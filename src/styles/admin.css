@@ -4,11 +4,275 @@
   box-sizing: border-box;
   font-family: "Public Sans", sans-serif;
 }
+
 :root {
-  --admin-primary-color: #fff8e9;
-  --admin-secondary-color: #8b714a;
-  --admin-teritary-color: #d7ac6c;
-  --admin-accent-color: #000;
-  --admin-background-color: #ad8c5c;
+  --admin-primary-color: #9c54ff;
+  --admin-secondary-color: #7f3bdd;
+  --admin-teritary-color: #295879;
+  --admin-accent-color: #fff;
   --admin-text-color: #fff;
+  --admin-border-color: #5c04d8;
+}
+
+.card {
+  border-radius: 3px;
+}
+
+/* Sidebar */
+.navbar-vertical.navbar-light {
+  background-color: #1c2b36 !important;
+
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link i,
+.navbar-vertical.navbar-light .navbar-nav .nav-link svg {
+  color: var(--admin-accent-color) !important;
+  padding-right: 10px;
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover i,
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover svg,
+.navbar-vertical.navbar-light .navbar-nav .nav-link.active i,
+.navbar-vertical.navbar-light .navbar-nav .nav-link.active svg {
+  color: var(--admin-text-color) !important;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: var(--admin-accent-color) !important;
+}
+
+.navbar-vertical.navbar-light .navbar-nav>.nav-item>.nav-link.active {
+  background-color: var(--sidber-menu-color) !important;
+  color: var(--admin-text-color) !important;
+}
+
+.navbar-vertical.navbar-light .navbar-nav>.nav-item>.nav-link:hover {
+  background-color: var(--admin-header-color);
+  /* color:var( --sidber-menu-color)!important; */
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link i,
+.navbar-vertical.navbar-light .navbar-nav .nav-link svg {
+  color: var(--admin-accent-color) !important;
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover i,
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover svg,
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover {
+  color: var(--sidber-menu-color) !important;
+  position: relative;
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link.active i,
+.navbar-vertical.navbar-light .navbar-nav .nav-link.active svg,
+.navbar-vertical.navbar-light .navbar-nav .nav-link.active {
+  color: var(--admin-accent-color) !important;
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover::after {
+  content: '\25C0';
+  /* Right arrow icon Unicode */
+  font-size: 1.5rem;
+  color: var(--sidber-menu-color) !important;
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+.navbar-vertical.navbar-expand-lg .navbar-brand {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background-color: #1c2b36;
+}
+
+@media (max-width: 991px) {
+  .navbar-vertical.navbar-expand-lg .navbar-brand {
+    position: static;
+  }
+}
+
+.sidebar-logo {
+  max-width: 100px;
+}
+
+.btn-button {
+  color: var(--admin-accent-color) !important;
+  background-color: #1c2b36 !important;
+  /* border-color: var(--admin-primary-color) !important; */
+  font-weight: 600 !important;
+}
+
+.btn-button-register {
+  color: var(--admin-accent-color) !important;
+  background-color: var(--admin-teritary-color) !important;
+  font-weight: 600 !important;
+}
+
+.btn-button-register:hover {
+  color: var(--admin-text-color) !important;
+  background-color: #1c2b36 !important;
+  /* border-color: var(--admin-primary-color) !important; */
+}
+
+.btn-button:hover {
+  color: var(--admin-text-color) !important;
+  background-color: var(--admin-teritary-color) !important;
+  /* border-color: var(--admin-primary-color) !important; */
+}
+
+.btn-check:focus+.btn-button,
+.btn-button:focus {
+  color: var(--admin-text-color);
+  background-color: var(--admin-secondary-color);
+  border-color: var(--admin-secondary-color);
+  box-shadow: 0 0 0 0.25rem var(--admin-teritary-color);
+}
+
+.btn-check:checked+.btn-button,
+.btn-check:active+.btn-button,
+.btn-button:active,
+.btn-button.active,
+.show>.btn-button.dropdown-toggle {
+  color: var(--admin-text-color);
+  background-color: var(--admin-secondary-color);
+  border-color: var(--admin-secondary-color);
+}
+
+.btn-check:checked+.btn-button:focus,
+.btn-check:active+.btn-button:focus,
+.btn-button:active:focus,
+.btn-button.active:focus,
+.show>.btn-button.dropdown-toggle:focus {
+  box-shadow: 0 0 0 0.25rem var(--admin-teritary-color);
+}
+
+.btn-button:disabled,
+.btn-button.disabled {
+  color: var(--admin-text-color);
+  background-color: var(--admin-secondary-color);
+  border-color: var(--admin-secondary-color);
+}
+
+.btn-button-check:checked+.btn-button,
+.btn-button.active,
+.btn-button.show,
+.btn-button:first-child:active,
+:not(.btn-button-check)+.btn-button:active {
+  background-color: var(--admin-secondary-color);
+  border-color: var(--admin-secondary-color);
+  color: var(--admin-text-color);
+}
+
+/* Banner  */
+.bannerAdd .circle {
+  width: 40px;
+  height: 40px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--admin-accent-color) !important;
+}
+
+.inputGroup {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  background-color: var(--admin-accent-color) !important;
+}
+
+.bannerAdd .circle::-webkit-color-swatch {
+  border-radius: 50%;
+}
+
+.circle {
+
+  border-radius: 50%;
+  /* Makes the input round */
+  width: 30px;
+  /* Set width */
+  height: 30px;
+  /* Set height */
+  padding: 0;
+  /* Remove padding */
+  border: none;
+  /* Remove border if needed */
+}
+
+/* Loader Css  */
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 55vh;
+}
+
+.loading {
+  --speed-of-animation: 0.9s;
+  --gap: 6px;
+  --first-color: #4c86f9;
+  --second-color: #49a84c;
+  --third-color: #f6bb02;
+  --fourth-color: #f6bb02;
+  --fifth-color: #2196f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  gap: 6px;
+  height: 100px;
+}
+
+.loading span {
+  width: 4px;
+  height: 50px;
+  background: var(--first-color);
+  animation: scale var(--speed-of-animation) ease-in-out infinite;
+}
+
+.loading span:nth-child(2) {
+  background: var(--second-color);
+  animation-delay: -0.8s;
+}
+
+.loading span:nth-child(3) {
+  background: var(--third-color);
+  animation-delay: -0.7s;
+}
+
+.loading span:nth-child(4) {
+  background: var(--fourth-color);
+  animation-delay: -0.6s;
+}
+
+.loading span:nth-child(5) {
+  background: var(--fifth-color);
+  animation-delay: -0.5s;
+}
+
+@keyframes scale {
+
+  0%,
+  40%,
+  100% {
+    transform: scaleY(0.05);
+  }
+
+  20% {
+    transform: scaleY(1);
+  }
+}
+
+.circle {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+.green {
+  background-color: green;
+}
+
+.red {
+  background-color: red;
 }

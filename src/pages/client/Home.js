@@ -1,10 +1,20 @@
 import React from "react";
+import Hero from "./home/Hero";
+import DailyDeals from "./home/DailyDeals";
+import BestSelling from "./home/BestSelling";
+import Categories from "./home/Categories";
+import SubCategories from "./home/SubCategories";
+import SubBanner from "./home/SubBanner";
 
-function Home({ handleLogin }) {
+function Home() {
   return (
     <div>
-      Home
-      <button onClick={handleLogin} className="btn btn-primary">Login</button>
+      <Hero />
+      <Categories />
+      <DailyDeals />
+      <SubCategories />
+      <SubBanner />
+      <BestSelling />
     </div>
   );
 }

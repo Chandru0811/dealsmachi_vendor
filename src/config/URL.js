@@ -1,9 +1,22 @@
-import React from 'react'
+import axios from "axios";
 
-function URL() {
-  return (
-    <div>URL</div>
-  )
-}
+const api = axios.create({
+  baseURL: "https://sgitjobs.com/dealslah/public/api/",
+});
 
-export default URL
+api.interceptors.request.use(
+  function (config) {
+    const token = sessionStorage.getItem("token");
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+export default api;
