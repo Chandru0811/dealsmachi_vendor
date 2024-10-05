@@ -12,9 +12,17 @@ import Payment from "./Payment";
 
 function Settings() {
   const [selectedItem, setSelectedItem] = useState("Shop");
+  const [showModal, setShowModal] = useState(false); // state for modal visibility
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
+    if (item === "Location") {
+      setShowModal(true); // Show modal when "Location" is clicked
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); // Close modal
   };
 
   return (
@@ -34,6 +42,39 @@ function Settings() {
         </div>
       </div>
 
+      {/* Modal */}
+      {showModal && (
+        <div className="modal show d-block" tabIndex="-1" role="dialog">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Location Settings</h5>
+                <button
+                  type="button"
+                  className="close"
+                  onClick={handleCloseModal}
+                >
+                  <span>&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                {/* Location content inside modal */}
+                <Location />
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleCloseModal}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div
         className="container card shadow border-0"
         style={{ minHeight: "90vh" }}
@@ -45,40 +86,45 @@ function Settings() {
           >
             <div className="dropdown-menu w-100 p-3">
               <div
-                className={`dropdown-item ps-5 ms-5 ${selectedItem === "Shop" ? "active" : ""
-                  }`}
+                className={`dropdown-item ps-5 ms-5 ${
+                  selectedItem === "Shop" ? "active" : ""
+                }`}
                 onClick={() => handleItemClick("Shop")}
               >
                 <BsHandbag />&nbsp;&nbsp; Company
               </div>
               <div className="dropdown-divider"></div>
               <div
-                className={`dropdown-item ps-5 ms-5 ${selectedItem === "Location" ? "active" : ""
-                  }`}
+                className={`dropdown-item ps-5 ms-5 ${
+                  selectedItem === "Location" ? "active" : ""
+                }`}
                 onClick={() => handleItemClick("Location")}
               >
                 <CiGlobe /> &nbsp;&nbsp;Location
               </div>
               <div className="dropdown-divider"></div>
               {/* <div
-                className={`dropdown-item ps-5 ms-5 ${selectedItem === "Payment" ? "active" : ""
-                  }`}
+                className={`dropdown-item ps-5 ms-5 ${
+                  selectedItem === "Payment" ? "active" : ""
+                }`}
                 onClick={() => handleItemClick("Payment")}
               >
                 <GrCurrency /> &nbsp;&nbsp;Payment
               </div> */}
               {/* <div className="dropdown-divider"></div> */}
               <div
-                className={`dropdown-item ps-5 ms-5 ${selectedItem === "Shop Policies" ? "active" : ""
-                  }`}
+                className={`dropdown-item ps-5 ms-5 ${
+                  selectedItem === "Shop Policies" ? "active" : ""
+                }`}
                 onClick={() => handleItemClick("Shop Policies")}
               >
                 <PiVanFill /> &nbsp;&nbsp;Company Policies
               </div>
               <div className="dropdown-divider"></div>
               <div
-                className={`dropdown-item ps-5 ms-5 ${selectedItem === "Shop Hours" ? "active" : ""
-                  }`}
+                className={`dropdown-item ps-5 ms-5 ${
+                  selectedItem === "Shop Hours" ? "active" : ""
+                }`}
                 onClick={() => handleItemClick("Shop Hours")}
               >
                 <MdAccessTime /> &nbsp;&nbsp;Company Hours
@@ -88,7 +134,7 @@ function Settings() {
           <div className="col-md-9 col-12 ">
             <div className="">
               {selectedItem === "Shop" && <Store />}
-              {selectedItem === "Location" && <Location />}
+              {selectedItem === "Location" && !showModal && <Location />}
               {selectedItem === "Payment" && <Payment />}
               {selectedItem === "Shop Policies" && <StorePolicy />}
               {selectedItem === "Shop Hours" && <StoreHours />}

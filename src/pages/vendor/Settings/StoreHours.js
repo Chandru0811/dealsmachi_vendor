@@ -41,6 +41,7 @@ const validationSchema = Yup.object({
 function StoreHours() {
   const shop_id = sessionStorage.getItem("shop_id");
   const [loading, setLoading] = useState(false);
+  const [loadIndicator, setLoadIndicator] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -56,7 +57,7 @@ function StoreHours() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      setLoading(true);
+      setLoadIndicator(true);
       values.shop_id = shop_id;
       try {
         const response = await api.post(`vendor/shop/hour/update`, values);
@@ -68,14 +69,16 @@ function StoreHours() {
         }
       } catch (error) {
         toast.error(error.message || "An error occurred");
-      } finally {
-        setLoading(false);
+      } 
+      finally {
+        setLoadIndicator(false);
       }
     },
   });
 
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`vendor/shop/hour/${shop_id}`);
         console.log("getHours", response.data.data);
@@ -83,6 +86,7 @@ function StoreHours() {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+      setLoading(false);
     };
     getData();
   }, [shop_id]);
@@ -91,6 +95,18 @@ function StoreHours() {
     <div className="container mt-4">
       <h4 className="text-primary my-5">Daily Basis Opening & Closing Hours</h4>
       <form onSubmit={formik.handleSubmit} className="w-100">
+      {loading ? (
+          <div className="loader-container">
+            <div class="loading">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
+          <div className="container">
         <div className="row mb-4">
         <Card>
             <Card.Header>Monday Time Slots</Card.Header>
@@ -410,14 +426,16 @@ function StoreHours() {
             </Card.Body>
           </Card>
         </div>
+        </div>
+        )}
         <div className="text-end mt-4 mb-3">
           <div className="text-end mt-4 mb-3">
             <button
               type="submit"
               className="btn btn-button btn-sm"
-              disabled={loading}
+              disabled={loadIndicator}
             >
-              {loading && (
+              {loadIndicator && (
                 <span
                   className="spinner-border spinner-border-sm me-2"
                   aria-hidden="true"

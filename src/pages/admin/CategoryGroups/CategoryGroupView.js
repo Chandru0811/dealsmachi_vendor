@@ -19,6 +19,7 @@ function CategoryGroupView() {
 
 
   const getData = async () => {
+    setLoading(true);
     try {
       const response = await api.get(`admin/categoryGroup/${id}`);
       setData(response.data.data);
@@ -26,6 +27,8 @@ function CategoryGroupView() {
     } catch (error) {
       toast.error("Error Fetching Data ", error);
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -34,19 +37,29 @@ function CategoryGroupView() {
 
   return (
     <div className="container-fluid minHeight">
-      <div className="card shadow border-0 mb-3">
-        <div className="row p-3">
-          <div className="d-flex justify-content-between align-items-center w-100">
-            <div>
-              <h3>View Category Group</h3>
-            </div>
-            <div>
-              <Link to="/categorygroup">
-                <button type="button" className="btn btn-light btn-sm me-2">
-                  <span>Back</span>
-                </button>
-              </Link>
-              {/* {shopStatus === false ? (
+      {loading ? (
+        <div className="loader-container">
+          <div className="loader">
+            <svg viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32"></circle>
+            </svg>
+          </div>
+        </div>
+      ) : (
+        <>
+          <div className="card shadow border-0 mb-3">
+            <div className="row p-3">
+              <div className="d-flex justify-content-between align-items-center w-100">
+                <div>
+                  <h3>View Category Group</h3>
+                </div>
+                <div>
+                  <Link to="/categorygroup">
+                    <button type="button" className="btn btn-light btn-sm me-2">
+                      <span>Back</span>
+                    </button>
+                  </Link>
+                  {/* {shopStatus === false ? (
                 <button
                   type="button"
                   onClick={handleActivate}
@@ -70,26 +83,26 @@ function CategoryGroupView() {
                   Deactivate
                 </button>
               ) : <></>} */}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="card shadow border-0 my-2" style={{ minHeight: "80vh" }}>
-        <div className="container">
-          <div className="row mt-5 p-3">
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Name</b>
-                  </p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.name}</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12">
+          </div>
+          <div className="card shadow border-0 my-2" style={{ minHeight: "80vh" }}>
+            <div className="container">
+              <div className="row mt-5 p-3">
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Name</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.name}</p>
+                    </div>
+                  </div>
+                </div>
+                {/* <div className="col-md-6 col-12">
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
@@ -100,20 +113,20 @@ function CategoryGroupView() {
                   <p className="text-muted text-sm">: {data.slug}</p>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Order</b>
-                  </p>
+            </div> */}
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Order</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.order}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.order}</p>
-                </div>
-              </div>
-            </div>
-            {/* <div className="col-md-6 col-12">
+                {/* <div className="col-md-6 col-12">
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
@@ -125,38 +138,50 @@ function CategoryGroupView() {
                 </div>
               </div>
             </div> */}
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Icon</b>
-                  </p>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Icon</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.icon}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: <img
-                    src={`${ImageURL}${data.icon}`}
-                    alt="Shop Logo"
-                    style={{ maxWidth: "100px", maxHeight: "100px" }}
-                  /></p>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Image</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: <img
+                        src={`${ImageURL}${data.image_path}`}
+                        alt="Shop Logo"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      /></p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-12">
-              <div className="row mb-3">
-                <div className="col-3 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Description</b>
-                  </p>
-                </div>
-                <div className="col-9">
-                  <p className="text-muted text-sm">: {data.description}</p>
+                <div className="col-12">
+                  <div className="row mb-3">
+                    <div className="col-3 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Description</b>
+                      </p>
+                    </div>
+                    <div className="col-9">
+                      <p className="text-muted text-sm">: {data.description}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-      {/* <Modal show={showModal} backdrop="static" keyboard={false} onHide={handleClose}>
+          {/* <Modal show={showModal} backdrop="static" keyboard={false} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Deactivate Shop</Modal.Title>
         </Modal.Header>
@@ -181,6 +206,8 @@ function CategoryGroupView() {
           </button>
         </Modal.Footer>
       </Modal> */}
+        </>
+      )}
     </div>
   );
 }

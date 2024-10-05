@@ -47,7 +47,7 @@ const Product = () => {
       const response = await api.get(`vendor/product/${id}`);
       setData(response.data.data); // Update data state
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      console.error("Error refreshing data:", error);
     }
     setLoading(false);
     initializeDataTable(); // Reinitialize DataTable after data update
@@ -61,10 +61,10 @@ const Product = () => {
         const response = await api.get(`vendor/product/${id}`);
         setData(response.data.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
       setLoading(false);
-      initializeDataTable(); // Initialize DataTable with fetched data
+      initializeDataTable();
     };
 
     fetchData();
@@ -83,10 +83,10 @@ const Product = () => {
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">Products</h3>
+                <h3 className="mb-0">Deals</h3>
                 <Link to="/product/add">
                   <button className="btn btn-sm btn-button shadow-none border-none py-3">
-                    <PiIntersectSquareFill size={20} /> Add Product
+                    <PiIntersectSquareFill size={20} /> Add Deal
                   </button>
                 </Link>
               </div>
@@ -101,12 +101,10 @@ const Product = () => {
       >
         {loading ? (
           <div className="loader-container">
-            <div class="loading">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className="loader">
+              <svg viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32"></circle>
+              </svg>
             </div>
           </div>
         ) : (
@@ -127,12 +125,12 @@ const Product = () => {
                 {data.map((data, index) => (
                   <tr key={index}>
                     <th scope="row">{index + 1}</th>
-                    <td className="text-center">
+                    <td className="text-start">
                       <img
-                        src={`${ImageURL}${data.image_url}`}
+                        src={`${ImageURL}${data.image_url1}`}
                         alt="Logo"
                         className="img-fluid w-25 me-3"
-                        style={{ maxHeight: "70px", maxWidth: "70px" }}
+                        style={{ maxHeight: "50px", maxWidth: "50px" }}
                       />
                       {data.name}
                     </td>
@@ -172,7 +170,7 @@ const Product = () => {
                       </Link>
                       <DeleteModel
                         onSuccess={refreshData}
-                        path={`vendor/product/${data.id}`}
+                        path={`vendor/product/${data.id}/delete`}
                         style={{ display: "inline-block" }}
                       />
                     </td>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../assets/CRMLogo.png";
+import deals from "../../assets/deals.png";
 import { BsBarChartFill, BsHouseDoorFill } from "react-icons/bs";
 import { BiSolidCategory, BiLogOut, BiCart } from "react-icons/bi";
 import { MdCategory } from "react-icons/md";
@@ -35,12 +35,22 @@ function VendorSidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
-            }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
+            leadMenuOpen || activeSubmenu ? "active" : ""
+          }`}
           to="/"
         >
-          <img src={Logo} alt="Logo" className="img-fluid sidebar-logo rounded-circle"
-            style={{ background: "#fff", borderRadius: "5px", width: "50px", height: "50px" }} />
+          <img
+            src={deals}
+            alt="deals"
+            className="img-fluid sidebar-logo rounded-circle"
+            style={{
+              background: "#fff",
+              borderRadius: "5px",
+              width: "50px",
+              height: "50px",
+            }}
+          />
           <p className="text-white">Dealsmachi</p>
         </NavLink>
         <div className="collapse navbar-collapse" id="sidebarCollapse">
@@ -67,7 +77,7 @@ function VendorSidebar({ handleLogout }) {
             {/* Products */}
             <li className="nav-item">
               <NavLink className="nav-link" to="/product">
-                <BiSolidCategory /> Products
+                <BiSolidCategory /> Deals
               </NavLink>
             </li>
 
@@ -77,7 +87,6 @@ function VendorSidebar({ handleLogout }) {
                 <BiCart /> Orders
               </NavLink>
             </li> */}
-
 
             {/* <li className="nav-item">
               <NavLink className="nav-link" to="/dealcategory">

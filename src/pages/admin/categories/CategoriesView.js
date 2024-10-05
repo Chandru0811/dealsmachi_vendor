@@ -19,6 +19,7 @@ function CategoriesView() {
 
 
   const getData = async () => {
+    setLoading(true);
     try {
       const response = await api.get(`admin/categories/${id}`);
       setData(response.data.data);
@@ -26,6 +27,7 @@ function CategoriesView() {
     } catch (error) {
       toast.error("Error Fetching Data ", error);
     }
+    setLoading(false);
   };
 
 
@@ -38,6 +40,25 @@ function CategoriesView() {
       console.error("Error fetching data:", error);
     }
   };
+
+  // const handleDeActive = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await api.post(`admin`);
+  //     if (response.status === 200) {
+  //       handleClose();
+  //       getData();
+  //       toast.success('Shop deactivated successfully!');
+  //     } else {
+  //       toast.error('Failed to deactivate shop.');
+  //     }
+  //   } catch (error) {
+  //     toast.error('An error occurred while deactivating the shop.');
+  //     console.error('Deactivation Error:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleActivate = async () => {
     setLoading(true);
@@ -64,87 +85,97 @@ function CategoriesView() {
 
   return (
     <div className="container-fluid ">
-      <div className="card shadow border-0 mb-3">
-        <div className="row p-3">
-          <div className="d-flex justify-content-between align-items-center w-100">
-            <div>
-              <h3>View Category</h3>
-            </div>
-            <div>
-              <Link to="/categories">
-                <button type="button" className="btn btn-light btn-sm me-2">
-                  <span>Back</span>
-                </button>
-              </Link>
-              {shopStatus === 0 && (
-                <button
-                  type="button"
-                  onClick={handleActivate}
-                  className="btn btn-success btn-sm me-2"
-                  disabled={loading}
-                >
-                  {loading && (
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      aria-hidden="true"
-                    ></span>
-                  )}
-                  Activate
-                </button>
-              )}
-            </div>
-
+      {loading ? (
+        <div className="loader-container">
+          <div className="loader">
+            <svg viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32"></circle>
+            </svg>
           </div>
         </div>
-      </div>
-      <div className="card shadow border-0 my-2" style={{ minHeight: "80vh" }}>
-        <div className="container">
-          <div className="row mt-5 p-3">
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Category Group Id</b>
-                  </p>
+      ) : (
+        <>
+          <div className="card shadow border-0 mb-3">
+            <div className="row p-3">
+              <div className="d-flex justify-content-between align-items-center w-100">
+                <div>
+                  <h3>View Category</h3>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    :{" "}
-                    {datas &&
-                      datas.map((category) =>
-                        parseInt(data.category_group_id) === category.id
-                          ? category.name || "--"
-                          : ""
+                <div>
+                  <Link to="/categories">
+                    <button type="button" className="btn btn-light btn-sm me-2">
+                      <span>Back</span>
+                    </button>
+                  </Link>
+                  {shopStatus == 0 ? (
+                    <button
+                      type="button"
+                      onClick={handleActivate}
+                      className="btn btn-success btn-sm me-2" disabled={loading}
+                    >
+                      {loading && (
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          aria-hidden="true"
+                        ></span>
                       )}
-                  </p>
+                      Activate
+                    </button>
+                  ) : <></>}
+
+                  {/* {shopStatus == 1 ? (
+                <button
+                  onClick={handleOpenModal}
+                  className="btn btn-danger btn-sm me-2"
+                >
+                  Deactivate
+                </button>
+              ) : <></>} */}
                 </div>
+
               </div>
             </div>
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Name</b>
-                  </p>
+          </div>
+          <div className="card shadow border-0 my-2" style={{ minHeight: "80vh" }}>
+            <div className="container">
+              <div className="row mt-5 p-3">
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Category Group Name</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.categoryGroupName}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.name}</p>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Name</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.name}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Slug</b>
-                  </p>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Slug</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.slug}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.slug}</p>
-                </div>
-              </div>
-            </div>
-            {/* <div className="col-md-6 col-12">
+                {/* <div className="col-md-6 col-12">
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
@@ -158,39 +189,39 @@ function CategoriesView() {
                 </div>
               </div>
             </div> */}
-            <div className="col-md-6 col-12">
-              <div className="row mb-3">
-                <div className="col-6 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Icon</b>
-                  </p>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Icon</b>
+                      </p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: <img
+                        src={`${ImageURL}${data.icon}`}
+                        alt="Shop Logo"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      /></p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: <img
-                    src={`${ImageURL}${data.icon}`}
-                    alt="Shop Logo"
-                    style={{ maxWidth: "100px", maxHeight: "100px" }}
-                  /></p>
-                </div>
-              </div>
-            </div>
-            <div className="col-12">
-              <div className="row mb-3">
-                <div className="col-3 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    <b>Description</b>
-                  </p>
-                </div>
-                <div className="col-9">
-                  <p className="text-muted text-sm">: {data.description}</p>
+                <div className="col-12">
+                  <div className="row mb-3">
+                    <div className="col-3 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">
+                        <b>Description</b>
+                      </p>
+                    </div>
+                    <div className="col-9">
+                      <p className="text-muted text-sm">: {data.description}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* <Modal show={showModal} backdrop="static" keyboard={false} onHide={handleClose}>
+          {/* <Modal show={showModal} backdrop="static" keyboard={false} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Deactivate Shop</Modal.Title>
         </Modal.Header>
@@ -215,6 +246,8 @@ function CategoriesView() {
           </button>
         </Modal.Footer>
       </Modal> */}
+        </>
+      )}
     </div>
   );
 }

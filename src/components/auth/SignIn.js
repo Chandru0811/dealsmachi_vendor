@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../config/URL";
 import toast from "react-hot-toast";
 
 function SignIn({ handleLogin }) {
@@ -25,8 +25,8 @@ function SignIn({ handleLogin }) {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(
-          `https://sgitjobs.com/dealslah/public/api/login`,
+        const response = await api.post(
+          `login`,
           values
         );
         if (response.status === 200) {

@@ -8,6 +8,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import toast from "react-hot-toast";
 import axios from "axios";
 import ApprovePopup from "./ApprovePopup";
+import api from "../../config/URL";
 
 function VendorLogin({ handleVendorLogin, handleLogin }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,10 +31,7 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
     onSubmit: async (values) => {
       try {
         setLoadIndicator(true);
-        const response = await axios.post(
-          `https://sgitjobs.com/dealslah/public/api/login`,
-          values
-        );
+        const response = await api.post(`login`, values);
         if (response.status === 200) {
           toast.success(response.data.message);
 
@@ -42,10 +40,7 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
           sessionStorage.setItem("id", response.data.data.userDetails.id);
           sessionStorage.setItem("email", response.data.data.userDetails.email);
           sessionStorage.setItem("role", response.data.data.userDetails.role);
-          sessionStorage.setItem(
-            "active",
-            "0"
-          );
+          sessionStorage.setItem("active", "0");
           sessionStorage.setItem(
             "shop_id",
             response.data.data.userDetails.shop_id
@@ -75,7 +70,11 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
           toast.error(response.data.message);
         }
       } catch (error) {
-        console.error("error login");
+        if (error.response.status === 400) {
+          toast.error(error.response.data.message);
+        } else {
+          toast.error(error.message);
+        }
       } finally {
         setLoadIndicator(false);
       }
@@ -192,7 +191,7 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
                   justifyContent: "center",
                 }}
               >
-                Became a Vendor
+                Register as a Vendor
               </Button>
             </Link>
           </div>

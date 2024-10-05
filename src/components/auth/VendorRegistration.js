@@ -5,7 +5,7 @@ import Form2 from "./Register/AddRegister/Form2";
 import Form3 from "./Register/AddRegister/Form3";
 import Form4 from "./Register/AddRegister/Form4";
 
-const steps = ["Store", "Location", "Payment", "Ready!"];
+const steps = ["Company", "Location", "Ready!"];
 
 export default function VendorRegistration({ handleVendorLogin }) {
   const [activeStep, setActiveStep] = useState(0);
@@ -32,12 +32,12 @@ export default function VendorRegistration({ handleVendorLogin }) {
           childRef.current.form4();
         }
         break;
+      // case "2":
+      //   if (childRef.current) {
+      //     childRef.current.form2();
+      //   }
+      //   break;
       case "2":
-        if (childRef.current) {
-          childRef.current.form2();
-        }
-        break;
-      case "3":
         if (childRef.current) {
           childRef.current.form3();
         }
@@ -57,7 +57,7 @@ export default function VendorRegistration({ handleVendorLogin }) {
           className="d-flex justify-content-center"
           style={{ color: "#771bf8" }}
         >
-          Dealsmachi - Deals that's Matter !
+          Dealslah - Deals that's Matter !
         </h2>
         <Stepper className="mt-5" activeStep={activeStep} alternativeLabel>
           {steps.map((step, index) => (
@@ -89,7 +89,7 @@ export default function VendorRegistration({ handleVendorLogin }) {
                 setLoadIndicators={setLoadIndicator}
               />
             )}
-            {activeStep === 2 && (
+            {/* {activeStep === 2 && (
               <Form2
                 formData={formData}
                 ref={childRef}
@@ -97,19 +97,19 @@ export default function VendorRegistration({ handleVendorLogin }) {
                 handleNext={handleNext}
                 setLoadIndicators={setLoadIndicator}
               />
-            )}
-            {activeStep === 3 && (
+            )} */}
+            {activeStep === 2 && (
               <Form3
                 formData={formData}
                 ref={childRef}
                 setFormData={setFormData}
-                // handleNext={handleNext}
+                handleNext={handleNext}
                 setLoadIndicators={setLoadIndicator}
                 handleVendorLogin={handleVendorLogin}
               />
             )}
             <div className="container-fluid p-1 d-flex align-items-center justify-content-center gap-2">
-              {activeStep !== 0 && activeStep !== 3 && (
+              {activeStep !== 0 && activeStep !== 2 && (
                 <button
                   className="btn btn-button-register mb-3 w-50"
                   onClick={handleBack}

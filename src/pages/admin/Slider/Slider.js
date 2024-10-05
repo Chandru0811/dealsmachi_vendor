@@ -3,12 +3,10 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import Image from "../../../assets/tv.png";
 import DeleteModel from '../../../components/admin/DeleteModel';
 import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
 import ImageURL from "../../../config/ImageURL";
-import toast from "react-hot-toast";
 
 const Slider = () => {
   const tableRef = useRef(null);
@@ -17,20 +15,12 @@ const Slider = () => {
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
-      return; // DataTable already initialized
+      return;
     }
     $(tableRef.current).DataTable({
       columnDefs: [{ orderable: false, targets: -1 }],
     });
   };
-  useEffect(() => {
-    if (!loading) {
-      initializeDataTable();
-    }
-    return () => {
-      destroyDataTable();
-    };
-  }, [loading]);
 
   const destroyDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -38,42 +28,43 @@ const Slider = () => {
     }
   };
 
-  const refreshData = async () => {
-    destroyDataTable(); // Clean up the old DataTable
+  const fetchData = async () => {
     setLoading(true);
     try {
       const response = await api.get('admin/sliders');
-      setDatas(response.data.data); // Update data state
-      initializeDataTable(); // Reinitialize DataTable after data update
+      setDatas(response.data.data);
+      setLoading(false);
+      initializeDataTable();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setLoading(false);
+    }
+  };
+
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get('/admin/sliders');
+      setDatas(response.data.data);
     } catch (error) {
       console.error('Error refreshing data:', error);
     }
     setLoading(false);
+    initializeDataTable();
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get('admin/sliders');
-        setDatas(response.data.data);
-        initializeDataTable(); // Initialize DataTable with fetched data
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-      setLoading(false);
-    };
-
     fetchData();
-    refreshData();
+
     return () => {
-      destroyDataTable(); // Cleanup DataTable on component unmount
+      destroyDataTable();
     };
   }, []);
 
   return (
     <section className="px-4">
-      <div className="card shadow border-0 mb-2 top-header" >
+      <div className="card shadow border-0 mb-2 top-header">
         <div className="container-fluid">
           <div className="row align-items-center">
             <div className="col p-2">
@@ -91,61 +82,39 @@ const Slider = () => {
           </div>
         </div>
       </div>
-      <div
-        className="container card shadow border-0" style={{ minHeight: "80vh" }}
-
-      >
+      <div className="container card shadow border-0" style={{ minHeight: "80vh" }}>
         {loading ? (
           <div className="loader-container">
-            <div class="loading">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className="loader">
+              <svg viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32"></circle>
+              </svg>
             </div>
           </div>
         ) : (
           <div className="table-responsive p-2">
-            <table
-              ref={tableRef}
-              className="display table nowrap"
-              style={{ width: "100%" }}
-            >
+            <table ref={tableRef} className="display table nowrap" style={{ width: "100%" }}>
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
-                    S.NO
-                  </th>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>S.NO</th>
                   <th className="text-center">Image</th>
-                  {/* <th className="text-center">Title</th> */}
                   <th className="text-center">Order</th>
-                  <th className="text-center">
-                    ACTION
-                  </th>
+                  <th className="text-center">ACTION</th>
                 </tr>
               </thead>
               <tbody>
                 {datas?.map((data, index) => (
                   <tr key={data.id}>
-
                     <td className="text-start align-middle">{index + 1}</td>
                     <td className="text-center">
                       <img
                         src={`${ImageURL}${data.image_path}`}
-                        alt="Image"
+                        alt="image_path"
                         className="img-fluid"
                         width={50}
                       ></img>
                     </td>
-                    <td
-                      className="ms-2">{data.order}
-                    </td>
-                    {/* <td className="align-middle">{data.slug}</td> */}
-
-
-
-
+                    <td className="text-center ms-2">{data.order}</td>
                     <td className="text-center">
                       <div className="d-flex justify-content-center">
                         <Link to={`/slider/view/${data.id}`}>
@@ -168,7 +137,6 @@ const Slider = () => {
           </div>
         )}
       </div>
-
     </section>
   );
 };

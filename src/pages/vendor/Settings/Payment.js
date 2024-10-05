@@ -21,6 +21,7 @@ const validationSchema = Yup.object().shape({
 function Payment() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const id = sessionStorage.getItem("shop_id");
+  const [loading, setLoading] = useState(true);
   const formik = useFormik({
     initialValues: {
       payment_id: "",
@@ -57,6 +58,7 @@ function Payment() {
   });
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`vendor/shop/payment/${id}`);
         const shopData = response.data.data;
@@ -65,12 +67,24 @@ function Payment() {
       } catch (error) {
         toast.error("Error Fetching Data ", error);
       }
+      setLoading(false);
     };
     getData();
   }, [id]);
   return (
     <section>
       <form onSubmit={formik.handleSubmit} className="w-100">
+      {loading ? (
+          <div className="loader-container">
+            <div class="loading">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
         <div className="container">
           <div className="row">
             <div className="col-md-4 col-12 mb-5">
@@ -282,6 +296,7 @@ function Payment() {
             </div>
           </div>
         </div>
+        )}
         <div className="text-end mt-4 mb-3">
           <button
             type="submit"

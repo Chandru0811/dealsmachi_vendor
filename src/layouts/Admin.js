@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Dashboard from "../pages/admin/Dashboard";
 import Sidebar from "../components/admin/Sidebar";
@@ -34,13 +34,16 @@ import DealCategory from "../pages/admin/DealCategory/DealCategory";
 import DealCategoryAdd from "../pages/admin/DealCategory/DealCategoryAdd";
 import DealCategoryEdit from "../pages/admin/DealCategory/DealCategoryEdit";
 import DealCategoryView from "../pages/admin/DealCategory/DealCategoryView";
+import ScrollToTop from "../pages/ScroolToTop";
 
 function Admin({ handleLogout }) {
   return (
     <div>
       <BrowserRouter basename="/dealslahVendor">
+        <ScrollToTop />
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
           <Sidebar handleLogout={handleLogout} />
+
           <div className="h-screen flex-grow-1 overflow-y-lg-auto">
             <AdminHeader />
             <main className="pt-2" style={{ backgroundColor: "#f2f2f2" }}>
@@ -66,13 +69,13 @@ function Admin({ handleLogout }) {
 
                   {/* Categories */}
                   <Route path="/categories" element={<CategoriesIndex />} />
-                  <Route path="/category/add" element={<CategoriesAdd />} />
+                  <Route path="/categories/add" element={<CategoriesAdd />} />
                   <Route
-                    path="/category/view/:id"
+                    path="/categories/view/:id"
                     element={<CategoriesView />}
                   />
                   <Route
-                    path="/category/edit/:id"
+                    path="/categories/edit/:id"
                     element={<CategoriesEdits />}
                   />
 

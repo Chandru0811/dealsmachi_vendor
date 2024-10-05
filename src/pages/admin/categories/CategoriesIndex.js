@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import DeleteModel from "../../../components/admin/DeleteModel";
 import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
+import ImageURL from "../../../config/ImageURL";
 
 const CategoriesIndex = () => {
   const [datas, setDatas] = useState();
@@ -68,10 +69,8 @@ const CategoriesIndex = () => {
     };
 
     fetchData();
-    refreshData();
-    
 
-    // Cleanup DataTable on component unmount
+
     return () => {
       if (tableRef.current) {
         $(tableRef.current).DataTable().destroy();
@@ -87,7 +86,7 @@ const CategoriesIndex = () => {
             <div className="col-12 p-2 d-flex justify-content-between align-items-center">
               <h3 class="mb-0">Categories</h3>
               <div class="container-fluid d-flex justify-content-end">
-                <Link to="/category/add">
+                <Link to="/categories/add">
                   <button
                     type="submit"
                     className="btn btn-sm btn-button shadow-none border-0 py-3"
@@ -104,12 +103,10 @@ const CategoriesIndex = () => {
       <div className="container card shadow border-0" style={{ minHeight: "80vh" }}>
         {loading ? (
           <div className="loader-container">
-            <div class="loading">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className="loader">
+              <svg viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32"></circle>
+              </svg>
             </div>
           </div>
         ) : (
@@ -126,7 +123,7 @@ const CategoriesIndex = () => {
                   </th>
                   {/* <th scope="col">Category Group Id</th> */}
                   <th scope="col">Name</th>
-                  <th scope="col">Slug</th>
+                  {/* <th scope="col">Slug</th> */}
                   <th scope="col">Description</th>
                   <th scope="col">Active</th>
                   <th scope="col" className="text-center">
@@ -143,33 +140,38 @@ const CategoriesIndex = () => {
                       {data.category_group_id}
                     </div>
                   </td> */}
-                    <td>
-                      <div className="word-wrap">{data.name}</div>
+                    <td className="text-start">
+                      <img
+                        src={`${ImageURL}${data.icon}`}
+                        alt="Logo"
+                        className="img-fluid w-25 me-3"
+                        style={{ maxHeight: "70px", maxWidth: "70px" }}
+                      />
+                      {data.name}
                     </td>
-                    <td>
+                    {/* <td>
                       <div className="word-wrap">{data.slug}</div>
-                    </td>
+                    </td> */}
                     <td>
                       <div className="word-wrap">{data.description}</div>
                     </td>
                     <td className="align-middle">
-                      {data.active ? (
-                        <span className="dot" style={{ backgroundColor: 'green', width: '10px', height: '10px', display: 'inline-block', borderRadius: '50%' }}></span>
-                      ) : (
+                      {data.active === "0" ? (
                         <span className="dot" style={{ backgroundColor: 'red', width: '10px', height: '10px', display: 'inline-block', borderRadius: '50%' }}></span>
+                      ) : (
+                        <span className="dot" style={{ backgroundColor: 'green', width: '10px', height: '10px', display: 'inline-block', borderRadius: '50%' }}></span>
                       )}
-                      {data.active ? ' Active' : ' Inactive'}
+                      {data.active === "1" ? ' Active' : ' Inactive'}
                     </td>
-
 
                     <td className="text-center">
                       <div>
-                        <Link to={`/category/view/${data.id}`}>
+                        <Link to={`/categories/view/${data.id}`}>
                           <button className="button-btn btn-sm m-2">
                             View
                           </button>
                         </Link>
-                        <Link to={`/category/edit/${data.id}`}>
+                        <Link to={`/categories/edit/${data.id}`}>
                           <button className="button-btn btn-sm m-2">
                             Edit
                           </button>

@@ -1,7 +1,18 @@
-import React from "react";
-import user from '../../assets/user.webp'
+import React, { useEffect } from "react";
+import user from "../../assets/user.webp";
 import { Link } from "react-router-dom";
+import { Tooltip } from "bootstrap";
+
 function VendorHeader() {
+  useEffect(() => {
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
+    tooltipTriggerList.forEach((tooltipTriggerEl) => {
+      new Tooltip(tooltipTriggerEl);
+    });
+  }, []);
+
   return (
     <header className="border-bottom py-3 sticky-top-header">
       <div className="container-fluid">
@@ -41,7 +52,14 @@ function VendorHeader() {
                 &nbsp;&nbsp;&nbsp;
                 <span style={{ fontSize: "24px" }}>
                   <Link to={"/settings"}>
-                    <img src={user} className="img-fluid header-user" alt="img" />
+                    <img
+                      src={user}
+                      className="img-fluid header-user"
+                      alt="img"
+                      data-bs-toggle="tooltip"
+                      data-bs-placement="bottom"
+                      title="Shop"
+                    />
                   </Link>
                 </span>
               </div>

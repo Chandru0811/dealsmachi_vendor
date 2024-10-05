@@ -16,15 +16,22 @@ const validationSchema = Yup.object({
     .matches(/^[0-9]+$/, "mobile number must be numeric")
     .required("mobile number is required!"),
   shopType: Yup.string().required("Shop Type is required!"),
-  //   logo: Yup.mixed().required("Logo is required"),
-  //   external_url: Yup.string().required("Banner Type is required!"),
-  //   banner: Yup.mixed().required("Banner is required!"),
+  logo: Yup.mixed().required("Logo is required"),
+  external_url: Yup.string()
+    .url("Please enter a valid URL")
+    .required("External URL is required!"),
+  map_url: Yup.string()
+    .url("Please enter a valid URL")
+    .required("Map URL is required!"),
+
+  banner: Yup.mixed().required("Banner is required!"),
   description: Yup.string().required("Description is required!"),
 });
 
 const Store = () => {
   const [data, setData] = useState([]);
   const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoading] = useState(true);
   const id = sessionStorage.getItem("shop_id");
   // const convertToSlug = (name) => {
   //   return name.toLowerCase().replace(/\s+/g, "_");
@@ -39,6 +46,7 @@ const Store = () => {
       shopType: "",
       logo: null,
       external_url: "",
+      map_url: "",
       banner: null,
       description: "",
       shop_ratings: "",
@@ -54,17 +62,19 @@ const Store = () => {
       formdata.append("email", data.email);
       formdata.append("mobile", data.mobile);
       formdata.append("shop_type", data.shopType);
+      formdata.append("map_url", data.map_url);
       formdata.append("external_url", data.external_url);
       formdata.append("description", data.description);
       formdata.append("shop_ratings", data.shop_ratings);
-      // const slug = convertToSlug(data.legal_name);
-      // formdata.append("slug", slug);
-      if (data.logo) {
+
+      if (data.logo instanceof File || data.logo instanceof Blob) {
         formdata.append("logo", data.logo);
       }
-      if (data.banner) {
+
+      if (data.banner instanceof File || data.banner instanceof Blob) {
         formdata.append("banner", data.banner);
       }
+      
       try {
         const response = await api.post(
           `vendor/shop/${id}/update/details`,
@@ -105,6 +115,7 @@ const Store = () => {
 
   useEffect(() => {
     const getData = async () => {
+      setLoading(true);
       try {
         const response = await api.get(`vendor/shop/details/${id}`);
         setData(response.data);
@@ -117,6 +128,7 @@ const Store = () => {
       } catch (error) {
         toast.error("Error Fetching Data ", error);
       }
+      setLoading(false);
     };
     getData();
   }, [id]);
@@ -124,281 +136,342 @@ const Store = () => {
   return (
     <section>
       <form onSubmit={formik.handleSubmit} className="w-100">
-        <div className="container">
-          {/* <h3 className='text-primary py-3'>Generat Settings</h3> */}
+        {loading ? (
+          <div className="loader-container">
+            <div class="loading">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
+          <div className="container">
+            {/* <h3 className='text-primary py-3'>Generat Settings</h3> */}
 
-          <div className="row">
-            <div className="col-md-4 col-12 mb-5 ">
-              <label className="form-label fw-bold">
-                Shop Name<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                }`}
-                name="name"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.name}
-              />
-              {formik.touched.name && formik.errors.name && (
-                <div className="error text-danger">
-                  <small>{formik.errors.name}</small>
-                </div>
-              )}
-            </div>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                Shop Legal Name<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.legal_name && formik.errors.legal_name
-                    ? "is-invalid"
-                    : ""
-                }`}
-                name="legal_name"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.legal_name}
-              />
-              {formik.touched.legal_name && formik.errors.legal_name && (
-                <div className="error text-danger">
-                  <small>{formik.errors.legal_name}</small>
-                </div>
-              )}
-            </div>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                Shop Email<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="email"
-                className={`form-control ${
-                  formik.touched.email && formik.errors.email
-                    ? "is-invalid"
-                    : ""
-                }`}
-                name="email"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.email}
-              />
-              {formik.touched.email && formik.errors.email && (
-                <div className="error text-danger">
-                  <small>{formik.errors.email}</small>
-                </div>
-              )}
-            </div>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                Shop mobile<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.mobile && formik.errors.mobile
-                    ? "is-invalid"
-                    : ""
-                }`}
-                name="mobile"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.mobile}
-              />
-              {formik.touched.mobile && formik.errors.mobile && (
-                <div className="error text-danger">
-                  <small>{formik.errors.mobile}</small>
-                </div>
-              )}
-            </div>
-
-            <h3 className="text-primary py-3">Shop Brand Setup</h3>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                Shop Type<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <select
-                type="text"
-                className={`form-select ${
-                  formik.touched.shopType && formik.errors.shopType
-                    ? "is-invalid"
-                    : ""
-                }`}
-                name="shopType"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.shopType}
-              >
-                <option></option>
-                <option value="product">Product</option>
-                <option value="service">Service</option>
-              </select>
-              {formik.touched.shopType && formik.errors.shopType && (
-                <div className="error text-danger">
-                  <small>{formik.errors.shopType}</small>
-                </div>
-              )}
-            </div>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                Shop Logo<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="file"
-                name="file"
-                accept=".png,.jpeg,.jpg,.gif,.svg"
-                className="form-control"
-                onChange={(event) => {
-                  const file = event.target.files[0];
-                  formik.setFieldValue("logo", file);
-                }}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.logo && formik.errors.logo && (
-                <div className="error text-danger">
-                  <small>{formik.errors.logo}</small>
-                </div>
-              )}
-
-              {formik.values.logo && (
-                <div className="mb-3">
-                  {typeof formik.values.logo === "object" ? (
-                    <img
-                      src={URL.createObjectURL(formik.values.logo)}
-                      alt="Shop logo"
-                      style={{ maxWidth: "100px", maxHeight: "100px" }}
-                    />
-                  ) : (
-                    <img
-                      src={`${ImageURL}${formik.values.logo}`}
-                      alt="Shop logo"
-                      style={{ maxWidth: "100px", maxHeight: "100px" }}
-                    />
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                External Url<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.external_url && formik.errors.external_url
-                    ? "is-invalid"
-                    : ""
-                }`}
-                name="external_url"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.external_url}
-              />
-              {formik.touched.external_url && formik.errors.external_url && (
-                <div className="error text-danger">
-                  <small>{formik.errors.external_url}</small>
-                </div>
-              )}
-            </div>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">
-                Shop Rating<span className="text-danger">*</span>
-              </label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.shop_ratings && formik.errors.shop_ratings
-                    ? "is-invalid"
-                    : ""
-                }`}
-                name="shop_ratings"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.shop_ratings}
-              />
-              {formik.touched.shop_ratings && formik.errors.shop_ratings && (
-                <div className="error text-danger">
-                  <small>{formik.errors.shop_ratings}</small>
-                </div>
-              )}
-            </div>
-            <div className="col-md-4 col-12 mb-5">
-              <label className="form-label fw-bold">Shop Bannenr</label>
-            </div>
-            <div className="col-md-8 col-12 mb-5">
-              <input
-                type="file"
-                name="file"
-                accept=".png,.jpeg,.jpg,.gif,svg"
-                className="form-control"
-                onChange={(event) => {
-                  formik.setFieldValue("banner", event.target.files[0]);
-                }}
-                onBlur={formik.handleBlur}
-              />
-
-              {formik.touched.banner && formik.errors.banner && (
-                <div className="error text-danger">
-                  <small>{formik.errors.banner}</small>
-                </div>
-              )}
-            </div>
-            {formik.values.banner &&
-              typeof formik.values.banner === "string" && (
-                <div className="col-12 mb-3">
-                  <img
-                    src={`${ImageURL}${formik.values.banner}`}
-                    alt="Shop Banner"
-                  />
-                </div>
-              )}
-            <div className="mb-3">
-              <h5 className="mb-4 fw-bold">Shop Description</h5>
-            </div>
-
-            <div className="row align-items-center">
-              <div className="col-12">
-                <textarea
-                  type="file"
+            <div className="row">
+              <div className="col-md-4 col-12 mb-5 ">
+                <label className="form-label fw-bold">
+                  Company Name<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
                   className={`form-control ${
-                    formik.touched.description && formik.errors.description
+                    formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
                   }`}
-                  name="description"
+                  name="name"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.description}
+                  value={formik.values.name}
                 />
-                {formik.touched.description && formik.errors.description && (
+                {formik.touched.name && formik.errors.name && (
                   <div className="error text-danger">
-                    <small>{formik.errors.description}</small>
+                    <small>{formik.errors.name}</small>
                   </div>
                 )}
               </div>
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company Legal Name<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.legal_name && formik.errors.legal_name
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="legal_name"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.legal_name}
+                />
+                {formik.touched.legal_name && formik.errors.legal_name && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.legal_name}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company Email<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="email"
+                  className={`form-control ${
+                    formik.touched.email && formik.errors.email
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="email"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.email}
+                />
+                {formik.touched.email && formik.errors.email && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.email}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company mobile<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.mobile && formik.errors.mobile
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="mobile"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.mobile}
+                />
+                {formik.touched.mobile && formik.errors.mobile && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.mobile}</small>
+                  </div>
+                )}
+              </div>
+
+              <h3 className="text-primary py-3">Company Brand Setup</h3>
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company Type<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <select
+                  type="text"
+                  className={`form-select ${
+                    formik.touched.shopType && formik.errors.shopType
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="shopType"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.shopType}
+                >
+                  <option></option>
+                  <option value="product">Product</option>
+                  <option value="service">Service</option>
+                </select>
+                {formik.touched.shopType && formik.errors.shopType && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.shopType}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company Logo<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="file"
+                  name="file"
+                  accept=".png,.jpeg,.jpg,.gif,.svg"
+                  className="form-control"
+                  onChange={(event) => {
+                    const file = event.target.files[0];
+                    formik.setFieldValue("logo", file);
+                  }}
+                  onBlur={formik.handleBlur}
+                />
+                {formik.touched.logo && formik.errors.logo && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.logo}</small>
+                  </div>
+                )}
+
+                {formik.values.logo && (
+                  <div className="mb-3">
+                    {typeof formik.values.logo === "object" ? (
+                      <img
+                        src={URL.createObjectURL(formik.values.logo)}
+                        alt="Shop logo"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    ) : (
+                      <img
+                        src={`${ImageURL}${formik.values.logo}`}
+                        alt="Shop logo"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  External Url<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.external_url && formik.errors.external_url
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="external_url"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.external_url}
+                />
+                {formik.touched.external_url && formik.errors.external_url && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.external_url}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company Map Url<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.map_url && formik.errors.map_url
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="map_url"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.map_url}
+                />
+                {formik.touched.map_url && formik.errors.map_url && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.map_url}</small>
+                  </div>
+                )}
+              </div>
+              {/* <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                Company Rating<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.shop_ratings && formik.errors.shop_ratings
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="shop_ratings"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.shop_ratings}
+                />
+                {formik.touched.shop_ratings && formik.errors.shop_ratings && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.shop_ratings}</small>
+                  </div>
+                )}
+              </div> */}
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label fw-bold">
+                  Company Banner<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="file"
+                  name="file"
+                  accept=".png,.jpeg,.jpg,.gif,svg"
+                  className="form-control"
+                  onChange={(event) => {
+                    formik.setFieldValue("banner", event.target.files[0]);
+                  }}
+                  onBlur={formik.handleBlur}
+                />
+
+                {formik.touched.banner && formik.errors.banner && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.banner}</small>
+                  </div>
+                )}
+
+                {formik.values.banner && (
+                  <div className="mb-3">
+                    {typeof formik.values.banner === "object" ? (
+                      <img
+                        src={URL.createObjectURL(formik.values.banner)}
+                        alt="Shop logo"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    ) : (
+                      <img
+                        src={`${ImageURL}${formik.values.banner}`}
+                        alt="Shop logo"
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+              {/* {formik.values.banner &&
+                typeof formik.values.banner === "string" && (
+                  <div className="col-12 mb-3">
+                    <img
+                      src={`${ImageURL}${formik.values.banner}`}
+                      alt="Shop Banner"
+                    />
+                  </div>
+                )} */}
+
+              <div className="mb-3">
+                <h5 className="mb-4 fw-bold">
+                  Company Description<span className="text-danger">*</span>
+                </h5>
+              </div>
+
+              <div className="row align-items-center">
+                <div className="col-12">
+                  <textarea
+                    type="file"
+                    className={`form-control ${
+                      formik.touched.description && formik.errors.description
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    name="description"
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values.description}
+                  />
+                  {formik.touched.description && formik.errors.description && (
+                    <div className="error text-danger">
+                      <small>{formik.errors.description}</small>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div className="text-end mt-4 mb-3">
           <button
             type="submit"

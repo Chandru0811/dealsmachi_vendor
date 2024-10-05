@@ -20,7 +20,14 @@ function Register() {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string().required("Password is required"),
+
+    password: Yup.string()
+      .matches(
+        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one Special Case Character"
+      )
+      .required("*Please Enter your password"),
+
     cpassword: Yup.string()
       .required("Confirm Password is required")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
@@ -37,12 +44,12 @@ function Register() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-        const payload = {
-          name: values.name,
-          email: values.email,
-          password: values.password,
-          password_confirmation: values.cpassword,
-        };
+      const payload = {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        password_confirmation: values.cpassword,
+      };
       try {
         setLoadIndicator(true);
         const response = await api.post(`register`, payload);
@@ -74,8 +81,8 @@ function Register() {
           console.error("API Error", error);
           toast.error("An unexpected error occurred.");
         }
-      }finally{
-        setLoadIndicator(false)
+      } finally {
+        setLoadIndicator(false);
       }
     },
   });
@@ -89,21 +96,21 @@ function Register() {
 
   return (
     <div
-      className="container-fluid d-flex justify-content-center align-items-center vh-100"
+      className="container-fluid d-flex justify-content-center align-items-center"
       style={{ backgroundColor: "#f2f2f2" }}
     >
       <div
         className="card shadow-lg p-3 mb-5 rounded"
         style={{ width: "100%", maxWidth: "400px" }}
       >
-        <Link to="/" style={{ height: "25px" }}>
+        <Link to="/">
           <button className="btn btn-link text-start shadow-none h-0">
             <IoMdArrowBack />
           </button>
         </Link>
         <div className="d-flex justify-content-around ">
           <h3
-            className={`cursor-pointer py-2`}
+            className={`py-2`}
             style={{
               borderBottom: "2px solid #9C54FF",
               paddingBottom: "5px",
@@ -161,8 +168,8 @@ function Register() {
                   onClick={togglePasswordVisibility}
                   style={{
                     position: "absolute",
-                    right: "10px",
-                    top: "50%",
+                    right: "40px",
+                    top: "30%",
                     transform: "translateY(-50%)",
                     cursor: "pointer",
                   }}
@@ -193,13 +200,13 @@ function Register() {
                   onClick={toggleconfirmPasswordVisibility}
                   style={{
                     position: "absolute",
-                    right: "10px",
-                    top: "50%",
+                    right: "40px",
+                    top: "22%",
                     transform: "translateY(-50%)",
                     cursor: "pointer",
                   }}
                 >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  {showcPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
               )}
               {formik.touched.cpassword && formik.errors.cpassword ? (

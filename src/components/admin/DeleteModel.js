@@ -7,12 +7,13 @@ import api from "../../config/URL";
 
 function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
   const [show, setShow] = useState(false);
-
+  const [loadIndicator, setLoadIndicator] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const deleteButtonRef = useRef(null);
 
   const handelDelete = async () => {
+    setLoadIndicator(true);
     try {
       const response = await api.delete(path);
       if (response.status === 201 || response.status === 200) {
@@ -39,6 +40,7 @@ function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
       } else {
         toast.error("Error deleting data:", error);
       }
+      setLoadIndicator(false);
     }
   };
   useEffect(() => {
@@ -64,7 +66,7 @@ function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
 
   return (
     <>
-      <button className="button-btn btn-sm" onClick={handleShow}>
+      <button className="button-btn btn-sm m-2" onClick={handleShow}>
         Delete
       </button>
 
@@ -72,7 +74,8 @@ function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
         <Modal.Header closeButton>
           <Modal.Title>Delete</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete?</Modal.Body>
+        <Modal.Body>Are you sure you want to deactivate this shop?
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
@@ -80,12 +83,20 @@ function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
           <Button
             variant="danger"
             onClick={handelDelete}
-            className={show ? "focused-button" : ""}
+            className={show ? "focused-button" : ""
+            }
+            disable={loadIndicator}
           >
+            {loadIndicator && (
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              ></span>
+            )}
             Delete
           </Button>
         </Modal.Footer>
-      </Modal>
+      </Modal >
     </>
   );
 }

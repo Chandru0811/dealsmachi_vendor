@@ -1,208 +1,392 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FiAlertTriangle } from "react-icons/fi";
 import toast from "react-hot-toast";
+import Cropper from "react-easy-crop";
 import api from "../../../config/URL";
+import "../../../styles/admin.css";
 
 function CategoryGroupAdd() {
-    const [loadIndicator, setLoadIndicator] = useState(false);
-    const [logo, setLogo] = useState(null); // this is the file
-    const navigate = useNavigate();
+  const [loadIndicator, setLoadIndicator] = useState(false);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const navigate = useNavigate();
+  const [originalFileName, setOriginalFileName] = useState("");
 
-    console.log("logo", logo);
+  const validationSchema = Yup.object({
+    name: Yup.string().required("*Name is required"),
+    image: Yup.mixed()
+      .required("*Image is required")
+      .test(
+        "fileSize",
+        "File size should be less than 2MB",
+        (value) => !value || (value && value.size <= 2 * 1024 * 1024)
+      ),
+    order: Yup.string().required("*Select an order"),
+    // active: Yup.string().required("*Select an active"),
+    description: Yup.string().required("*Describtion is required"),
+    icon: Yup.string().required("*Icon is required"),
+  });
 
-    const validationSchema = Yup.object({
-        name: Yup.string().required("*Name is required"),
-        // icon: Yup.mixed().required("*Icon is required"), // ensuring it's validated as a file
-        order: Yup.string().required("*Select an order"),
-        // active: Yup.string().required("*Select an active"),
-    });
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      slug: "",
+      icon: "",
+      image: null,
+      order: "",
+      description: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values, { resetForm }) => {
+      console.log("Category Group Data:", values);
 
-    const formik = useFormik({
-        initialValues: {
-            name: "",
-            slug: "",
-            icon: null,
-            order: "",
-            active: "",
-            description: "",
-        },
-        validationSchema: validationSchema,
-        onSubmit: async (values, { resetForm }) => {
-            console.log("Category Group Data:", values);
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("slug", values.slug);
+      formData.append("icon", values.icon);
+      formData.append("image", values.image);
+      formData.append("order", values.order);
+      formData.append("description", values.description);
 
-            const formData = new FormData();
-            formData.append("name", values.name);
-            formData.append("slug", values.slug);
-            formData.append("icon", logo); // adding the logo file to FormData
-            formData.append("order", values.order);
-            formData.append("active", values.active);
-            formData.append("description", values.description);
+      setLoadIndicator(true);
 
-            setLoadIndicator(true);
+      try {
+        const response = await api.post(`admin/categoryGroup`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        console.log("Response", response);
 
-            try {
-                const response = await api.post(`admin/categoryGroup`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data", // make sure this is multipart/form-data
-                    },
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate("/categorygroup");
+          resetForm();
+          setPreviewImage(null);
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
                 });
-                console.log("Response", response);
+              });
+            });
+          }
+        } else {
+          console.error("API Error", error);
+          toast.error("An unexpected error occurred.");
+        }
+      } finally {
+        setLoadIndicator(false);
+      }
+    },
+  });
 
-                if (response.status === 200) {
-                    toast.success(response.data.message);
-                    navigate("/categorygroup");
-                    resetForm();
-                } else {
-                    toast.error(response.data.message);
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 422) {
-                    const errors = error.response.data.error;
-                    if (errors) {
-                        Object.keys(errors).forEach((key) => {
-                            errors[key].forEach((errorMsg) => {
-                                toast(errorMsg, {
-                                    icon: <FiAlertTriangle className="text-warning" />,
-                                });
-                            });
-                        });
-                    }
-                } else {
-                    console.error("API Error", error);
-                    toast.error("An unexpected error occurred.");
-                }
-            } finally {
-                setLoadIndicator(false);
-            }
-        },
+  useEffect(() => {
+    const slug = formik.values.name
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "_")
+      .replace(/[^\w\-]+/g, "");
+    formik.setFieldValue("slug", slug);
+  }, [formik.values.name]);
+
+  // Handle canceling the cropper
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setImageSrc(null);
+    formik.setFieldValue("image", ""); // Reset Formik field value for 'image'
+    document.querySelector("input[type='file']").value = ""; // Reset the file input field
+  };
+
+  const handleFileChange = async (event) => {
+    const file = event.currentTarget.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageSrc(reader.result);
+        setShowCropper(true);
+        setOriginalFileName(file.name); // Save the original file name
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  };
+
+  // Helper function to get the cropped image
+  const getCroppedImg = (imageSrc, crop, croppedAreaPixels) => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.src = imageSrc;
+      image.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        // Set canvas size to 250x250 pixels
+        const targetWidth = 50;
+        const targetHeight = 50;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        // Scale the cropped image to fit into the 250x250 pixels canvas
+        ctx.drawImage(
+          image,
+          croppedAreaPixels.x,
+          croppedAreaPixels.y,
+          croppedAreaPixels.width,
+          croppedAreaPixels.height,
+          0,
+          0,
+          targetWidth,
+          targetHeight
+        );
+
+        // Convert the canvas content to a Blob
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error("Canvas is empty"));
+            return;
+          }
+          blob.name = "croppedImage.jpeg";
+          resolve(blob);
+        }, "image/jpeg");
+      };
     });
-    useEffect(() => {
-        const slug = formik.values.name.toLowerCase().replace(/\s+/g, "_");
-        formik.setFieldValue("slug", slug);
-    }, [formik.values.name]);
+  };
 
-    return (
-        <div className="container-fluid minHeight m-0">
-            <form onSubmit={formik.handleSubmit}>
-                <div className="card shadow border-0 mb-2 top-header">
-                    <div className="container-fluid py-4">
-                        <div className="row align-items-center">
-                            <div className="col">
-                                <div className="d-flex align-items-center gap-4">
-                                    <h1 className="h4 ls-tight headingColor">Add Category Group</h1>
-                                </div>
-                            </div>
-                            <div className="col-auto">
-                                <div className="hstack gap-2 justify-content-end">
-                                    <Link to="/categorygroup">
-                                        <button type="button" className="btn btn-light btn-sm">
-                                            Back
-                                        </button>
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="card shadow border-0 my-2" style={{ minHeight: "80vh" }}>
-                    <div className="row mt-3 me-2">
-                        <div className="col-12 text-end"></div>
-                    </div>
-                    <div className="container mb-5">
-                        <div className="row py-4">
-                            <div className="col-md-6 col-12 mb-3">
-                                <label className="form-label">
-                                    Name<span className="text-danger">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    className={`form-control ${formik.touched.name && formik.errors.name ? "is-invalid" : ""}`}
-                                    {...formik.getFieldProps("name")}
-                                />
-                                {formik.touched.name && formik.errors.name && (
-                                    <div className="invalid-feedback">{formik.errors.name}</div>
-                                )}
-                            </div>
+  const handleCropSave = async () => {
+    try {
+      const croppedImageBlob = await getCroppedImg(
+        imageSrc,
+        crop,
+        croppedAreaPixels
+      );
+      const fileName = originalFileName || "croppedImage.jpg";
+      const file = new File([croppedImageBlob], fileName, {
+        type: "image/jpeg",
+      });
 
-                            <div className="col-md-6 col-12 mb-3">
-                                <label className="form-label">
-                                    Icon<span className="text-danger">*</span>
-                                </label>
-                                <input
-                                    name="icon"
-                                    type="file"
-                                    className={`form-control`}
-                                    onChange={(event) => {
-                                        const file = event.currentTarget.files[0];
-                                        setLogo(file); // setting the selected file
-                                    }}
-                                />
-                                {formik.touched.icon && formik.errors.icon && (
-                                    <div className="invalid-feedback">{formik.errors.icon}</div>
-                                )}
-                            </div>
-                            <div className="col-md-6 col-12 mb-3">
-                                <label className="form-label">
-                                    Order<span className="text-danger">*</span>
-                                </label>
-                                <select
-                                    aria-label="Default select example"
-                                    className={`form-select ${formik.touched.order && formik.errors.order ? "is-invalid" : ""}`}
-                                    {...formik.getFieldProps("order")}
-                                >
-                                    <option value="">Select an order</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                </select>
-                                {formik.touched.order && formik.errors.order && (
-                                    <div className="invalid-feedback">{formik.errors.order}</div>
-                                )}
-                            </div>
-                            {/* <div className="col-md-6 col-12 mb-3">
-                                <label className="form-label">
-                                    Active<span className="text-danger">*</span>
-                                </label>
-                                <select
-                                    aria-label="Default select example"
-                                    className={`form-select ${formik.touched.active && formik.errors.active ? "is-invalid" : ""}`}
-                                    {...formik.getFieldProps("active")}
-                                >
-                                    <option value="">Select an active</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
-                                </select>
-                                {formik.touched.active && formik.errors.active && (
-                                    <div className="invalid-feedback">{formik.errors.active}</div>
-                                )}
-                            </div> */}
-                            <div className="col-md-6 col-12 mb-3">
-                                <label className="form-label">Description</label>
-                                <textarea
-                                    rows={4}
-                                    className={`form-control`}
-                                    {...formik.getFieldProps("description")}
-                                />
-                            </div>
-                        </div>
-                    </div>
+      // Set the file in Formik
+      formik.setFieldValue("image", file);
+
+      // Close the cropper
+      setShowCropper(false);
+    } catch (error) {
+      console.error("Error cropping the image:", error);
+    }
+  };
+
+  return (
+    <div className="container-fluid minHeight m-0">
+      <form onSubmit={formik.handleSubmit}>
+        <div className="card shadow border-0 mb-2 top-header">
+          <div className="container-fluid py-4">
+            <div className="row align-items-center">
+              <div className="col">
+                <div className="d-flex align-items-center gap-4">
+                  <h1 className="h4 ls-tight headingColor">
+                    Add Category Group
+                  </h1>
                 </div>
-                <div className="col-auto">
-                    <div className="hstack gap-2 justify-content-end">
-                        <button type="submit" className="btn btn-button btn-sm">
-                            {loadIndicator && (
-                                <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-                            )}
-                            Submit
-                        </button>
-                    </div>
+              </div>
+              <div className="col-auto">
+                <div className="hstack gap-2 justify-content-end">
+                  <Link to="/categorygroup">
+                    <button type="button" className="btn btn-light btn-sm">
+                      Back
+                    </button>
+                  </Link>
                 </div>
-            </form>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+
+        <div
+          className="card shadow border-0 my-2"
+          style={{ minHeight: "80vh" }}
+        >
+          <div className="row mt-3 me-2">
+            <div className="col-12 text-end"></div>
+          </div>
+          <div className="container mb-5">
+            <div className="row py-4">
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Name<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.name && formik.errors.name
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("name")}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="invalid-feedback">{formik.errors.name}</div>
+                )}
+              </div>
+
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Order<span className="text-danger">*</span>
+                </label>
+                <select
+                  aria-label="Default select example"
+                  className={`form-select ${
+                    formik.touched.order && formik.errors.order
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("order")}
+                >
+                  <option value="">Select an order</option>
+                  {Array.from({ length: 15 }, (_, i) => (
+                    <option key={i + 1} value={i + 1}>
+                      {i + 1}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.order && formik.errors.order && (
+                  <div className="invalid-feedback">{formik.errors.order}</div>
+                )}
+              </div>
+
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Icon<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.icon && formik.errors.icon
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("icon")}
+                />
+                {formik.touched.icon && formik.errors.icon && (
+                  <div className="invalid-feedback">{formik.errors.icon}</div>
+                )}
+              </div>
+
+              <div className="col-md-6 col-12 file-input">
+                <label className="form-label">
+                  Image<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  accept=".png, .jpg, .jpeg, .svg, .webp"
+                  className={`form-control ${
+                    formik.touched.image && formik.errors.image
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  onChange={handleFileChange}
+                />
+                <p style={{ fontSize: "13px" }}>
+                  Note: Maximum file size is 2MB. Allowed: .png, .jpg, .jpeg,
+                  .svg, .webp.
+                </p>
+                {formik.touched.image && formik.errors.image && (
+                  <div className="invalid-feedback">{formik.errors.image}</div>
+                )}
+
+                {showCropper && (
+                  <div className="crop-container">
+                    <Cropper
+                      image={imageSrc}
+                      crop={crop}
+                      zoom={zoom}
+                      aspect={50 / 50}
+                      onCropChange={setCrop}
+                      onZoomChange={setZoom}
+                      onCropComplete={onCropComplete}
+                      cropShape="box"
+                      showGrid={false}
+                    />
+                  </div>
+                )}
+                {showCropper && (
+                  <div className="d-flex justify-content-start mt-3 gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-primary mt-3"
+                      onClick={handleCropSave}
+                    >
+                      Save Cropped Image
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-secondary mt-3"
+                      onClick={handleCropCancel}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Description<span className="text-danger">*</span>
+                </label>
+                <textarea
+                  rows={4}
+                  className={`form-control ${
+                    formik.touched.description && formik.errors.description
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("description")}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="invalid-feedback">{formik.errors.description}</div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-auto">
+          <div className="hstack gap-2 justify-content-end">
+            <button
+              type="submit"
+              className="btn btn-button btn-sm"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
 }
 
 export default CategoryGroupAdd;

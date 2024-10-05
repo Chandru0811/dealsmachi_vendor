@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import Logo from "../../assets/CRMLogo.png";
+import deals from "../../assets/deals.png";
 import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidCategory, BiLogOut } from "react-icons/bi";
 import { MdCategory } from "react-icons/md";
 import { TbShoppingCartFilled } from "react-icons/tb";
-
 
 function Sidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -36,24 +35,36 @@ function Sidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
-            }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
+            leadMenuOpen || activeSubmenu ? "active" : ""
+          }`}
           to="/"
         >
-          <img src={Logo} alt="Logo" className="img-fluid sidebar-logo rounded-circle"
-            style={{ background: "#fff", borderRadius: "5px", width: "50px", height: "50px" }} />
+          <img
+            src={deals}
+            alt="deals"
+            className="img-fluid sidebar-logo rounded-circle"
+            style={{
+              background: "#fff",
+              borderRadius: "5px",
+              width: "50px",
+              height: "50px",
+            }}
+          />
           <p className="text-white">Dealsmachi</p>
         </NavLink>
         <div className="collapse navbar-collapse" id="sidebarCollapse">
           <ul className="navbar-nav">
             <li className="nav-item">
               <NavLink className="nav-link" to="/dashboard">
-                <BsBarChartFill />Dashboard
+                <BsBarChartFill />
+                Dashboard
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/slider">
-                <BiSolidCategory />Slider
+                <BiSolidCategory />
+                Slider
               </NavLink>
             </li>
             {/* <li className="nav-item">
@@ -64,22 +75,26 @@ function Sidebar({ handleLogout }) {
             </li> */}
             <li className="nav-item">
               <NavLink className="nav-link" to="/categorygroup">
-                <MdCategory />Category Groups
+                <MdCategory />
+                Category Groups
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/categories">
-                <BiSolidCategory />Categories
+                <BiSolidCategory />
+                Categories
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/dealcategories">
-                <BiSolidCategory />Deal Categories
+                <BiSolidCategory />
+                Deal Categories
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/products">
-                <TbShoppingCartFilled />Product
+                <TbShoppingCartFilled />
+                Product
               </NavLink>
             </li>
             <li className="nav-item">
@@ -98,7 +113,8 @@ function Sidebar({ handleLogout }) {
                   className="nav-link ps-6"
                   onClick={handelLogOutClick}
                 >
-                  <BiLogOut />&nbsp;&nbsp; Logout
+                  <BiLogOut />
+                  &nbsp;&nbsp; Logout
                 </button>
               </div>
             </div>
