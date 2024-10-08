@@ -22,7 +22,7 @@ import CategoryView from "../pages/vendor/Category/CategoryView";
 function Vendor({ handleLogout }) {
   return (
     <div>
-      <BrowserRouter basename="/dealslahVendor">
+      <BrowserRouter basename="/dealsmachiVendor">
         <ApprovePopup />
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
           <VendorSidebar handleLogout={handleLogout} />

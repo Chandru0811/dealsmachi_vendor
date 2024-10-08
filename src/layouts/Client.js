@@ -24,7 +24,7 @@ function Client({
   return (
     <div>
       <div style={{ background: "" }}>
-        <BrowserRouter basename="/dealslahVendor">
+        <BrowserRouter basename="/dealsmachiVendor">
           {/* <Header /> */}
           <Routes>
             {/* <Route path="/" element={<Home  />} /> */}

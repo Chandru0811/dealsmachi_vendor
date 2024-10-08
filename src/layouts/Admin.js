@@ -39,7 +39,7 @@ import ScrollToTop from "../pages/ScroolToTop";
 function Admin({ handleLogout }) {
   return (
     <div>
-      <BrowserRouter basename="/dealslahVendor">
+      <BrowserRouter basename="/dealsmachiVendor">
         <ScrollToTop />
         <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
           <Sidebar handleLogout={handleLogout} />
