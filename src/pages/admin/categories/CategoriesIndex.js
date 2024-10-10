@@ -153,7 +153,7 @@ const CategoriesIndex = () => {
                       <div className="word-wrap">{data.slug}</div>
                     </td> */}
                     <td>
-                      <div className="word-wrap">{data.description}</div>
+                      <p className=" text-wrap">{data.description}</p>
                     </td>
                     <td className="align-middle">
                       {data.active === "0" ? (

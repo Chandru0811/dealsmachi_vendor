@@ -62,7 +62,7 @@ const Shop = () => {
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">Shop</h3>
+                <h3 className="mb-0">Company</h3>
               </div>
             </div>
           </div>
@@ -73,7 +73,7 @@ const Shop = () => {
         className="container card shadow border-0"
         style={{ minHeight: "80vh" }}
       >
-       {loading ? (
+        {loading ? (
           <div className="loader-container">
             <div className="loader">
               <svg viewBox="0 0 80 80">
@@ -123,30 +123,37 @@ const Shop = () => {
                       {/* <td className="text-center">{data.name}</td> */}
                       <td className="text-start">{data.email}</td>
                       <td className="align-middle">
-                        {data.active === "0" ? (
-                          <span
-                            className="dot"
-                            style={{
-                              backgroundColor: "red",
-                              width: "10px",
-                              height: "10px",
-                              display: "inline-block",
-                              borderRadius: "50%",
-                            }}
-                          ></span>
+                        {data.active === 1 ? (
+                          <>
+                            <span
+                              className="dot"
+                              style={{
+                                backgroundColor: "green",
+                                width: "10px",
+                                height: "10px",
+                                display: "inline-block",
+                                borderRadius: "50%",
+                                marginRight: "3px",
+                              }}
+                            ></span>
+                            Active
+                          </>
                         ) : (
-                          <span
-                            className="dot"
-                            style={{
-                              backgroundColor: "green",
-                              width: "10px",
-                              height: "10px",
-                              display: "inline-block",
-                              borderRadius: "50%",
-                            }}
-                          ></span>
+                          <>
+                            <span
+                              className="dot"
+                              style={{
+                                backgroundColor: "red",
+                                width: "10px",
+                                height: "10px",
+                                display: "inline-block",
+                                borderRadius: "50%",
+                                marginRight: "3px",
+                              }}
+                            ></span>
+                            Inactive
+                          </>
                         )}
-                        {data.active === "1" ? " Active" : " Inactive"}
                       </td>
                       <td className="text-center">
                         <div className="d-flex justify-content-center">

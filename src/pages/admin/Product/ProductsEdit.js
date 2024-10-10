@@ -66,7 +66,7 @@ function ProductsEdit() {
                 <div className="card shadow border-0 mb-3">
                     <div className="row p-3">
                         <div className="d-flex justify-content-between align-items-center">
-                            <h1 className="h4 ls-tight">Edit Products</h1>
+                            <h1 className="h4 ls-tight">Edit Deals</h1>
                             <Link to="/products">
                                 <button type="button" className="btn btn-light btn-sm">
                                     <span>Back</span>

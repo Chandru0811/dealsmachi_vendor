@@ -74,7 +74,7 @@ function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
         <Modal.Header closeButton>
           <Modal.Title>Delete</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to deactivate this shop?
+        <Modal.Body>Are you sure you want to delete this item?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

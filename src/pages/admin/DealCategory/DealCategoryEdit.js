@@ -19,18 +19,39 @@ function DealCategoryEdit() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [showCropper, setShowCropper] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [originalFileName, setOriginalFileName] = useState("");
+  const [originalFileType, setOriginalFileType] = useState("");
 
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const SUPPORTED_FORMATS = [
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/svg+xml",
+    "image/webp",
+  ];
+
+  const imageValidation = Yup.mixed()
+    .nullable()
+    .test("fileFormat", "Unsupported format", (value) => {
+      return !value || (value && SUPPORTED_FORMATS.includes(value.type));
+    })
+    .test("fileSize", "File size is too large. Max 2MB.", (value) => {
+      return !value || (value && value.size <= MAX_FILE_SIZE);
+    });
   const validationSchema = Yup.object({
-    name: Yup.string().required("*Name is required"),
-    // image: Yup.mixed()
+    name: Yup.string()
+      .max(25, "Name must be 25 characters or less")
+      .required("Name is required"), // image: Yup.mixed()
     //   .required("*Image is required")
     //   .test(
     //     "fileSize",
     //     "File size should be less than 2MB",
     //     (value) => !value || (value && value.size <= 2 * 1024 * 1024) // 2MB in bytes
     //   ),
-
+    image_path: imageValidation,
     // active: Yup.string().required("*Select an active status"),
+    description: Yup.string().max(825, "Maximum 825 characters allowed"),
   });
 
   const formik = useFormik({
@@ -49,9 +70,11 @@ function DealCategoryEdit() {
       formData.append("slug", values.slug);
 
       formData.append("name", values.name);
-      formData.append("image", values.image_path);
       // formData.append("active", values.active);
       formData.append("description", values.description);
+      if (values.image_path) {
+        formData.append("image", values.image_path);
+      }
 
       try {
         const response = await api.post(
@@ -104,51 +127,39 @@ function DealCategoryEdit() {
     formik.setFieldValue("slug", slug);
   }, [formik.values.name]);
 
-
   const handleFileChange = (event) => {
-    const file = event.currentTarget.files[0];
+    const file = event?.target?.files[0];
     if (file) {
-      const validTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/svg+xml",
-        "image/webp",
-      ];
-      if (!validTypes.includes(file.type)) {
-        toast.error("Unsupported file type. Please select a valid image.");
+      if (file.size > MAX_FILE_SIZE) {
+        formik.setFieldError(`image_path`, "File size is too large. Max 2MB.");
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size exceeds 5MB. Please select a smaller image.");
-        return;
-      }
+      formik.setFieldError(`image_path`, "");
 
+      // Read file as data URL for cropping
       const reader = new FileReader();
       reader.onload = () => {
-        setImageSrc(reader.result);
-        setShowCropper(true);
+        setImageSrc(reader.result); // Set imageSrc for the cropper
+        setOriginalFileName(file.name);
+        setOriginalFileType(file.type);
+        setShowCropper(true); // Show cropper when image is loaded
       };
       reader.readAsDataURL(file);
+
+      if (file.size > MAX_FILE_SIZE) {
+        formik.setFieldError(`image`, "File size is too large. Max 2MB.");
+      }
     }
   };
-  // Handle canceling the cropper
-  const handleCropCancel = () => {
-    setShowCropper(false);
-    setImageSrc(null);
-    formik.setFieldValue("image_path", ""); // Reset Formik field value for 'image'
-    document.querySelector("input[type='file']").value = ""; // Reset the file input field
+
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
   };
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
-
-  const getCroppedImg = (imageSrc, croppedAreaPixels) => {
+  const getCroppedImg = (imageSrc, crop, croppedAreaPixels) => {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = imageSrc;
-      image.setAttribute("crossOrigin", "anonymous");
       image.onload = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -170,48 +181,41 @@ function DealCategoryEdit() {
           targetHeight
         );
 
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(new Error("Canvas is empty"));
-              return;
-            }
-            blob.name = "croppedImage.jpeg";
-            resolve(blob);
-          },
-          "image/jpeg",
-          1
-        );
-      };
-      image.onerror = () => {
-        reject(new Error("Failed to load image"));
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error("Canvas is empty"));
+            return;
+          }
+          blob.name = "croppedImage.jpeg";
+          resolve(blob);
+        }, "image/jpeg");
       };
     });
   };
 
   const handleCropSave = async () => {
     try {
-      const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-
-      const file = new File([croppedImageBlob], "croppedImage.jpg", {
-        type: "image/jpeg",
+      const croppedImageBlob = await getCroppedImg(
+        imageSrc,
+        crop,
+        croppedAreaPixels
+      );
+      const file = new File([croppedImageBlob], originalFileName, {
+        type: originalFileType,
       });
 
       formik.setFieldValue("image_path", file);
-
-      const newPreviewURL = URL.createObjectURL(file);
-      setPreviewImage(newPreviewURL);
-
-      if (previewImage && previewImage.startsWith("blob:")) {
-        URL.revokeObjectURL(previewImage);
-      }
-
       setShowCropper(false);
-      setImageSrc(null);
     } catch (error) {
       console.error("Error cropping the image:", error);
-      toast.error("Failed to crop the image. Please try again.");
     }
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setImageSrc(null);
+    formik.setFieldValue("image_path", "");
+    document.querySelector("input[type='file']").value = "";
   };
 
   useEffect(() => {
@@ -268,10 +272,11 @@ function DealCategoryEdit() {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.name && formik.errors.name
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control ${
+                        formik.touched.name && formik.errors.name
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("name")}
                     />
                     {formik.touched.name && formik.errors.name && (
@@ -287,11 +292,12 @@ function DealCategoryEdit() {
                     </label>
                     <input
                       type="file"
-                      accept=".png, .jpg, .jpeg, .svg, .webp"
-                      className={`form-control ${formik.touched.image_path && formik.errors.image_path
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      // accept=".png, .jpg, .jpeg, .svg, .webp"
+                      className={`form-control ${
+                        formik.touched.image_path && formik.errors.image_path
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       onChange={handleFileChange}
                       onBlur={formik.handleBlur}
                     />
@@ -362,6 +368,7 @@ function DealCategoryEdit() {
                       rows={5}
                       className="form-control"
                       {...formik.getFieldProps("description")}
+                      maxLength={825}
                     />
                     {formik.touched.description &&
                       formik.errors.description && (

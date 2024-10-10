@@ -8,6 +8,14 @@ function ShopHours() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const convertTo12HourFormat = (time) => {
+    if (!time) return "";
+    const [hours, minutes] = time.split(":");
+    const period = +hours >= 12 ? "PM" : "AM";
+    const formattedHours = +hours % 12 || 12;
+    return `${formattedHours}:${minutes} ${period}`;
+  };
+
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
@@ -46,8 +54,8 @@ function ShopHours() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        :{data.daily_timing[day].opening} -{" "}
-                        {data.daily_timing[day].closing}
+                        : {data.daily_timing?.[day]?.opening ? convertTo12HourFormat(data.daily_timing[day].opening) : ""} -{" "}
+                        {data.daily_timing?.[day]?.closing ? convertTo12HourFormat(data.daily_timing[day].closing) : ""}
                       </p>
                     </div>
                   </div>

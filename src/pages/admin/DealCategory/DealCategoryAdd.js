@@ -15,11 +15,32 @@ function DealCategoryAdd() {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [showCropper, setShowCropper] = useState(false);
+  const [originalFileName, setOriginalFileName] = useState("");
+  const [originalFileType, setOriginalFileType] = useState("");
 
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const SUPPORTED_FORMATS = [
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/svg+xml",
+    "image/webp",
+  ];
+
+  const imageValidation = Yup.mixed()
+    .required("*Image is required")
+    .test("fileFormat", "Unsupported format", (value) => {
+      return !value || (value && SUPPORTED_FORMATS.includes(value.type));
+    })
+    .test("fileSize", "File size is too large. Max 2MB.", (value) => {
+      return !value || (value && value.size <= MAX_FILE_SIZE);
+    });
   const validationSchema = Yup.object({
-    name: Yup.string().required("*Name is required"),
-    // active: Yup.string().required("*Select an active"),
-    image: Yup.mixed().required("*Image is required"), // Ensure image is required
+    name: Yup.string()
+      .max(25, "Name must be 25 characters or less")
+      .required("Name is required"), // active: Yup.string().required("*Select an active"),
+    image: imageValidation, // Ensure image is required
+    // description: Yup.string().max(825, "Maximum 825 characters allowed"),
   });
 
   const formik = useFormik({
@@ -82,15 +103,28 @@ function DealCategoryAdd() {
     const slug = formik.values.name.toLowerCase().replace(/\s+/g, "_");
     formik.setFieldValue("slug", slug);
   }, [formik.values.name]);
-  const handleFileChange = async (event) => {
-    const file = event.currentTarget.files[0];
+  const handleFileChange = (event) => {
+    const file = event?.target?.files[0];
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        formik.setFieldError(`image`, "File size is too large. Max 2MB.");
+        return;
+      }
+      formik.setFieldError(`image`, "");
+
+      // Read file as data URL for cropping
       const reader = new FileReader();
       reader.onload = () => {
-        setImageSrc(reader.result);
-        setShowCropper(true);
+        setImageSrc(reader.result); // Set imageSrc for the cropper
+        setOriginalFileName(file.name);
+        setOriginalFileType(file.type);
+        setShowCropper(true); // Show cropper when image is loaded
       };
       reader.readAsDataURL(file);
+
+      if (file.size > MAX_FILE_SIZE) {
+        formik.setFieldError(`image`, "File size is too large. Max 2MB.");
+      }
     }
   };
 
@@ -98,7 +132,6 @@ function DealCategoryAdd() {
     setCroppedAreaPixels(croppedAreaPixels);
   };
 
-  // Helper function to get the cropped image
   const getCroppedImg = (imageSrc, crop, croppedAreaPixels) => {
     return new Promise((resolve, reject) => {
       const image = new Image();
@@ -112,7 +145,6 @@ function DealCategoryAdd() {
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
-        // Scale the cropped image to fit into the 250x250 pixels canvas
         ctx.drawImage(
           image,
           croppedAreaPixels.x,
@@ -125,7 +157,6 @@ function DealCategoryAdd() {
           targetHeight
         );
 
-        // Convert the canvas content to a Blob
         canvas.toBlob((blob) => {
           if (!blob) {
             reject(new Error("Canvas is empty"));
@@ -145,26 +176,22 @@ function DealCategoryAdd() {
         crop,
         croppedAreaPixels
       );
-
-      // Convert the Blob to a File object
-      const file = new File([croppedImageBlob], "croppedImage.jpg", {
-        type: "image/jpeg",
+      const file = new File([croppedImageBlob], originalFileName, {
+        type: originalFileType,
       });
 
-      // Set the file in Formik
       formik.setFieldValue("image", file);
-
-      // Close the cropper
       setShowCropper(false);
     } catch (error) {
       console.error("Error cropping the image:", error);
     }
   };
+
   const handleCropCancel = () => {
     setShowCropper(false);
     setImageSrc(null);
-    formik.setFieldValue("image", ""); // Reset Formik field value for 'image'
-    document.querySelector("input[type='file']").value = ""; // Reset the file input field
+    formik.setFieldValue("image", "");
+    document.querySelector("input[type='file']").value = "";
   };
 
   return (
@@ -237,7 +264,7 @@ function DealCategoryAdd() {
                                 )}
                             </div> */}
 
-              <div className="col-md-6 col-12 file-input">
+              {/* <div className="col-md-6 col-12 file-input">
                 <label className="form-label">
                   Image<span className="text-danger">*</span>
                 </label>
@@ -249,10 +276,21 @@ function DealCategoryAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  onChange={handleFileChange}
+                  onChange={(event) => {
+                    const file = event.currentTarget.files[0];
+                    if (file && file.size > 2 * 1024 * 1024) {
+                      formik.setFieldError(
+                        "image",
+                        "File size should not exceed 2MB"
+                      );
+                    } else {
+                      handleFileChange(event); // Your existing file change logic
+                    }
+                  }}
                 />
                 <p style={{ fontSize: "13px" }}>
-                  Note: Maximum file size is 2MB. Allowed: .png, .jpg, .jpeg, .svg, .webp.
+                  Note: Maximum file size is 2MB. Allowed: .png, .jpg, .jpeg,
+                  .svg, .webp.
                 </p>
                 {formik.touched.image && formik.errors.image && (
                   <div className="invalid-feedback">{formik.errors.image}</div>
@@ -292,14 +330,89 @@ function DealCategoryAdd() {
                     </button>
                   </div>
                 )}
+              </div> */}
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Image
+                  <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  accept=".png,.jpeg,.jpg,.svg,.webp"
+                  className={`form-control ${
+                    formik.touched.image && formik.errors.image
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="image"
+                  onChange={handleFileChange}
+                  onBlur={formik.handleBlur}
+                />
+                <p style={{ fontSize: "13px" }}>
+                  Note: Maximum file size is 2MB. Allowed: .png, .jpg, .jpeg,
+                  .svg, .webp.
+                </p>
+                {formik.touched.image && formik.errors.image && (
+                  <div className="invalid-feedback">{formik.errors.image}</div>
+                )}
+
+                {showCropper && imageSrc && (
+                  <div className="crop-container">
+                    <Cropper
+                      image={imageSrc}
+                      crop={crop}
+                      zoom={zoom}
+                      aspect={300 / 200}
+                      onCropChange={setCrop}
+                      onZoomChange={setZoom}
+                      onCropComplete={onCropComplete}
+                      cropShape="rect"
+                      showGrid={false}
+                    />
+                  </div>
+                )}
+
+                {showCropper && (
+                  <div className="d-flex justify-content-start mt-3 gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-primary mt-3"
+                      onClick={handleCropSave}
+                    >
+                      Save Cropped Image
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary mt-3"
+                      onClick={handleCropCancel}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Description</label>
                 <textarea
                   rows={4}
-                  className={`form-control`}
+                  className={`form-control ${
+                    formik.errors.description && formik.touched.description
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   {...formik.getFieldProps("description")}
+                  maxLength={825}
                 />
+                {formik.values.description.length > 825 ? (
+                  <div className="text-danger">
+                    The description cannot exceed 825 characters.
+                  </div>
+                ) : null}
+                {formik.errors.description && formik.touched.description ? (
+                  <div className="invalid-feedback">
+                    {formik.errors.description}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

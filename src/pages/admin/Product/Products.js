@@ -48,7 +48,7 @@ const Products = () => {
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">Products</h3>
+                <h3 className="mb-0">Deals</h3>
                 {/* <Link to="/products/add">
                                     <button className="btn btn-sm btn-button shadow-none border-none py-3">
                                         <PiPlusSquareFill size={20} /> Add Product
@@ -117,30 +117,37 @@ const Products = () => {
                     </td>
                     <td className="align-middle text-start">{data.brand}</td>
                     <td className="align-middle">
-                      {data.active === "0" ? (
-                        <span
-                          className="dot"
-                          style={{
-                            backgroundColor: "red",
-                            width: "10px",
-                            height: "10px",
-                            display: "inline-block",
-                            borderRadius: "50%",
-                          }}
-                        ></span>
+                      {data.active === 1 ? (
+                        <>
+                          <span
+                            className="dot"
+                            style={{
+                              backgroundColor: "green",
+                              width: "10px",
+                              height: "10px",
+                              display: "inline-block",
+                              borderRadius: "50%",
+                              marginRight: "3px",
+                            }}
+                          ></span>
+                          Active
+                        </>
                       ) : (
-                        <span
-                          className="dot"
-                          style={{
-                            backgroundColor: "green",
-                            width: "10px",
-                            height: "10px",
-                            display: "inline-block",
-                            borderRadius: "50%",
-                          }}
-                        ></span>
+                        <>
+                          <span
+                            className="dot"
+                            style={{
+                              backgroundColor: "red",
+                              width: "10px",
+                              height: "10px",
+                              display: "inline-block",
+                              borderRadius: "50%",
+                              marginRight: "3px",
+                            }}
+                          ></span>
+                          Inactive
+                        </>
                       )}
-                      {data.active === "1" ? " Active" : " Inactive"}
                     </td>
                     <td className="align-middle text-center">
                       <Link to={`/products/view/${data.id}`}>

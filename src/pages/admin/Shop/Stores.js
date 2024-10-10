@@ -40,7 +40,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Shop Name</b>
+                  <b>Company Name</b>
                 </p>
               </div>
               <div className="col-9">
@@ -52,7 +52,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-4 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Shop Legal Name</b>
+                  <b>Company Legal Name</b>
                 </p>
               </div>
               <div className="col-8">
@@ -64,7 +64,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Shop Email</b>
+                  <b>Company Email</b>
                 </p>
               </div>
               <div className="col-9">
@@ -76,7 +76,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-4 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Shop Phone</b>
+                  <b>Company Phone</b>
                 </p>
               </div>
               <div className="col-8">
@@ -88,7 +88,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Shop Type</b>
+                  <b>Company Type</b>
                 </p>
               </div>
               <div className="col-9">
@@ -121,7 +121,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Shop Description</b>
+                  <b>Company Description</b>
                 </p>
               </div>
               <div className="col-9">

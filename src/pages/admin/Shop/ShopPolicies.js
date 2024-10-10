@@ -35,12 +35,12 @@ function ShopPolicies() {
         </div>
       ) : (
         <div className="row mt-5 pb-3">
-          <div className="col-md-6 col-12">
+          <div className="col-md-12 col-12">
             <div className="row  mb-2">
-              <div className="col-6  ">
+              <div className="col-4">
                 <p className="fw-medium">Shipping Policy </p>
               </div>
-              <div className="col-6">
+              <div className="col-8">
                 <p
                   className="text-muted text-sm"
                   dangerouslySetInnerHTML={{ __html: data?.shipping_policy }}
@@ -48,12 +48,12 @@ function ShopPolicies() {
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-12">
+          <div className="col-md-12 col-12">
             <div className="row  mb-2">
-              <div className="col-6  ">
+              <div className="col-4">
                 <p className="fw-medium">Refund Policy</p>
               </div>
-              <div className="col-6">
+              <div className="col-8">
                 <p
                   className="text-muted text-sm"
                   dangerouslySetInnerHTML={{ __html: data?.refund_policy }}
@@ -61,12 +61,12 @@ function ShopPolicies() {
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-12">
+          <div className="col-md-12 col-12">
             <div className="row  mb-2">
-              <div className="col-6  ">
+              <div className="col-4">
                 <p className="fw-medium">Cancellation/Return/Exchange Policy</p>
               </div>
-              <div className="col-6">
+              <div className="col-8">
                 <p
                   className="text-muted text-sm"
                   dangerouslySetInnerHTML={{

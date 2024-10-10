@@ -87,7 +87,7 @@ function ProductsView() {
             <div className="row p-3">
               <div className="d-flex justify-content-between align-items-center w-100">
                 <div>
-                  <h3>View Products</h3>
+                  <h3>View Deals</h3>
                 </div>
                 <div>
                   <Link to="/products">
@@ -95,14 +95,14 @@ function ProductsView() {
                       <span>Back</span>
                     </button>
                   </Link>
-                  {shopStatus === "0" ? (
+                  {shopStatus == "0" ? (
                     <button
                       type="button"
                       onClick={handleActivate}
                       className="btn btn-success btn-sm me-2"
-                      disabled={loading}
+                      disabled={loadIndicator}
                     >
-                      {loading && (
+                      {loadIndicator && (
                         <span
                           className="spinner-border spinner-border-sm me-2"
                           aria-hidden="true"
@@ -111,19 +111,13 @@ function ProductsView() {
                       Activate
                     </button>
                   ) : (
-                    <></>
-                  )}
-
-                  {/* {shopStatus === "1" ? (
                     <button
                       onClick={handleOpenModal}
                       className="btn btn-danger btn-sm me-2"
                     >
                       Deactivate
                     </button>
-                  ) : (
-                    <></>
-                  )} */}
+                  )}
                 </div>
               </div>
             </div>
@@ -321,12 +315,6 @@ function ProductsView() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-3">
-                  <div className="col-6 d-flex justify-content-start align-items-center"></div>
-                  <div className="col-6"></div>
-                </div>
-              </div>
               {/* <div className="col-md-6 col-12">
                         <div className="row mb-3">
                             <div className="col-6 d-flex justify-content-start align-items-center">
@@ -457,9 +445,9 @@ function ProductsView() {
         onHide={handleClose}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Deactivate Shop</Modal.Title>
+          <Modal.Title>Deactivate Deal</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to deactivate this shop?</Modal.Body>
+        <Modal.Body>Are you sure you want to deactivate this Deal?</Modal.Body>
         <Modal.Footer>
           <button className="btn btn-sm btn-button" onClick={handleClose}>
             Close

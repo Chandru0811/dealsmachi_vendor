@@ -22,10 +22,6 @@ function Register() {
       .required("Email is required"),
 
     password: Yup.string()
-      .matches(
-        /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one Special Case Character"
-      )
       .required("*Please Enter your password"),
 
     cpassword: Yup.string()
@@ -169,7 +165,7 @@ function Register() {
                   style={{
                     position: "absolute",
                     right: "40px",
-                    top: "30%",
+                    top: "50%",
                     transform: "translateY(-50%)",
                     cursor: "pointer",
                   }}

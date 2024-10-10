@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import ApprovePopup from "./ApprovePopup";
 import api from "../../config/URL";
+import { FiAlertTriangle } from "react-icons/fi";
 
 function VendorLogin({ handleVendorLogin, handleLogin }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -69,13 +70,21 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
         } else {
           toast.error(response.data.message);
         }
-      } catch (error) {
+      }catch (error) {
         if (error.response.status === 400) {
-          toast.error(error.response.data.message);
+          const errorMessage = error.response.data.message;
+          if (errorMessage) {
+            toast(errorMessage, {
+              icon: <FiAlertTriangle className="text-warning" />,
+            });
+          }
         } else {
-          toast.error(error.message);
+          console.error("API Error", error);
+          toast.error("An unexpected error occurred.");
         }
-      } finally {
+      }
+      
+       finally {
         setLoadIndicator(false);
       }
     },

@@ -11,25 +11,43 @@ import { FiAlertTriangle } from "react-icons/fi";
 function CategoriesEdits() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(false);
-  // const id = sessionStorage.getItem("id");
   const { id } = useParams();
   const navigate = useNavigate();
   const [datas, setDatas] = useState([]);
-
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [showCropper, setShowCropper] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
+  const [originalFileName, setOriginalFileName] = useState("");
+  const [originalFileType, setOriginalFileType] = useState("");
+
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+  const SUPPORTED_FORMATS = [
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/svg+xml",
+    "image/webp",
+  ];
+
+  const imageValidation = Yup.mixed()
+    .nullable()
+    .test("fileFormat", "Unsupported format", (value) => {
+      return !value || (value && SUPPORTED_FORMATS.includes(value.type));
+    })
+    .test("fileSize", "File size is too large. Max 2MB.", (value) => {
+      return !value || (value && value.size <= MAX_FILE_SIZE);
+    });
 
   const validationSchema = Yup.object({
     category_group_id: Yup.string().required("*Select an groupId"),
-    // active: Yup.string().required("*Select an Status"),
-    // description: Yup.string().required("*Description is required"),
-    name: Yup.string().required("*name is required"),
-    // slug: Yup.string().required("*name Label is required"),
-    // icon: Yup.string().required("*Icon is required"),
+    name: Yup.string()
+      .max(25, "Name must be 25 characters or less")
+      .required("Name is required"),
+    icon: imageValidation,
+    description: Yup.string().max(825, "Maximum 825 characters allowed"),
   });
 
   const formik = useFormik({
@@ -94,6 +112,7 @@ function CategoriesEdits() {
       }
     },
   });
+
   useEffect(() => {
     const getData = async () => {
       setLoading(true);
@@ -109,7 +128,8 @@ function CategoriesEdits() {
     };
 
     getData();
-  }, []);
+  }, [id]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -123,64 +143,46 @@ function CategoriesEdits() {
 
     fetchData();
   }, []);
-  useEffect(() => {
-    // formik.setValues(datas);
-  }, []);
 
   useEffect(() => {
     const slug = formik.values.name.toLowerCase().replace(/\s+/g, "_");
     formik.setFieldValue("slug", slug);
   }, [formik.values.name]);
 
-  // Handle canceling the cropper
-  const handleCropCancel = () => {
-    setShowCropper(false);
-    setImageSrc(null);
-  };
-
   const handleFileChange = (event) => {
-    const file = event.currentTarget.files[0];
+    const file = event?.target?.files[0];
     if (file) {
-      const validTypes = [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/svg+xml",
-        "image/webp",
-      ];
-      if (!validTypes.includes(file.type)) {
-        toast.error("Unsupported file type. Please select a valid image.");
+      if (file.size > MAX_FILE_SIZE) {
+        formik.setFieldError(`icon`, "File size is too large. Max 2MB.");
         return;
       }
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size exceeds 5MB. Please select a smaller image.");
-        return;
-      }
+      formik.setFieldError(`icon`, "");
 
       const reader = new FileReader();
       reader.onload = () => {
         setImageSrc(reader.result);
+        setOriginalFileName(file.name);
+        setOriginalFileType(file.type);
         setShowCropper(true);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+  const onCropComplete = (croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels);
-  }, []);
+  };
 
-  const getCroppedImg = (imageSrc, croppedAreaPixels) => {
+  const getCroppedImg = (imageSrc, crop, croppedAreaPixels) => {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = imageSrc;
-      image.setAttribute("crossOrigin", "anonymous");
       image.onload = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
         const targetWidth = 300;
-        const targetHeight = 200;
+        const targetHeight = 300;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
@@ -196,49 +198,41 @@ function CategoriesEdits() {
           targetHeight
         );
 
-        canvas.toBlob(
-          (blob) => {
-            if (!blob) {
-              reject(new Error("Canvas is empty"));
-              return;
-            }
-            blob.name = "croppedImage.jpeg";
-            resolve(blob);
-          },
-          "image/jpeg",
-          1
-        );
-      };
-      image.onerror = () => {
-        reject(new Error("Failed to load image"));
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error("Canvas is empty"));
+            return;
+          }
+          blob.name = "croppedImage.jpeg";
+          resolve(blob);
+        }, "image/jpeg");
       };
     });
   };
 
   const handleCropSave = async () => {
     try {
-      const croppedImageBlob = await getCroppedImg(imageSrc, croppedAreaPixels);
-
-      const file = new File([croppedImageBlob], "croppedImage.jpg", {
-        type: "image/jpeg",
+      const croppedImageBlob = await getCroppedImg(
+        imageSrc,
+        crop,
+        croppedAreaPixels
+      );
+      const file = new File([croppedImageBlob], originalFileName, {
+        type: originalFileType,
       });
 
-      // Set the cropped image in Formik
       formik.setFieldValue("icon", file);
-
-      const newPreviewURL = URL.createObjectURL(file);
-      setPreviewImage(newPreviewURL);
-
-      if (previewImage && previewImage.startsWith("blob:")) {
-        URL.revokeObjectURL(previewImage);
-      }
-
       setShowCropper(false);
-      setImageSrc(null);
     } catch (error) {
       console.error("Error cropping the image:", error);
-      toast.error("Failed to crop the image. Please try again.");
     }
+  };
+
+  const handleCropCancel = () => {
+    setShowCropper(false);
+    setImageSrc(null);
+    formik.setFieldValue("icon", "");
+    document.querySelector("input[type='file']").value = "";
   };
 
   useEffect(() => {
@@ -289,11 +283,12 @@ function CategoriesEdits() {
                     </label>
                     <select
                       aria-label="Default select example"
-                      className={`form-select ${formik.touched.category_group_id &&
+                      className={`form-select ${
+                        formik.touched.category_group_id &&
                         formik.errors.category_group_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("category_group_id")}
                     >
                       <option value=""></option>
@@ -317,10 +312,11 @@ function CategoriesEdits() {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${formik.touched.name && formik.errors.name
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control ${
+                        formik.touched.name && formik.errors.name
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("name")}
                     />
                     {formik.touched.name && formik.errors.name && (
@@ -329,17 +325,18 @@ function CategoriesEdits() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
+                  {/* <div className="col-md-6 col-12 mb-3">
                     <label className="form-label">
                       Icon<span className="text-danger">*</span>
                     </label>
                     <input
                       type="file"
                       accept=".png, .jpg, .jpeg, .svg, .webp"
-                      className={`form-control ${formik.touched.image && formik.errors.image
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control ${
+                        formik.touched.image && formik.errors.image
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       onChange={handleFileChange}
                       onBlur={formik.handleBlur}
                     />
@@ -373,7 +370,7 @@ function CategoriesEdits() {
                           image={imageSrc}
                           crop={crop}
                           zoom={zoom}
-                          aspect={300 / 300}
+                          aspect={300 / 200}
                           onCropChange={setCrop}
                           onZoomChange={setZoom}
                           onCropComplete={onCropComplete}
@@ -402,19 +399,91 @@ function CategoriesEdits() {
                         </button>
                       </div>
                     )}
-                  </div>
+                  </div> */}
+                  <div className="col-md-6 col-12 mb-3">
+                    <label className="form-label">
+                      Icon
+                      <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="file"
+                      accept=".png,.jpeg,.jpg,.svg,.webp"
+                      className={`form-control ${
+                        formik.touched.icon && formik.errors.icon
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      name="icon"
+                      onChange={handleFileChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    <p style={{ fontSize: "13px" }}>
+                      Note: Maximum file size is 2MB. Allowed: .png, .jpg,
+                      .jpeg, .svg, .webp.
+                    </p>
+                    {formik.touched.icon && formik.errors.icon && (
+                      <div className="invalid-feedback">
+                        {formik.errors.icon}
+                      </div>
+                    )}
 
+                    {previewImage && (
+                      <div className="my-3">
+                        <img
+                          src={previewImage}
+                          alt="Selected"
+                          style={{ maxWidth: "100px", maxHeight: "100px" }}
+                        />
+                      </div>
+                    )}
+                    {showCropper && imageSrc && (
+                      <div className="crop-container">
+                        <Cropper
+                          image={imageSrc}
+                          crop={crop}
+                          zoom={zoom}
+                          aspect={300 / 300}
+                          onCropChange={setCrop}
+                          onZoomChange={setZoom}
+                          onCropComplete={onCropComplete}
+                          cropShape="rect"
+                          showGrid={false}
+                        />
+                      </div>
+                    )}
+
+                    {showCropper && (
+                      <div className="d-flex justify-content-start mt-3 gap-2">
+                        <button
+                          type="button"
+                          className="btn btn-primary mt-3"
+                          onClick={handleCropSave}
+                        >
+                          Save Cropped Image
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-secondary mt-3"
+                          onClick={handleCropCancel}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   <div className="col-md-6 col-12 mb-3">
                     <label className="form-label">
                       Description<span className="text-danger">*</span>
                     </label>
                     <textarea
                       rows={5}
-                      className={`form-control ${formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control ${
+                        formik.touched.description && formik.errors.description
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("description")}
+                      maxLength={825}
                     />
                     {formik.touched.description &&
                       formik.errors.description && (

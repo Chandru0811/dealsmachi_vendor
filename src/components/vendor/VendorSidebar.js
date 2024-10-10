@@ -19,9 +19,9 @@ function VendorSidebar({ handleLogout }) {
 
   return (
     <nav
-      className="navbar show navbar-vertical h-lg-screen navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
-      id="navbarVertical"
-    >
+    className="navbar show navbar-vertical navbar-expand-lg p-0 navbar-light border-bottom h-screen border-bottom-lg-0 border-end-lg overflow-y-auto"
+    id="navbarVertical"
+  >
       <div className="container-fluid">
         <button
           className="navbar-toggler mx-2 p-1"
@@ -35,25 +35,15 @@ function VendorSidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
-            leadMenuOpen || activeSubmenu ? "active" : ""
-          }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
+            }`}
           to="/"
         >
-          <img
-            src={deals}
-            alt="deals"
-            className="img-fluid sidebar-logo rounded-circle"
-            style={{
-              background: "#fff",
-              borderRadius: "5px",
-              width: "50px",
-              height: "50px",
-            }}
-          />
+          <img src={deals} alt="deals" className="img-fluid sidebar-logo rounded-circle"
+            style={{ background: "#fff", borderRadius: "5px", width: "50px", height: "50px" }} />
           <p className="text-white">Dealsmachi</p>
         </NavLink>
-        <div className="collapse navbar-collapse" id="sidebarCollapse">
+        <div className="collapse navbar-collapse" id="sidebarCollapse" style={{marginTop:"5rem"}}>
           <ul className="navbar-nav">
             {/* Dashboard */}
             <li className="nav-item">
@@ -88,6 +78,7 @@ function VendorSidebar({ handleLogout }) {
               </NavLink>
             </li> */}
 
+
             {/* <li className="nav-item">
               <NavLink className="nav-link" to="/dealcategory">
                 <MdCategory /> Deal Category
@@ -101,7 +92,7 @@ function VendorSidebar({ handleLogout }) {
               </NavLink>
             </li> */}
           </ul>
-          <div className="mt-auto logutBtn">
+          <div className="ps-4 mt-auto w-100 mb-4">
             <div className="navbar-nav">
               <div className="nav-item">
                 <button

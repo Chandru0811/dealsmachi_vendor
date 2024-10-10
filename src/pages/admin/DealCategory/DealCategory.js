@@ -148,7 +148,7 @@ function DealCategory() {
                       {data.name}
                     </td>
                     <td className="align-middle">{data.slug}</td>
-                    <td className="align-middle text-start">
+                    <td className="align-middle text-start text-wrap">
                       {data.description}
                     </td>
                     {/* <td className="text-center">

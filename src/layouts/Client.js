@@ -12,6 +12,7 @@ import SignIn from "../components/auth/SignIn";
 import AdminLogin from "../components/auth/AdminLogin";
 import Wellcomepage from "../components/auth/Register/AddRegister/Wellcomepage";
 import Register from "../components/auth/Register/AddRegister/Register";
+import ScrollToTop from "../pages/ScrollToTop";
 // import NotFound from "../components/common/NotFound";
 
 function Client({
@@ -26,6 +27,7 @@ function Client({
       <div style={{ background: "" }}>
         <BrowserRouter basename="/dealsmachiVendor">
           {/* <Header /> */}
+          <ScrollToTop />
           <Routes>
             {/* <Route path="/" element={<Home  />} /> */}
             {/* <Route path="*" element={<NotFound />} /> */}

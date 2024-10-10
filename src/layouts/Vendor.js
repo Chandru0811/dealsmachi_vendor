@@ -18,17 +18,19 @@ import Category from "../pages/vendor/Category/Category";
 import CategoryAdd from "../pages/vendor/Category/CategoryAdd";
 import CategoryEdit from "../pages/vendor/Category/CategoryEdit";
 import CategoryView from "../pages/vendor/Category/CategoryView";
+import ScrollToTop from "../pages/ScrollToTop";
 
 function Vendor({ handleLogout }) {
   return (
     <div>
-      <BrowserRouter basename="/dealsmachiVendor">
+      <BrowserRouter basename="/dealslahVendor">
         <ApprovePopup />
-        <div className="d-flex flex-column flex-lg-row h-lg-full bg-surface-secondary">
+        <div className="d-flex flex-column flex-lg-row bg-surface-secondary">
           <VendorSidebar handleLogout={handleLogout} />
-          <div className="h-screen flex-grow-1 overflow-y-lg-auto">
+          <div className="flex-grow-1 h-screen overflow-y-auto">
             <VendorHeader />
             <main className="pt-3 bg-surface-secondary">
+              <ScrollToTop />
               <div style={{ minHeight: "90vh" }}>
                 <Routes>
                   <Route path="/" element={<DashboardV />} />

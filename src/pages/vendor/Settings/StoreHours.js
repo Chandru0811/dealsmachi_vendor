@@ -97,12 +97,10 @@ function StoreHours() {
       <form onSubmit={formik.handleSubmit} className="w-100">
       {loading ? (
           <div className="loader-container">
-            <div class="loading">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+            <div className="loader">
+              <svg viewBox="0 0 80 80">
+                <circle cx="40" cy="40" r="32"></circle>
+              </svg>
             </div>
           </div>
         ) : (

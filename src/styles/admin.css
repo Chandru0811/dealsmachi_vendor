@@ -353,3 +353,23 @@
 /* Page Loader */
 
 /* Page Loader */
+
+.logo_ats{
+  position: fixed !important;
+  /* min-width: 18.1%; */
+  top: 0;
+}
+
+@media screen and (max-width:992px) {
+  .logo_ats{
+    position: none;
+    min-width: 18.1%;
+    right: 0;
+    font-size: 15px;
+  }
+  .sidebar-logo{
+    width: 25px !important;
+    height: 25px !important;
+    padding: 0 !important;
+  }
+}

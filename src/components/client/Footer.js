@@ -11,7 +11,7 @@ function Footer() {
       <div className='container pt-5'>
         <div className='row text-center'>
           <div className='col-md-12'>
-            <img src={Logo} alt='Dealslah' className='img-fluid mb-3' style={{ height: "3rem" }} />
+            <img src={Logo} alt='Dealsmachi' className='img-fluid mb-3' style={{ height: "3rem" }} />
           </div>
           <div className='col-md-12'>
             <ul className='footer-links list-inline'>
@@ -34,7 +34,7 @@ function Footer() {
           </div>
           <hr className='mb-0' />
           <div className='col-md-12'>
-            <p className='footer-text py-3 mb-0'><Link to='/termsandconditions' className='copyrights'>Terms and Conditions</Link> | <Link to='/privacypolicy' className='copyrights'>Privacy Policy</Link> | 2024 © Copyright Dealslah. All Rights Reserved.</p>
+            <p className='footer-text py-3 mb-0'><Link to='/termsandconditions' className='copyrights'>Terms and Conditions</Link> | <Link to='/privacypolicy' className='copyrights'>Privacy Policy</Link> | 2024 © Copyright Dealsmachi. All Rights Reserved.</p>
           </div>
         </div>
       </div>

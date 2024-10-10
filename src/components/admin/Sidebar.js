@@ -19,7 +19,7 @@ function Sidebar({ handleLogout }) {
 
   return (
     <nav
-      className="navbar show navbar-vertical h-lg-screen navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
+      className="navbar show navbar-vertical h-screen navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
       id="navbarVertical"
     >
       <div className="container-fluid">
@@ -35,10 +35,10 @@ function Sidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
-            leadMenuOpen || activeSubmenu ? "active" : ""
-          }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
+            }`}
           to="/"
+        // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
           <img
             src={deals}
@@ -53,7 +53,7 @@ function Sidebar({ handleLogout }) {
           />
           <p className="text-white">Dealsmachi</p>
         </NavLink>
-        <div className="collapse navbar-collapse" id="sidebarCollapse">
+        <div className="collapse navbar-collapse" id="sidebarCollapse" style={{ marginTop: "5rem" }}>
           <ul className="navbar-nav">
             <li className="nav-item">
               <NavLink className="nav-link" to="/dashboard">
@@ -94,17 +94,17 @@ function Sidebar({ handleLogout }) {
             <li className="nav-item">
               <NavLink className="nav-link" to="/products">
                 <TbShoppingCartFilled />
-                Product
+                Deals
               </NavLink>
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/shop">
                 <TbShoppingCartFilled />
-                Shop
+                Company
               </NavLink>
             </li>
           </ul>
-          <div className="mt-auto logutBtn">
+          <div className="ps-4 mt-auto w-100 mb-4">
             <div className="navbar-nav">
               <div className="nav-item">
                 <button

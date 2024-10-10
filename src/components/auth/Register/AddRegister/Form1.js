@@ -219,6 +219,10 @@ const Form1 = forwardRef(
                     <div className="col-md-8">
                       <input
                         type="text"
+                        onInput={(event) => {
+                          event.target.value = event.target.value
+                            .replace(/[^0-9.]/g, "")
+                        }}
                         className={`form-control ${
                           formik.touched.mobile && formik.errors.mobile
                             ? "is-invalid"

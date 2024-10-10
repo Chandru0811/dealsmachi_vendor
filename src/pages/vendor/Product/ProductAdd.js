@@ -35,18 +35,17 @@ function ProductAdd() {
     "image/svg+xml",
     "image/webp",
   ];
-  const FILE_SIZE = 2 * 1024 * 1024;
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const imageValidation = Yup.mixed()
-    .required("Image field is required")
-    .test("fileSize", "File size is too large. Max 2MB", (value) => {
-      return !value || (value && value.size <= FILE_SIZE);
-    })
+    .required("*Image is required")
     .test("fileFormat", "Unsupported format", (value) => {
       return !value || (value && SUPPORTED_FORMATS.includes(value.type));
     });
   const validationSchema = Yup.object({
     shop_id: Yup.string().required("Caategory Group is required"),
-    name: Yup.string().required("Name is required"),
+    name: Yup.string()
+      .max(25, "Name must be 25 characters or less")
+      .required("Name is required"),
     category_id: Yup.string().required("Category Id is required"),
     deal_type: Yup.string().required("Deal Type is required"),
     // brand: Yup.string().required("Brand is required"),
@@ -58,18 +57,18 @@ function ProductAdd() {
       .max(100, "Discount must be less than 100"),
     discounted_price: Yup.number()
       .required("Discounted Price is required")
-      .lessThan(
+      .max(
         Yup.ref("original_price"),
-        "Discounted Price must be less than Original Price"
+        "The Discounted Price must be same or below the Original Price."
       ),
     // start_date: Yup.date().required("Start Date is required").nullable(),
     // end_date: Yup.date()
     //   .required("End Date is required")
     //   .min(Yup.ref("start_date"), "End Date cannot be before Start Date")
     //   .nullable(),
-    stock: Yup.number()
-      .required("Stock is required")
-      .min(0, "Stock cannot be negative"),
+    // stock: Yup.number()
+    //   .required("Stock is required")
+    //   .min(0, "Stock cannot be negative"),
     // sku: Yup.string().required("SKU is required"),
     image1: imageValidation,
     image2: imageValidation,
@@ -260,40 +259,60 @@ function ProductAdd() {
   //   formik1.setFieldValue("description", "");
   //   setShowModal(true);
   // };
+
   useEffect(() => {
     const { original_price, discounted_percentage } = formik.values;
 
-    if (original_price) {
-      if (discounted_percentage === "" || discounted_percentage === null) {
-        formik.setFieldValue("discounted_price", original_price);
-      } else {
-        const discountedPrice =
-          original_price - (original_price * discounted_percentage) / 100;
+    const timeoutId = setTimeout(() => {
+      if (original_price) {
+        let discountedPrice;
+        if (discounted_percentage === "" || discounted_percentage === null) {
+          discountedPrice = original_price;
+        } else {
+          discountedPrice =
+            original_price - (original_price * discounted_percentage) / 100;
+        }
+        discountedPrice = Math.round(discountedPrice * 100) / 100;
         formik.setFieldValue("discounted_price", discountedPrice);
       }
-    }
-  }, [formik.values.discounted_percentage]);
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [formik.values.discounted_percentage, formik.values.original_price]);
 
   useEffect(() => {
     const { original_price, discounted_price } = formik.values;
-    if (original_price) {
-      if (!discounted_price || discounted_price === "0") {
-        formik.setFieldValue("discounted_percentage", 100);
-      } else {
-        const discountedPercentage =
-          ((original_price - discounted_price) / original_price) * 100;
-  
-        // Example: Format manually to 1 decimal place if you want
-        const formattedPercentage = Math.floor(discountedPercentage * 10) / 10; // For one decimal
-        formik.setFieldValue("discounted_percentage", formattedPercentage);
+
+    const timeoutId = setTimeout(() => {
+      if (original_price) {
+        if (discounted_price === null || discounted_price === "0") {
+          formik.setFieldValue("discounted_percentage", 100);
+        } else {
+          const discountedPercentage =
+            ((original_price - discounted_price) / original_price) * 100;
+
+          const formattedPercentage =
+            Math.round(discountedPercentage * 10) / 10;
+          formik.setFieldValue("discounted_percentage", formattedPercentage);
+        }
       }
-    }
-  }, [formik.values.discounted_price, formik.values.original_price]);
-  
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [formik.values.discounted_price]);
 
   const handleFileChange = (index, event) => {
     const file = event.target.files[0];
+
     if (file) {
+      if (file.size > MAX_FILE_SIZE) {
+        formik.setFieldError(
+          `image${index + 1}`,
+          "File size is too large. Max 2MB."
+        );
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         const newImages = [...images];
@@ -303,6 +322,9 @@ function ProductAdd() {
         const newShowCropper = [...showCropper];
         newShowCropper[index] = true;
         setShowCropper(newShowCropper);
+
+        formik.setFieldValue(`image${index + 1}_originalFileName`, file.name);
+        formik.setFieldValue(`image${index + 1}_originalFileFormat`, file.type);
       };
       reader.readAsDataURL(file);
     }
@@ -314,16 +336,43 @@ function ProductAdd() {
     setCroppedAreas(newCroppedAreas);
   };
 
+  const handleCropCancel = (index) => {
+    const newShowCropper = [...showCropper];
+    newShowCropper[index] = false; // Hide cropper for the specific index
+    setShowCropper(newShowCropper);
+
+    const newImages = [...images];
+    newImages[index] = null; // Clear the image for this specific index
+    setImages(newImages);
+
+    // Reset the Formik field value for this specific image field
+    formik.setFieldValue(`image${index + 1}`, "");
+
+    // Reset the specific file input by targeting it using its index
+    const fileInput = document.querySelectorAll("input[type='file']")[index];
+    if (fileInput) {
+      fileInput.value = ""; // Clear the file input value
+    }
+  };
+
   const handleCropSave = async (index) => {
     const croppedImageBlob = await getCroppedImg(
       images[index],
       crops[index],
       croppedAreas[index]
     );
-    const file = new File([croppedImageBlob], `croppedImage${index + 1}.jpg`, {
-      type: "image/jpeg",
+
+    const originalFileName =
+      formik.values[`image${index + 1}_originalFileName`];
+    const originalFileFormat =
+      formik.values[`image${index + 1}_originalFileFormat`];
+
+    const file = new File([croppedImageBlob], originalFileName, {
+      type: originalFileFormat,
     });
+
     formik.setFieldValue(`image${index + 1}`, file);
+
     const newShowCropper = [...showCropper];
     newShowCropper[index] = false;
     setShowCropper(newShowCropper);
@@ -506,6 +555,7 @@ function ProductAdd() {
                   formik.touched.name && formik.errors.name ? "is-invalid" : ""
                 }`}
                 {...formik.getFieldProps("name")}
+                maxLength={825}
               />
               {formik.touched.name && formik.errors.name && (
                 <div className="invalid-feedback">{formik.errors.name}</div>
@@ -551,6 +601,7 @@ function ProductAdd() {
                   </div>
                 )}
             </div>
+
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Discounted Price<span className="text-danger">*</span>
@@ -559,8 +610,9 @@ function ProductAdd() {
                 type="text"
                 onInput={(event) => {
                   event.target.value = event.target.value
-                    .replace(/[^0-9.]/g, "") // Allow digits and decimal point
-                    .replace(/(\..*?)\..*/g, '$1') // Ensure only one decimal point
+                    .replace(/[^0-9.]/g, "") // Allow only numbers and decimal point
+                    .replace(/(\..*)\./g, "$1") // Prevent multiple decimal points
+                    .replace(/(\.\d{1})./g, "$1"); // Allow only two decimal digits
                 }}
                 className={`form-control ${
                   formik.touched.discounted_price &&
@@ -578,25 +630,28 @@ function ProductAdd() {
                   </div>
                 )}
             </div>
+
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
-                Discounted Percentage<span className="text-danger">*</span>
+                Discounted Percentage (%)<span className="text-danger">*</span>
               </label>
               <input
                 type="text"
                 onInput={(event) => {
-                  event.target.value = event.target.value
-                    .replace(/[^0-9.]/g, "") // Allow digits and decimal point
-                    .replace(/(\..*?)\..*/g, '$1') // Ensure only one decimal point
-                    .slice(0, 5); // Limit the length if needed (5 characters for example)
+                  let value = event.target.value
+                    .replace(/[^0-9.]/g, "") // Only allow numbers and a single decimal point
+                    .replace(/(\..*)\./g, "$1") // Prevent multiple decimal points
+                    .replace(/^(\d*\.\d{1}).*/, "$1"); // Limit to one decimal places
+
+                  formik.setFieldValue("discounted_percentage", value);
                 }}
+                {...formik.getFieldProps("discounted_percentage")}
                 className={`form-control ${
                   formik.touched.discounted_percentage &&
                   formik.errors.discounted_percentage
                     ? "is-invalid"
                     : ""
                 }`}
-                {...formik.getFieldProps("discounted_percentage")}
               />
               {formik.touched.discounted_percentage &&
                 formik.errors.discounted_percentage && (
@@ -607,11 +662,15 @@ function ProductAdd() {
             </div>
 
             <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Stock<span className="text-danger">*</span>
-              </label>
+              <label className="form-label">Stock</label>
               <input
-                type="number"
+                type="text"
+                onInput={(event) => {
+                  event.target.value = event.target.value.replace(
+                    /[^0-9]/g,
+                    ""
+                  );
+                }}
                 className={`form-control ${
                   formik.touched.stock && formik.errors.stock
                     ? "is-invalid"
@@ -711,13 +770,22 @@ function ProductAdd() {
                         }
                       />
                     </div>
-                    <button
-                      type="button"
-                      className="btn btn-primary mt-3"
-                      onClick={() => handleCropSave(index)}
-                    >
-                      Save Cropped Image {num}
-                    </button>
+                    <div className="d-flex justify-content-start mt-3 gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-primary mt-3"
+                        onClick={() => handleCropSave(index)}
+                      >
+                        Save Cropped Image {num}
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary mt-3"
+                        onClick={() => handleCropCancel(index)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
