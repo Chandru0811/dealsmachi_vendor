@@ -44,7 +44,7 @@ const Store = () => {
       legal_name: "",
       email: "",
       mobile: "",
-      company_registeration_no:"",
+      company_registeration_no: "",
       shopType: "",
       logo: null,
       external_url: "",
@@ -77,7 +77,7 @@ const Store = () => {
       if (data.banner instanceof File || data.banner instanceof Blob) {
         formdata.append("banner", data.banner);
       }
-      
+
       try {
         const response = await api.post(
           `vendor/shop/${id}/update/details`,
@@ -127,11 +127,11 @@ const Store = () => {
         formik.setFieldValue(
           "shopType",
           shopData.shop_type === "product" ? "product" :
-          shopData.shop_type === "service" ? "service" :
-          shopData.shop_type === "product&service" ? "product&service" :
-          "" 
+            shopData.shop_type === "service" ? "service" :
+              shopData.shop_type === "product&service" ? "product&service" :
+                ""
         );
-        
+
       } catch (error) {
         toast.error("Error Fetching Data ", error);
       }
@@ -143,7 +143,7 @@ const Store = () => {
   return (
     <section>
       <form onSubmit={formik.handleSubmit} className="w-100">
-      {loading ? (
+        {loading ? (
           <div className="loader-container">
             <div className="loader">
               <svg viewBox="0 0 80 80">
@@ -164,11 +164,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.name && formik.errors.name
+                  className={`form-control ${formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="name"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -188,11 +187,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.legal_name && formik.errors.legal_name
+                  className={`form-control ${formik.touched.legal_name && formik.errors.legal_name
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="legal_name"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -212,11 +210,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="email"
-                  className={`form-control ${
-                    formik.touched.email && formik.errors.email
+                  className={`form-control ${formik.touched.email && formik.errors.email
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="email"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -236,11 +233,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.mobile && formik.errors.mobile
+                  className={`form-control ${formik.touched.mobile && formik.errors.mobile
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="mobile"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -254,17 +250,16 @@ const Store = () => {
               </div>
               <div className="col-md-4 col-12 mb-5">
                 <label className="form-label fw-bold">
-                Company Registeration No<span className="text-danger">*</span>
+                  Company Registeration No<span className="text-danger">*</span>
                 </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.company_registeration_no && formik.errors.company_registeration_no
+                  className={`form-control ${formik.touched.company_registeration_no && formik.errors.company_registeration_no
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="company_registeration_no"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -286,11 +281,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <select
                   type="text"
-                  className={`form-select ${
-                    formik.touched.shopType && formik.errors.shopType
+                  className={`form-select ${formik.touched.shopType && formik.errors.shopType
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="shopType"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -357,11 +351,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.external_url && formik.errors.external_url
+                  className={`form-control ${formik.touched.external_url && formik.errors.external_url
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="external_url"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -381,11 +374,10 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.map_url && formik.errors.map_url
+                  className={`form-control ${formik.touched.map_url && formik.errors.map_url
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="map_url"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -482,16 +474,15 @@ const Store = () => {
                 <div className="col-12">
                   <textarea
                     type="file"
-                    className={`form-control ${
-                      formik.touched.description && formik.errors.description
+                    className={`form-control ${formik.touched.description && formik.errors.description
                         ? "is-invalid"
                         : ""
-                    }`}
+                      }`}
                     name="description"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.description}
-                    style={{ cursor: "auto"}}
+                    style={{ cursor: "auto" }}
                   />
                   {formik.touched.description && formik.errors.description && (
                     <div className="error text-danger">
@@ -506,7 +497,7 @@ const Store = () => {
         <div className="text-end mt-4 mb-3">
           <button
             type="submit"
-            className="btn btn-sm btn-outline-primary"
+            className="btn btn-button btn-sm"
             disabled={loadIndicator}
           >
             {loadIndicator && (

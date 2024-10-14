@@ -101,18 +101,18 @@ function Register() {
       >
         <Link to="/">
           <button className="btn btn-link text-start shadow-none h-0">
-            <IoMdArrowBack />
+            <IoMdArrowBack style={{color:"#ff0060"}} />
           </button>
         </Link>
         <div className="d-flex justify-content-around ">
           <h3
             className={`py-2`}
             style={{
-              borderBottom: "2px solid #9C54FF",
+              borderBottom: "2px solid #ff0060",
               paddingBottom: "5px",
               width: "100%",
               textAlign: "center",
-              color: "#771bf8",
+              color: "#ff0060",
             }}
           >
             Register

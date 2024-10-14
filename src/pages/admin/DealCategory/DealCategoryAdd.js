@@ -234,11 +234,10 @@ function DealCategoryAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.name && formik.errors.name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.name && formik.errors.name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("name")}
                 />
                 {formik.touched.name && formik.errors.name && (
@@ -246,91 +245,6 @@ function DealCategoryAdd() {
                 )}
               </div>
 
-              {/* <div className="col-md-6 col-12 mb-3">
-                                <label className="form-label">
-                                    Active<span className="text-danger">*</span>
-                                </label>
-                                <select
-                                    aria-label="Default select example"
-                                    className={`form-select ${formik.touched.active && formik.errors.active ? "is-invalid" : ""}`}
-                                    {...formik.getFieldProps("active")}
-                                >
-                                    <option value="">Select an active</option>
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
-                                </select>
-                                {formik.touched.active && formik.errors.active && (
-                                    <div className="invalid-feedback">{formik.errors.active}</div>
-                                )}
-                            </div> */}
-
-              {/* <div className="col-md-6 col-12 file-input">
-                <label className="form-label">
-                  Image<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="file"
-                  accept=".png, .jpg, .jpeg, .svg, .webp"
-                  className={`form-control ${
-                    formik.touched.image && formik.errors.image
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  onChange={(event) => {
-                    const file = event.currentTarget.files[0];
-                    if (file && file.size > 2 * 1024 * 1024) {
-                      formik.setFieldError(
-                        "image",
-                        "File size should not exceed 2MB"
-                      );
-                    } else {
-                      handleFileChange(event); // Your existing file change logic
-                    }
-                  }}
-                />
-                <p style={{ fontSize: "13px" }}>
-                  Note: Maximum file size is 2MB. Allowed: .png, .jpg, .jpeg,
-                  .svg, .webp.
-                </p>
-                {formik.touched.image && formik.errors.image && (
-                  <div className="invalid-feedback">{formik.errors.image}</div>
-                )}
-
-                {showCropper && (
-                  <div className="crop-container">
-                    <Cropper
-                      image={imageSrc}
-                      crop={crop}
-                      zoom={zoom}
-                      aspect={300 / 200}
-                      onCropChange={setCrop}
-                      onZoomChange={setZoom}
-                      onCropComplete={onCropComplete}
-                      cropShape="box"
-                      showGrid={false}
-                    />
-                  </div>
-                )}
-                {showCropper && (
-                  <div className="d-flex justify-content-start mt-3 gap-2">
-                    <button
-                      type="button"
-                      className="btn btn-primary mt-3"
-                      onClick={handleCropSave}
-                    >
-                      Save Cropped Image
-                    </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-secondary mt-3"
-                      onClick={handleCropCancel}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                )}
-              </div> */}
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Image
@@ -339,11 +253,10 @@ function DealCategoryAdd() {
                 <input
                   type="file"
                   accept=".png,.jpeg,.jpg,.svg,.webp"
-                  className={`form-control ${
-                    formik.touched.image && formik.errors.image
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.image && formik.errors.image
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   name="image"
                   onChange={handleFileChange}
                   onBlur={formik.handleBlur}
@@ -391,15 +304,14 @@ function DealCategoryAdd() {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12 mb-5">
                 <label className="form-label">Description</label>
                 <textarea
-                  rows={4}
-                  className={`form-control ${
-                    formik.errors.description && formik.touched.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  rows={5}
+                  className={`form-control ${formik.errors.description && formik.touched.description
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("description")}
                   maxLength={825}
                 />
@@ -415,19 +327,18 @@ function DealCategoryAdd() {
                 ) : null}
               </div>
             </div>
-          </div>
-        </div>
-        <div className="col-auto">
-          <div className="hstack gap-2 justify-content-end">
-            <button type="submit" className="btn btn-button btn-sm">
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Submit
-            </button>
+            <div className="hstack p-2 mt-5">
+              <button type="submit" className="btn btn-sm btn-button mt-5"
+                disabled={loadIndicator}>
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                Submit
+              </button>
+            </div>
           </div>
         </div>
       </form>

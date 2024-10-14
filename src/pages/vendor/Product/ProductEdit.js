@@ -393,17 +393,17 @@ function ProductAdd() {
       crops[index],
       croppedAreas[index]
     );
-  
+
     const originalFileName = formik.values[`image_url${index + 1}_originalFileName`];
     const originalFileFormat = formik.values[`image_url${index + 1}_originalFileFormat`];
-  
+
     const file = new File([croppedImageBlob], originalFileName, {
-      type: originalFileFormat, 
+      type: originalFileFormat,
     });
-  
+
     formik.setFieldValue(`image_url${index + 1}`, file);
-    console.log("file",file)
-  
+    console.log("file", file)
+
     const newShowCropper = [...showCropper];
     newShowCropper[index] = false;
     setShowCropper(newShowCropper);
@@ -861,17 +861,18 @@ function ProductAdd() {
                   )}
                 </div>
               </div>
-            </div>
-            <div className="hstack gap-2 justify-content-end p-2">
-              <button type="submit" className="btn btn-sm btn-button">
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Update
-              </button>
+              <div className="hstack p-2">
+                <button type="submit" className="btn btn-sm btn-button"
+                  disabled={loadIndicator}>
+                  {loadIndicator && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  Update
+                </button>
+              </div>
             </div>
           </>
         )}

@@ -10,7 +10,7 @@ function WelcomeWizard() {
     >
       <h2
         className="d-flex justify-content-center mb-5"
-        style={{ color: "#771bf8" }}
+        style={{ color: "#ff0060" }}
       >
         Dealsmachi - Deals that's Matter !
       </h2>

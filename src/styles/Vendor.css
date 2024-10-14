@@ -59,7 +59,7 @@
 }
 
 .wellcome-btn {
-  background-color: #771bf8;
+  background-color: #ff0060;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -71,7 +71,7 @@
 .dropdown-menu {
   display: flex;
   flex-direction: column;
-  background: #1c2b36 !important;
+  background: #ff0060 !important;
 }
 
 .dropdown-item {
@@ -84,11 +84,11 @@
 }
 
 .dropdown-item:hover {
-  color: #5dbfd8;
+  color: #ffecee;
 }
 
 .dropdown-item.active {
-  color: #5dbfd8;
+  color: #ffecee;
 }
 
 .modal-backdrop {

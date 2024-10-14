@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/webpixels/css/blob/main/LICENSE)
  */
  :root {
-  --admin-header-color: #1c2b36;
+  --admin-header-color: #ff0060;
   --x-gray-50: #fafafa;
   --x-gray-100: #f5f9fc;
   --x-gray-200: #e7eaf0;
@@ -183,8 +183,8 @@
   --x-body-line-height: 1.625;
   --x-body-color: #525f7f;
   --x-body-bg: #fff;
-  --header-setting-color:#667afc;
-  --sidber-menu-color:#17a2b8;
+  --header-setting-color:#fff;
+  --sidber-menu-color:#ffecee;
 }
 
 *,
@@ -6185,13 +6185,13 @@ fieldset:disabled .btn {
 
 .btn-danger {
   color: #fff;
-  background-color: #f36;
+  background-color: #ef4444;
   border-color: #f36;
 }
 
 .btn-danger:hover {
   color: #fff;
-  background-color: #d92b57;
+  background-color: #f8b4b4;
   border-color: #cc2952;
 }
 

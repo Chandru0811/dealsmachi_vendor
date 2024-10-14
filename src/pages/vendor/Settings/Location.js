@@ -69,7 +69,7 @@ function Location() {
   return (
     <section>
       <form onSubmit={formik.handleSubmit} className="w-100">
-      {loading ? (
+        {loading ? (
           <div className="loader-container">
             <div className="loader">
               <svg viewBox="0 0 80 80">
@@ -215,7 +215,7 @@ function Location() {
         <div className="text-end mt-4 mb-3">
           <button
             type="submit"
-            className="btn btn-sm btn-outline-primary"
+            className="btn btn-button btn-sm"
             disabled={loadIndicator}
           >
             {loadIndicator && (

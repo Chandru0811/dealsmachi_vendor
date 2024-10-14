@@ -23,7 +23,7 @@ import ScrollToTop from "../pages/ScrollToTop";
 function Vendor({ handleLogout }) {
   return (
     <div>
-      <BrowserRouter basename="/dealslahVendor">
+      <BrowserRouter basename="/dealsmachiVendor">
         <ApprovePopup />
         <div className="d-flex flex-column flex-lg-row bg-surface-secondary">
           <VendorSidebar handleLogout={handleLogout} />

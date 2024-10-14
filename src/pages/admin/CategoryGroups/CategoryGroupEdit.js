@@ -269,7 +269,7 @@ function CategoryGroupEdit() {
         croppedAreaPixels
       );
       const file = new File([croppedImageBlob], originalFileName, {
-        type:originalFileType,
+        type: originalFileType,
       });
 
       formik.setFieldValue("image", file);
@@ -341,11 +341,10 @@ function CategoryGroupEdit() {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${
-                        formik.touched.name && formik.errors.name
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.name && formik.errors.name
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("name")}
                     />
                     {formik.touched.name && formik.errors.name && (
@@ -360,11 +359,10 @@ function CategoryGroupEdit() {
                       Order<span className="text-danger">*</span>
                     </label>
                     <select
-                      className={`form-select ${
-                        formik.touched.order && formik.errors.order
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-select ${formik.touched.order && formik.errors.order
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("order")}
                     >
                       <option value="">Select an order</option>
@@ -387,11 +385,10 @@ function CategoryGroupEdit() {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${
-                        formik.touched.icon && formik.errors.icon
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.icon && formik.errors.icon
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("icon")}
                     />
                     {formik.touched.icon && formik.errors.icon && (
@@ -483,11 +480,10 @@ function CategoryGroupEdit() {
                     <input
                       type="file"
                       accept=".png,.jpeg,.jpg,.svg,.webp"
-                      className={`form-control ${
-                        formik.touched.image && formik.errors.image
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.image && formik.errors.image
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       name="image"
                       onChange={handleFileChange}
                       onBlur={formik.handleBlur}
@@ -563,15 +559,9 @@ function CategoryGroupEdit() {
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div className="col-auto">
-              <div className="hstack gap-2 justify-content-end">
-                <button
-                  type="submit"
-                  className="btn btn-sm btn-button"
-                  disabled={loadIndicator}
-                >
+              <div className="hstack p-2">
+                <button type="submit" className="btn btn-sm btn-button"
+                  disabled={loadIndicator}>
                   {loadIndicator && (
                     <span
                       className="spinner-border spinner-border-sm me-2"

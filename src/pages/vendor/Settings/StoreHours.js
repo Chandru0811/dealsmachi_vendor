@@ -69,7 +69,7 @@ function StoreHours() {
         }
       } catch (error) {
         toast.error(error.message || "An error occurred");
-      } 
+      }
       finally {
         setLoadIndicator(false);
       }
@@ -93,357 +93,360 @@ function StoreHours() {
 
   return (
     <div className="container mt-4">
-      <h4 className="text-primary my-5">Daily Basis Opening & Closing Hours</h4>
-      <form onSubmit={formik.handleSubmit} className="w-100">
       {loading ? (
-          <div className="loader-container">
-            <div className="loader">
-              <svg viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="32"></circle>
-              </svg>
+        <div className="loader-container">
+          <div className="loader">
+            <svg viewBox="0 0 80 80">
+              <circle cx="40" cy="40" r="32"></circle>
+            </svg>
+          </div>
+        </div>
+      ) : (
+        <>
+          <h4 className="text-primary my-5">Daily Basis Opening & Closing Hours</h4>
+          <form onSubmit={formik.handleSubmit} className="w-100">
+            <div className="container">
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Monday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            name="daily_timing.monday.opening"
+                            {...formik.getFieldProps("daily_timing.monday.opening")}
+                          />
+                          {formik.touched.daily_timing?.monday?.opening &&
+                            formik.errors.daily_timing?.monday?.opening && (
+                              <div className="error text-danger">
+                                <small>{formik.errors.daily_timing.monday.opening}</small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            name="daily_timing.monday.closing"
+                            {...formik.getFieldProps("daily_timing.monday.closing")}
+                          />
+                          {formik.touched.daily_timing?.monday?.closing &&
+                            formik.errors.daily_timing?.monday?.closing && (
+                              <div className="error text-danger">
+                                <small>{formik.errors.daily_timing.monday.closing}</small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Tuesday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.tuesday.opening")}
+                          />
+                          {formik.touched.daily_timing?.tuesday?.opening &&
+                            formik.errors.daily_timing?.tuesday?.opening && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.tuesday.opening}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.tuesday.closing")}
+                          />
+                          {formik.touched.daily_timing?.tuesday?.closing &&
+                            formik.errors.daily_timing?.tuesday?.closing && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.tuesday.closing}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Wednesday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps(
+                              "daily_timing.wednesday.opening"
+                            )}
+                          />
+                          {formik.touched.daily_timing?.wednesday?.opening &&
+                            formik.errors.daily_timing?.wednesday?.opening && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.wednesday.opening}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps(
+                              "daily_timing.wednesday.closing"
+                            )}
+                          />
+                          {formik.touched.daily_timing?.wednesday?.closing &&
+                            formik.errors.daily_timing?.wednesday?.closing && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.wednesday.closing}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Thursday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.thursday.opening")}
+                          />
+                          {formik.touched.daily_timing?.thursday?.opening &&
+                            formik.errors.daily_timing?.thursday?.opening && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.thursday.opening}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.thursday.closing")}
+                          />
+                          {formik.touched.daily_timing?.thursday?.closing &&
+                            formik.errors.daily_timing?.thursday?.closing && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.thursday.closing}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Friday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.friday.opening")}
+                          />
+                          {formik.touched.daily_timing?.friday?.opening &&
+                            formik.errors.daily_timing?.friday?.opening && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.friday.opening}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.friday.closing")}
+                          />
+                          {formik.touched.daily_timing?.friday?.closing &&
+                            formik.errors.daily_timing?.friday?.closing && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.friday.closing}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Saturday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.saturday.opening")}
+                          />
+                          {formik.touched.daily_timing?.saturday?.opening &&
+                            formik.errors.daily_timing?.saturday?.opening && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.saturday.opening}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.saturday.closing")}
+                          />
+                          {formik.touched.daily_timing?.saturday?.closing &&
+                            formik.errors.daily_timing?.saturday?.closing && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.saturday.closing}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+              <div className="row mb-4">
+                <Card>
+                  <Card.Header>Sunday Time Slots</Card.Header>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Opening</label>
+                          <input
+                            type="time"
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.sunday.opening")}
+                          />
+                          {formik.touched.daily_timing?.sunday?.opening &&
+                            formik.errors.daily_timing?.sunday?.opening && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.sunday.opening}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                      <div className="col-md-6 col-12">
+                        <div className="mb-3">
+                          <label className="form-label">Closing</label>
+                          <input
+                            type="time"
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className="form-control"
+                            {...formik.getFieldProps("daily_timing.sunday.closing")}
+                          />
+                          {formik.touched.daily_timing?.sunday?.closing &&
+                            formik.errors.daily_timing?.sunday?.closing && (
+                              <div className="error text-danger">
+                                <small>
+                                  {formik.errors.daily_timing.sunday.closing}
+                                </small>
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className="container">
-        <div className="row mb-4">
-        <Card>
-            <Card.Header>Monday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      name="daily_timing.monday.opening"
-                      {...formik.getFieldProps("daily_timing.monday.opening")}
-                    />
-                    {formik.touched.daily_timing?.monday?.opening &&
-                      formik.errors.daily_timing?.monday?.opening && (
-                        <div className="error text-danger">
-                          <small>{formik.errors.daily_timing.monday.opening}</small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      name="daily_timing.monday.closing"
-                      {...formik.getFieldProps("daily_timing.monday.closing")}
-                    />
-                    {formik.touched.daily_timing?.monday?.closing &&
-                      formik.errors.daily_timing?.monday?.closing && (
-                        <div className="error text-danger">
-                          <small>{formik.errors.daily_timing.monday.closing}</small>
-                        </div>
-                      )}
-                  </div>
-                </div>
+
+            <div className="text-end mt-4 mb-3">
+              <div className="text-end mt-4 mb-3">
+                <button
+                  type="submit"
+                  className="btn btn-button btn-sm"
+                  disabled={loadIndicator}
+                >
+                  {loadIndicator && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  Update
+                </button>
               </div>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="row mb-4">
-          <Card>
-            <Card.Header>Tuesday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.tuesday.opening")}
-                    />
-                    {formik.touched.daily_timing?.tuesday?.opening &&
-                      formik.errors.daily_timing?.tuesday?.opening && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.tuesday.opening}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.tuesday.closing")}
-                    />
-                    {formik.touched.daily_timing?.tuesday?.closing &&
-                      formik.errors.daily_timing?.tuesday?.closing && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.tuesday.closing}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="row mb-4">
-          <Card>
-            <Card.Header>Wednesday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps(
-                        "daily_timing.wednesday.opening"
-                      )}
-                    />
-                    {formik.touched.daily_timing?.wednesday?.opening &&
-                      formik.errors.daily_timing?.wednesday?.opening && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.wednesday.opening}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps(
-                        "daily_timing.wednesday.closing"
-                      )}
-                    />
-                    {formik.touched.daily_timing?.wednesday?.closing &&
-                      formik.errors.daily_timing?.wednesday?.closing && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.wednesday.closing}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="row mb-4">
-          <Card>
-            <Card.Header>Thursday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.thursday.opening")}
-                    />
-                    {formik.touched.daily_timing?.thursday?.opening &&
-                      formik.errors.daily_timing?.thursday?.opening && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.thursday.opening}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.thursday.closing")}
-                    />
-                    {formik.touched.daily_timing?.thursday?.closing &&
-                      formik.errors.daily_timing?.thursday?.closing && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.thursday.closing}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="row mb-4">
-          <Card>
-            <Card.Header>Friday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.friday.opening")}
-                    />
-                    {formik.touched.daily_timing?.friday?.opening &&
-                      formik.errors.daily_timing?.friday?.opening && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.friday.opening}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.friday.closing")}
-                    />
-                    {formik.touched.daily_timing?.friday?.closing &&
-                      formik.errors.daily_timing?.friday?.closing && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.friday.closing}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="row mb-4">
-          <Card>
-            <Card.Header>Saturday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.saturday.opening")}
-                    />
-                    {formik.touched.daily_timing?.saturday?.opening &&
-                      formik.errors.daily_timing?.saturday?.opening && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.saturday.opening}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.saturday.closing")}
-                    />
-                    {formik.touched.daily_timing?.saturday?.closing &&
-                      formik.errors.daily_timing?.saturday?.closing && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.saturday.closing}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-        <div className="row mb-4">
-          <Card>
-            <Card.Header>Sunday Time Slots</Card.Header>
-            <Card.Body>
-              <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Opening</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.sunday.opening")}
-                    />
-                    {formik.touched.daily_timing?.sunday?.opening &&
-                      formik.errors.daily_timing?.sunday?.opening && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.sunday.opening}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="mb-3">
-                    <label className="form-label">Closing</label>
-                    <input
-                      type="time"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      className="form-control"
-                      {...formik.getFieldProps("daily_timing.sunday.closing")}
-                    />
-                    {formik.touched.daily_timing?.sunday?.closing &&
-                      formik.errors.daily_timing?.sunday?.closing && (
-                        <div className="error text-danger">
-                          <small>
-                            {formik.errors.daily_timing.sunday.closing}
-                          </small>
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-            </Card.Body>
-          </Card>
-        </div>
-        </div>
-        )}
-        <div className="text-end mt-4 mb-3">
-          <div className="text-end mt-4 mb-3">
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Update
-            </button>
-          </div>
-        </div>
-      </form>
+            </div>
+          </form>
+        </>
+      )}
     </div>
   );
 }

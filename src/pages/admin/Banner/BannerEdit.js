@@ -193,7 +193,9 @@ function BannerEdit() {
         </div>
         <div className="hstack gap-2 justify-content-end p-2">
 
-          <button type="submit" className="btn btn-sm btn-button">
+          <button type="submit" className="btn btn-sm btn-button"
+            disabled={loadIndicator}
+          >
             {loadIndicator && (
               <span
                 className="spinner-border spinner-border-sm me-2"

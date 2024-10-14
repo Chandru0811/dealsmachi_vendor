@@ -6,7 +6,7 @@
 }
 
 :root {
-  --client-primary-color: #9C54FF;
+  --client-primary-color: #ff0060;
   --client-secondary-color: #f2f4f5;
   --client-teritary-color: #000;
   --client-text-color: #fff;
@@ -415,8 +415,8 @@
 }
 /* Sub Banner */
 .css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-active {
-  color: #771bf8 !important;
+  color: #ff0060 !important;
 }
 .css-15rfbsb-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
-  color: #771bf8 !important;
+  color: #ff0060 !important;
 }

@@ -236,7 +236,7 @@ function SliderEdit() {
               className="container card shadow border-0"
               style={{ minHeight: "60vh" }}
             >
-              <div className="row mt-3">
+              <div className="row mt-3 mb-5">
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">
                     Image
@@ -308,7 +308,7 @@ function SliderEdit() {
                   )}
                 </div>
 
-                <div className="col-md-6 col-12 mb-3">
+                <div className="col-md-6 col-12 mb-5">
                   <label className="form-label">
                     Order<span className="text-danger">*</span>
                   </label>
@@ -334,20 +334,20 @@ function SliderEdit() {
                   )}
                 </div>
               </div>
-            </div>
-            <div className="hstack gap-2 justify-content-end p-2">
-              <button
-                type="submit"
-                className="btn btn-sm btn-button"
-                disabled={loadIndicator}>
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Update
-              </button>
+              <div className="hstack p-2 mt-5">
+                <button
+                  type="submit"
+                  className="btn btn-sm btn-button"
+                  disabled={loadIndicator}>
+                  {loadIndicator && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  Update
+                </button>
+              </div>
             </div>
           </>
         )}

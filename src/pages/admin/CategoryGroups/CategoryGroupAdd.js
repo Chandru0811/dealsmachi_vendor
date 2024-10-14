@@ -12,7 +12,7 @@ function CategoryGroupAdd() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [imageSrc, setImageSrc] = useState(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
-  const [zoom, setZoom] = useState(1);  
+  const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [showCropper, setShowCropper] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
@@ -250,11 +250,10 @@ function CategoryGroupAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.name && formik.errors.name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.name && formik.errors.name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("name")}
                 />
                 {formik.touched.name && formik.errors.name && (
@@ -268,11 +267,10 @@ function CategoryGroupAdd() {
                 </label>
                 <select
                   aria-label="Default select example"
-                  className={`form-select ${
-                    formik.touched.order && formik.errors.order
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select ${formik.touched.order && formik.errors.order
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("order")}
                 >
                   <option value="">Select an order</option>
@@ -293,11 +291,10 @@ function CategoryGroupAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.icon && formik.errors.icon
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.icon && formik.errors.icon
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("icon")}
                 />
                 {formik.touched.icon && formik.errors.icon && (
@@ -370,11 +367,10 @@ function CategoryGroupAdd() {
                 <input
                   type="file"
                   accept=".png,.jpeg,.jpg,.svg,.webp"
-                  className={`form-control ${
-                    formik.touched.image && formik.errors.image
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.image && formik.errors.image
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   name="image"
                   onChange={handleFileChange}
                   onBlur={formik.handleBlur}
@@ -428,11 +424,10 @@ function CategoryGroupAdd() {
                 </label>
                 <textarea
                   rows={4}
-                  className={`form-control ${
-                    formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.description && formik.errors.description
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("description")}
                   maxLength={825}
                 />
@@ -444,15 +439,9 @@ function CategoryGroupAdd() {
               </div>
             </div>
           </div>
-        </div>
-
-        <div className="col-auto">
-          <div className="hstack gap-2 justify-content-end">
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
+          <div className="hstack p-2">
+            <button type="submit" className="btn btn-sm btn-button"
+              disabled={loadIndicator}>
               {loadIndicator && (
                 <span
                   className="spinner-border spinner-border-sm me-2"
@@ -463,6 +452,7 @@ function CategoryGroupAdd() {
             </button>
           </div>
         </div>
+
       </form>
     </div>
   );

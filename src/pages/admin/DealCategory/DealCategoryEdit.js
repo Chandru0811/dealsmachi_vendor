@@ -262,8 +262,10 @@ function DealCategoryEdit() {
             </div>
             <div
               className="card shadow border-0 my-2"
-              style={{ minHeight: "80vh" }}
-            >
+              style={{ minHeight: "80vh" }}>
+              <div className="row mt-3 me-2">
+                <div className="col-12 text-end"></div>
+              </div>
               <div className="container mb-5">
                 <div className="row py-4">
                   <div className="col-md-6 col-12 mb-3">
@@ -272,11 +274,10 @@ function DealCategoryEdit() {
                     </label>
                     <input
                       type="text"
-                      className={`form-control ${
-                        formik.touched.name && formik.errors.name
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.name && formik.errors.name
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("name")}
                     />
                     {formik.touched.name && formik.errors.name && (
@@ -293,11 +294,10 @@ function DealCategoryEdit() {
                     <input
                       type="file"
                       // accept=".png, .jpg, .jpeg, .svg, .webp"
-                      className={`form-control ${
-                        formik.touched.image_path && formik.errors.image_path
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.image_path && formik.errors.image_path
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       onChange={handleFileChange}
                       onBlur={formik.handleBlur}
                     />
@@ -379,22 +379,21 @@ function DealCategoryEdit() {
                   </div>
                 </div>
               </div>
+              <div className="hstack p-2 mt-5 mb-3">
+                <button type="submit" className="btn btn-sm btn-button mt-5"
+                  disabled={loadIndicator}>
+                  {loadIndicator && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
+                  )}
+                  Update
+                </button>
+              </div>
             </div>
           </div>
         )}
-        <div className="col-auto">
-          <div className="hstack gap-2 justify-content-end">
-            <button type="submit" className="btn btn-button btn-sm">
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Update
-            </button>
-          </div>
-        </div>
       </form>
     </div>
   );

@@ -180,7 +180,7 @@ function CategoriesAdd() {
         croppedAreaPixels
       );
       const file = new File([croppedImageBlob], originalFileName, {
-        type:originalFileType,
+        type: originalFileType,
       });
 
       formik.setFieldValue("icon", file);
@@ -314,12 +314,11 @@ function CategoriesAdd() {
                 </label>
                 <select
                   aria-label="Default select example"
-                  className={`form-select ${
-                    formik.touched.category_group_id &&
-                    formik.errors.category_group_id
+                  className={`form-select ${formik.touched.category_group_id &&
+                      formik.errors.category_group_id
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   {...formik.getFieldProps("category_group_id")}
                 >
                   <option value=""></option>
@@ -343,11 +342,10 @@ function CategoriesAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.name && formik.errors.name
+                  className={`form-control ${formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   {...formik.getFieldProps("name")}
                 />
                 {formik.touched.name && formik.errors.name && (
@@ -420,11 +418,10 @@ function CategoriesAdd() {
                 <input
                   type="file"
                   accept=".png,.jpeg,.jpg,.svg,.webp"
-                  className={`form-control ${
-                    formik.touched.icon && formik.errors.icon
+                  className={`form-control ${formik.touched.icon && formik.errors.icon
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   name="icon"
                   onChange={handleFileChange}
                   onBlur={formik.handleBlur}
@@ -478,11 +475,10 @@ function CategoriesAdd() {
                 </label>
                 <textarea
                   rows={5}
-                  className={`form-control ${
-                    formik.touched.description && formik.errors.description
+                  className={`form-control ${formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   {...formik.getFieldProps("description")}
                   maxLength={825}
                 />
@@ -494,14 +490,9 @@ function CategoriesAdd() {
               </div>
             </div>
           </div>
-        </div>
-        <div className="col-auto">
-          <div className="hstack gap-2 justify-content-end">
-            <button
-              type="submit"
-              className="btn btn-sm btn-button"
-              disabled={loadIndicator}
-            >
+          <div className="hstack p-2">
+            <button type="submit" className="btn btn-sm btn-button"
+              disabled={loadIndicator}>
               {loadIndicator && (
                 <span
                   className="spinner-border spinner-border-sm me-2"
