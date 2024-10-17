@@ -35,7 +35,7 @@ const Form3 = forwardRef(
             <Link to={"/vendorlogin"} className=" mt-4">
               <button
                 className="btn"
-                style={{ backgroundColor: "#ff0060", color: "white" }}
+                style={{ backgroundColor: "#ef4444", color: "white" }}
                 onClick={handleVendorLogin}
               >
                 Go to your store Dashboard!
@@ -46,7 +46,7 @@ const Form3 = forwardRef(
             <Link
               to={"/"}
               className="pt-5"
-              style={{ textDecoration: "underline" , color:"#ff0060"}}
+              style={{ textDecoration: "underline" , color:"#ef4444"}}
             >
               <p>Return to the Marketplace</p>
             </Link>

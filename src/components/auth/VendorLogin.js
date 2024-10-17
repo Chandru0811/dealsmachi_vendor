@@ -107,11 +107,11 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
           <h3
             className={`cursor-pointer py-2`}
             style={{
-              borderBottom: "2px solid #ffecee",
+              borderBottom: "2px solid #ef4444",
               paddingBottom: "5px",
               width: "100%",
               textAlign: "center",
-              color: "#ff0060",
+              color: "#ef4444",
             }}
           >
             Login
@@ -138,7 +138,7 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
             <Link
               to="/forgot"
               className="ml-auto"
-              style={{ fontSize: "0.9em", textDecoration: "none" ,color:"#ff0060" }}
+              style={{ fontSize: "0.9em", textDecoration: "none" ,color:"#ef4444" }}
             >
               Forgot Password?
             </Link>

@@ -72,6 +72,14 @@ const Form4 = forwardRef(
       formik.setFieldValue("rating", rating);
     };
 
+    const handleFieldChange = (e) => {
+      formik.handleChange(e);
+      setFormData((prevData) => ({
+        ...prevData,
+        [e.target.name]: e.target.value,
+      }));
+    };
+
     useImperativeHandle(ref, () => ({
       form4: formik.handleSubmit,
     }));
@@ -97,7 +105,7 @@ const Form4 = forwardRef(
                             : ""
                         }`}
                         name="street"
-                        onChange={formik.handleChange}
+                        onChange={handleFieldChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.street}
                       />
@@ -123,7 +131,7 @@ const Form4 = forwardRef(
                             : ""
                         }`}
                         name="street2"
-                        onChange={formik.handleChange}
+                        onChange={handleFieldChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.street2}
                       />
@@ -149,7 +157,7 @@ const Form4 = forwardRef(
                             : ""
                         }`}
                         name="city"
-                        onChange={formik.handleChange}
+                        onChange={handleFieldChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.city}
                       />
@@ -205,7 +213,7 @@ const Form4 = forwardRef(
                             : ""
                         }`}
                         name="zip_code"
-                        onChange={formik.handleChange}
+                        onChange={handleFieldChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.zip_code}
                       />
@@ -233,7 +241,7 @@ const Form4 = forwardRef(
                             : ""
                         }`}
                         name="country"
-                        onChange={formik.handleChange}
+                        onChange={handleFieldChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.country}
                       />
@@ -255,3 +263,5 @@ const Form4 = forwardRef(
 );
 
 export default Form4;
+
+

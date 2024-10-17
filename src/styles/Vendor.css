@@ -59,7 +59,7 @@
 }
 
 .wellcome-btn {
-  background-color: #ff0060;
+  background-color: #ef4444;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -71,7 +71,7 @@
 .dropdown-menu {
   display: flex;
   flex-direction: column;
-  background: #ff0060 !important;
+  background: #ef4444 !important;
 }
 
 .dropdown-item {
@@ -84,14 +84,32 @@
 }
 
 .dropdown-item:hover {
-  color: #ffecee;
+  color: #f8b4b4;
 }
 
 .dropdown-item.active {
-  color: #ffecee;
+  color: #f8b4b4;
 }
 
 .modal-backdrop {
   filter: blur(10px);
   box-shadow: none;
+}
+.vendor_dashcard {
+  border-radius: 8px;
+}
+
+.setting-heading{
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link:hover::after {
+  content: '\25C0';
+  font-size: 0.8rem;
+  color: var(--sidber-menu-color) !important;
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
 }

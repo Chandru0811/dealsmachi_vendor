@@ -7,9 +7,9 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 const validationSchema = Yup.object({
-  shipping_policy: Yup.string().required("Shipping Policy is required"),
-  refund_policy: Yup.string().required("Refund Policy is required"),
-  cancellation_policy: Yup.string().required("Cancelation Policy is required"),
+  // shipping_policy: Yup.string().required("Shipping Policy is required"),
+  // refund_policy: Yup.string().required("Refund Policy is required"),
+  // cancellation_policy: Yup.string().required("Cancelation Policy is required"),
 });
 function StorePolicy() {
   const shop_id = sessionStorage.getItem("shop_id");
@@ -81,7 +81,7 @@ function StorePolicy() {
   return (
     <div className="row m-0">
       <form onSubmit={formik.handleSubmit} className="w-100">
-      {loading ? (
+        {loading ? (
           <div className="loader-container">
             <div className="loader">
               <svg viewBox="0 0 80 80">
@@ -95,7 +95,7 @@ function StorePolicy() {
               {/* <h3 className="text-primary mb-4">Policies Setting</h3> */}
               <div className="mb-5">
                 <label className="form-label">
-                  <h5 className="fw-bold">Shipping Policy<span className="text-danger">*</span></h5>
+                  <p className=" ">Shipping Policy </p>
                 </label>
                 <ReactQuill
                   ref={editor}
@@ -106,16 +106,14 @@ function StorePolicy() {
                   onBlur={() => formik.setFieldTouched("shipping_policy", true)}
                   modules={Editor.modules}
                 />
-                {formik.touched.shipping_policy &&
-                  formik.errors.shipping_policy && (
-                    <div className="error text-danger">
-                      <small>{formik.errors.shipping_policy}</small>
-                    </div>
-                  )}
+
+                <div className="error text-danger">
+                  <small>{formik.errors.shipping_policy}</small>
+                </div>
               </div>
               <div className="mb-5">
                 <label className="form-label">
-                  <h5 className="fw-bold">Refund Policy<span className="text-danger">*</span></h5>
+                  <p className=" ">Refund Policy </p>
                 </label>
                 <ReactQuill
                   ref={editor}
@@ -126,18 +124,14 @@ function StorePolicy() {
                   onBlur={() => formik.setFieldTouched("refund_policy", true)}
                   modules={Editor.modules}
                 />
-                {formik.touched.refund_policy &&
-                  formik.errors.refund_policy && (
-                    <div className="error text-danger">
-                      <small>{formik.errors.refund_policy}</small>
-                    </div>
-                  )}
+
+                <div className="error text-danger">
+                  <small>{formik.errors.refund_policy}</small>
+                </div>
               </div>
               <div className="mb-5">
                 <label className="form-label">
-                  <h5 className="fw-bold">
-                    Cancellation/Return/Exchange Policy<span className="text-danger">*</span>
-                  </h5>
+                  <p className=" ">Cancellation/Return/Exchange Policy</p>
                 </label>
                 <ReactQuill
                   ref={editor}
@@ -150,12 +144,9 @@ function StorePolicy() {
                   }
                   modules={Editor.modules}
                 />
-                {formik.touched.cancellation_policy &&
-                  formik.errors.cancellation_policy && (
-                    <div className="error text-danger">
-                      <small>{formik.errors.cancellation_policy}</small>
-                    </div>
-                  )}
+                <div className="error text-danger">
+                  <small>{formik.errors.cancellation_policy}</small>
+                </div>
               </div>
               <div className="text-end mt-4 mb-3">
                 <button

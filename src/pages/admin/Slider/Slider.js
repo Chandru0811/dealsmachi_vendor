@@ -3,7 +3,7 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import DeleteModel from '../../../components/admin/DeleteModel';
+import DeleteModel from "../../../components/admin/DeleteModel";
 import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
 import ImageURL from "../../../config/ImageURL";
@@ -11,7 +11,7 @@ import ImageURL from "../../../config/ImageURL";
 const Slider = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -22,22 +22,18 @@ const Slider = () => {
     });
   };
 
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
+    };
+  }, [loading]);
+
   const destroyDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
       $(tableRef.current).DataTable().destroy();
-    }
-  };
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get('admin/sliders');
-      setDatas(response.data.data);
-      setLoading(false);
-      initializeDataTable();
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
     }
   };
 
@@ -45,26 +41,41 @@ const Slider = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get('/admin/sliders');
+      const response = await api.get("/admin/sliders");
       setDatas(response.data.data);
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      console.error("Error refreshing data:", error);
     }
     setLoading(false);
     initializeDataTable();
   };
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth", 
-    });
-
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get("admin/sliders");
+        setDatas(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setLoading(false);
+      initializeDataTable();
+    };
     fetchData();
+    refreshData();
 
     return () => {
       destroyDataTable();
+      fetchData();
     };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }, []);
 
   return (
@@ -87,7 +98,10 @@ const Slider = () => {
           </div>
         </div>
       </div>
-      <div className="container card shadow border-0" style={{ minHeight: "80vh" }}>
+      <div
+        className="container card shadow border-0"
+        style={{ minHeight: "80vh" }}
+      >
         {loading ? (
           <div className="loader-container">
             <div className="loader">
@@ -98,10 +112,16 @@ const Slider = () => {
           </div>
         ) : (
           <div className="table-responsive p-2">
-            <table ref={tableRef} className="display table nowrap" style={{ width: "100%" }}>
+            <table
+              ref={tableRef}
+              className="display table nowrap"
+              style={{ width: "100%" }}
+            >
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>S.NO</th>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                    S.NO
+                  </th>
                   <th className="text-center">Image</th>
                   <th className="text-center">Order</th>
                   <th className="text-center">ACTION</th>
@@ -123,10 +143,14 @@ const Slider = () => {
                     <td className="text-center">
                       <div className="d-flex justify-content-center">
                         <Link to={`/slider/view/${data.id}`}>
-                          <button className="button-btn btn-sm m-2">View</button>
+                          <button className="button-btn btn-sm m-2">
+                            View
+                          </button>
                         </Link>
                         <Link to={`/slider/edit/${data.id}`}>
-                          <button className="button-btn btn-sm m-2">Edit</button>
+                          <button className="button-btn btn-sm m-2">
+                            Edit
+                          </button>
                         </Link>
                         <DeleteModel
                           onSuccess={refreshData}

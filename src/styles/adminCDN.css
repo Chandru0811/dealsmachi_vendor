@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/webpixels/css/blob/main/LICENSE)
  */
  :root {
-  --admin-header-color: #ff0060;
+  --admin-header-color: #ef4444;
   --x-gray-50: #fafafa;
   --x-gray-100: #f5f9fc;
   --x-gray-200: #e7eaf0;
@@ -184,7 +184,7 @@
   --x-body-color: #525f7f;
   --x-body-bg: #fff;
   --header-setting-color:#fff;
-  --sidber-menu-color:#ffecee;
+  --sidber-menu-color:#f8b4b4;
 }
 
 *,

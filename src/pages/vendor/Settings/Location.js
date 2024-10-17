@@ -83,7 +83,7 @@ function Location() {
 
             <div className="row">
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">Street<span className="text-danger">*</span></label>
+                <label className="form-label">Street<span className="text-danger">*</span></label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
@@ -104,7 +104,7 @@ function Location() {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">Street2</label>
+                <label className="form-label">Street2</label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
@@ -125,7 +125,7 @@ function Location() {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">City</label>
+                <label className="form-label">City</label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
@@ -146,7 +146,7 @@ function Location() {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">Zip Code<span className="text-danger">*</span></label>
+                <label className="form-label">Zip Code<span className="text-danger">*</span></label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
@@ -167,7 +167,7 @@ function Location() {
                 )}
               </div>
               {/* <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">State</label>
+                <label className="form-label">State</label>
               </div> */}
               {/* <div className="col-md-8 col-12 mb-5">
                 <input
@@ -188,7 +188,7 @@ function Location() {
                 )}
               </div> */}
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">Country<span className="text-danger">*</span></label>
+                <label className="form-label">Country<span className="text-danger">*</span></label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input

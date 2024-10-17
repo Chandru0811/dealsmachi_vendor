@@ -4,14 +4,13 @@ import Modal from "react-bootstrap/Modal";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import ImageURL from "../../../config/ImageURL";
+import noImage from "../../../assets/noimage.png";
 
 function ProductsView() {
   const { id } = useParams();
   const [data, setData] = useState([]);
-
   const [loading, setLoading] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [datas, setDatas] = useState([]);
   const [shopStatus, setShopStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
   const handleOpenModal = () => setShowModal(true);
@@ -59,7 +58,6 @@ function ProductsView() {
     try {
       const response = await api.get(`admin/product/${id}`);
       setData(response.data.data);
-      setDatas(response.data.data);
       setShopStatus(response.data.data.active);
     } catch (error) {
       toast.error("Error Fetching Data ", error);
@@ -127,27 +125,6 @@ function ProductsView() {
             style={{ minHeight: "80vh" }}
           >
             <div className="row mt-5 p-3">
-              {/* <div className="col-md-6 col-12">
-                        <div className="row mb-3">
-                            <div className="col-6 d-flex justify-content-start align-items-center">
-                                <p className="text-sm">
-                                    <b>Category Group</b>
-                                </p>
-                            </div>
-                            <div className="col-6">
-                                <p className="text-muted text-sm">
-                                    :{" "}
-                                    {Array.isArray(datas) &&
-                                        datas.map((category) =>
-                                            parseInt(data.category_group_id) === category.id
-                                                ? category.name || "--"
-                                                : ""
-                                        )}
-                                </p>
-                            </div>
-                        </div>
-                    </div> */}
-
               <div className="col-md-6 col-12">
                 <div className="row mb-3">
                   <div className="col-6 d-flex justify-content-start align-items-center">
@@ -183,16 +160,15 @@ function ProductsView() {
                   </div>
                   <div className="col-6">
                     {console.log("Deal Type Value:", data.deal_type)}{" "}
-                    {/* Debugging */}
                     <p className="text-muted text-sm">
                       :{" "}
                       {data.deal_type === 1 || data.deal_type === "0"
                         ? "Product"
                         : data.deal_type === 2 || data.deal_type === "1"
-                        ? "Service"
-                        : data.deal_type === 3 || data.deal_type === "2"
-                        ? "Product and Service"
-                        : "Unknown"}
+                          ? "Service"
+                          : data.deal_type === 3 || data.deal_type === "2"
+                            ? "Product and Service"
+                            : "Unknown"}
                     </p>
                   </div>
                 </div>
@@ -315,35 +291,6 @@ function ProductsView() {
                   </div>
                 </div>
               </div>
-              {/* <div className="col-md-6 col-12">
-                        <div className="row mb-3">
-                            <div className="col-6 d-flex justify-content-start align-items-center">
-                                <p className="text-sm">
-                                    <b></b>
-                                </p>
-                            </div>
-                            <div className="col-6">
-                                <p className="text-muted text-sm"></p>
-                            </div>
-                        </div>
-                    </div> */}
-
-              {/* <div className="col-md-6 col-12">
-                        <div className="row mb-3">
-                            <div className="col-6 d-flex justify-content-start align-items-center">
-                                <p className="text-sm">
-                                    <b>Image</b>
-                                </p>
-                            </div>
-                            <div className="col-6">
-                                <p className="text-muted text-sm">: <img
-                                    src={`${ImageURL}${data.image_url1}`}
-                                    alt="icon"
-                                    style={{ maxWidth: "100px", maxHeight: "100px" }}
-                                /></p>
-                            </div>
-                        </div>
-                    </div> */}
               <div className="col-md-6 col-12">
                 <div className="row mb-3">
                   <div className="col-6 d-flex justify-content-start align-items-center">
@@ -420,7 +367,6 @@ function ProductsView() {
                   </div>
                 </div>
               </div>
-
               <div className="col-12">
                 <div className="row mb-3">
                   <div className="col-3 d-flex justify-content-start align-items-center">
@@ -430,6 +376,66 @@ function ProductsView() {
                   </div>
                   <div className="col-9">
                     <p className="text-muted text-sm">: {data.description}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="row p-3">
+              <h4 className="mb-5">Company Information</h4>
+              <div className="col-md-6 col-12">
+                <div className="row mb-3">
+                  <div className="col-6 d-flex justify-content-start align-items-center">
+                    <p className="text-sm">
+                      <b>Company Name</b>
+                    </p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data?.shop?.name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-3">
+                  <div className="col-6 d-flex justify-content-start align-items-center">
+                    <p className="text-sm">
+                      <b>Logo</b>
+                    </p>
+                  </div>
+                  <div className="col-12">
+                    <p className="text-muted text-sm">
+                      <img
+                        src={
+                          data?.shop?.logo !== null
+                            ? `${ImageURL}${data?.shop?.logo}`
+                            : noImage
+                        }
+                        alt={data?.shop?.name}
+                        style={{ maxWidth: "100px", maxHeight: "100px" }}
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-12">
+                <div className="row mb-3">
+                  <div className="col-12 d-flex justify-content-start align-items-center">
+                    <p className="text-sm">
+                      <b>Banner</b>
+                    </p>
+                  </div>
+                  <div className="col-12">
+                    <p className="text-muted text-sm">
+                      <img
+                        src={
+                          data?.shop?.banner !== null
+                            ? `${ImageURL}${data?.shop?.banner}`
+                            : noImage
+                        }
+                        alt={data?.shop?.name}
+                      />
+                    </p>
                   </div>
                 </div>
               </div>

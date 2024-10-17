@@ -96,7 +96,7 @@ const Shop = () => {
 
                   <th className="text-start">Store Name</th>
                   <th className="text-start">Email</th>
-                  <th className="text-start">Active</th>
+                  <th className="text-start">Status</th>
                   <th className="text-center">ACTION</th>
                 </tr>
               </thead>

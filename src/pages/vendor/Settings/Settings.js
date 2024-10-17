@@ -24,11 +24,11 @@ function Settings() {
           <div className="d-flex justify-content-between align-items-center w-100">
             <div>
               {!selectedItem && <h3 className="mb-0">Settings</h3>}
-              {selectedItem === "Shop" && <h3>General Settings</h3>}
-              {selectedItem === "Location" && <h3>Shop Address</h3>}
-              {selectedItem === "Payment" && <h3>Payment Settings</h3>}
-              {selectedItem === "Shop Policies" && <h3>Policies Settings</h3>}
-              {selectedItem === "Shop Hours" && <h3>Hours Settings</h3>}
+              {selectedItem === "Shop" && <p className="setting-heading">General Settings</p>}
+              {selectedItem === "Location" && <p className="setting-heading">Shop Address</p>}
+              {selectedItem === "Payment" && <p className="setting-heading">Payment Settings</p>}
+              {selectedItem === "Shop Policies" && <p className="setting-heading">Policies Settings</p>}
+              {selectedItem === "Shop Hours" && <p className="setting-heading">Working Hours</p>}
             </div>
           </div>
         </div>

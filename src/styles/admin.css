@@ -8,7 +8,7 @@
 :root {
   --admin-primary-color: #9c54ff;
   --admin-secondary-color: #7f3bdd;
-  --admin-teritary-color: #ff0060;
+  --admin-teritary-color: #ef4444;
   --admin-accent-color: #fff;
   --admin-text-color: #fff;
   --admin-border-color: #5c04d8;
@@ -20,7 +20,7 @@
 
 /* Sidebar */
 .navbar-vertical.navbar-light {
-  background-color: #ff0060 !important;
+  background-color: #ef4444 !important;
 
 }
 
@@ -85,7 +85,7 @@
   position: sticky;
   top: 0;
   z-index: 200;
-  background-color: #ff0060;
+  background-color: #ef4444;
 }
 
 @media (max-width: 991px) {
@@ -100,7 +100,7 @@
 
 .btn-button {
   color: var(--admin-accent-color) !important;
-  background-color: #ff0060 !important;
+  background-color: #ef4444 !important;
   /* border-color: var(--admin-primary-color) !important; */
   font-weight: 600 !important;
 }
@@ -113,13 +113,13 @@
 
 .btn-button-register:hover {
   color: var(--admin-text-color) !important;
-  background-color: #ffecee !important;
+  background-color: #f8b4b4 !important;
   /* border-color: var(--admin-primary-color) !important; */
 }
 
 .btn-button:hover {
   color: var(--admin-text-color) !important;
-  background-color: #ffecee !important;
+  background-color: #f8b4b4 !important;
   /* border-color: var(--admin-primary-color) !important; */
 }
 

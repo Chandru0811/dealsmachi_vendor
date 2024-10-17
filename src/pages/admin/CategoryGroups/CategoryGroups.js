@@ -7,7 +7,8 @@ import DeleteModel from '../../../components/admin/DeleteModel';
 import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
 import ImageURL from '../../../config/ImageURL';
-import noImage from '../../../assets/noimage.png'
+import noImage from '../../../assets/noimage.png';
+
 function CategoryGroups() {
   const [datas, setDatas] = useState();
   const [loading, setLoading] = useState(true);
@@ -118,7 +119,7 @@ function CategoryGroups() {
                   <th scope="col">Name</th>
                   {/* <th scope="col">Slug</th> */}
                   <th scope="col" className='text-start'>Order</th>
-                  <th scope="col">Active</th>
+                  <th scope="col">Status</th>
                   <th scope="col" className="text-center">
                     ACTION
                   </th>

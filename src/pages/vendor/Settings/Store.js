@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
   mobile: Yup.string()
     .matches(/^[0-9]+$/, "mobile number must be numeric")
     .required("mobile number is required!"),
-  shopType: Yup.string().required("Shop Type is required!"),
+  shop_type: Yup.string().required("Shop Type is required!"),
   company_registeration_no: Yup.string().required("Company Registration is required!"),
   logo: Yup.mixed().required("Logo is required"),
   external_url: Yup.string()
@@ -31,6 +31,7 @@ const validationSchema = Yup.object({
 
 const Store = () => {
   const [data, setData] = useState([]);
+  console.log("Data:", data);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
   const id = sessionStorage.getItem("shop_id");
@@ -45,7 +46,7 @@ const Store = () => {
       email: "",
       mobile: "",
       company_registeration_no: "",
-      shopType: "",
+      shop_type: "",
       logo: null,
       external_url: "",
       map_url: "",
@@ -64,7 +65,7 @@ const Store = () => {
       formdata.append("email", data.email);
       formdata.append("mobile", data.mobile);
       formdata.append("company_registeration_no", data.company_registeration_no);
-      formdata.append("shop_type", data.shopType);
+      formdata.append("shop_type", data.shop_type);
       formdata.append("map_url", data.map_url);
       formdata.append("external_url", data.external_url);
       formdata.append("description", data.description);
@@ -124,13 +125,7 @@ const Store = () => {
         setData(response.data);
         const shopData = response.data.data;
         formik.setValues(shopData);
-        formik.setFieldValue(
-          "shopType",
-          shopData.shop_type === "product" ? "product" :
-            shopData.shop_type === "service" ? "service" :
-              shopData.shop_type === "product&service" ? "product&service" :
-                ""
-        );
+
 
       } catch (error) {
         toast.error("Error Fetching Data ", error);
@@ -157,7 +152,7 @@ const Store = () => {
 
             <div className="row">
               <div className="col-md-4 col-12 mb-5 ">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Name<span className="text-danger">*</span>
                 </label>
               </div>
@@ -180,7 +175,7 @@ const Store = () => {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Legal Name<span className="text-danger">*</span>
                 </label>
               </div>
@@ -203,7 +198,7 @@ const Store = () => {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Email<span className="text-danger">*</span>
                 </label>
               </div>
@@ -226,7 +221,7 @@ const Store = () => {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company mobile<span className="text-danger">*</span>
                 </label>
               </div>
@@ -249,7 +244,7 @@ const Store = () => {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Registeration No<span className="text-danger">*</span>
                 </label>
               </div>
@@ -274,35 +269,35 @@ const Store = () => {
 
               <h3 className="text-primary py-3">Company Brand Setup</h3>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Type<span className="text-danger">*</span>
                 </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <select
                   type="text"
-                  className={`form-select ${formik.touched.shopType && formik.errors.shopType
+                  className={`form-select ${formik.touched.shop_type && formik.errors.shop_type
                       ? "is-invalid"
                       : ""
                     }`}
-                  name="shopType"
+                  name="shop_type"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  value={formik.values.shopType}
+                  value={formik.values.shop_type}
                 >
                   <option></option>
-                  <option value="product">Product</option>
-                  <option value="service">Service</option>
-                  <option value="product&service">Product and Service</option>
+                  <option value="1">Product</option>
+                  <option value="2">Service</option>
+                  <option value="3">Product and Service</option>
                 </select>
-                {formik.touched.shopType && formik.errors.shopType && (
+                {formik.touched.shop_type && formik.errors.shop_type && (
                   <div className="error text-danger">
-                    <small>{formik.errors.shopType}</small>
+                    <small>{formik.errors.shop_type}</small>
                   </div>
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Logo<span className="text-danger">*</span>
                 </label>
               </div>
@@ -344,7 +339,7 @@ const Store = () => {
               </div>
 
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   External Url<span className="text-danger">*</span>
                 </label>
               </div>
@@ -367,7 +362,7 @@ const Store = () => {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Map Url<span className="text-danger">*</span>
                 </label>
               </div>
@@ -390,7 +385,7 @@ const Store = () => {
                 )}
               </div>
               {/* <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                 Company Rating<span className="text-danger">*</span>
                 </label>
               </div>
@@ -414,7 +409,7 @@ const Store = () => {
                 )}
               </div> */}
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label fw-bold">
+                <label className="form-label">
                   Company Banner<span className="text-danger">*</span>
                 </label>
               </div>
@@ -465,7 +460,7 @@ const Store = () => {
                 )} */}
 
               <div className="mb-3">
-                <h5 className="mb-4 fw-bold">
+                <h5 className="mb-4">
                   Company Description<span className="text-danger">*</span>
                 </h5>
               </div>

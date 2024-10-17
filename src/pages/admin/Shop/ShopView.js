@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { BsHandbag } from "react-icons/bs";
 import { CiGlobe } from "react-icons/ci";
-import { GrCurrency } from "react-icons/gr";
 import { PiVanFill } from "react-icons/pi";
 import { MdAccessTime } from "react-icons/md";
+// import { GrCurrency } from "react-icons/gr";
 import Stores from "./Stores";
 import Locations from "./Locations";
 import Payments from "./Payments";
@@ -13,6 +13,10 @@ import ShopHours from "./ShopHours";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import Modal from "react-bootstrap/Modal";
+import { TiShoppingCart } from "react-icons/ti";
+import Products from "./Products";
+import { FaRegUserCircle } from "react-icons/fa";
+import LoginDetails from "./LoginDetails";
 
 function ShopView() {
   const { id } = useParams();
@@ -99,6 +103,8 @@ function ShopView() {
                   {/* {selectedItem === "Payment" && <h3>Payment Settings</h3>} */}
                   {selectedItem === "Shop Policies" && <h3>Policies Settings</h3>}
                   {selectedItem === "Shop Hours" && <h3>Hours Settings</h3>}
+                  {selectedItem === "Products" && <h3>Products</h3>}
+                  {selectedItem === "Login Details" && <h3>Login Details</h3>}
                 </div>
                 <div>
                   <Link to="/shop">
@@ -159,16 +165,15 @@ function ShopView() {
                   >
                     <CiGlobe /> Location
                   </div>
+                  {/* <div className="dropdown-divider"></div>
+                  <div
+                    className={`dropdown-item ${selectedItem === "Payment" ? "active" : ""
+                      }`}
+                    onClick={() => handleItemClick("Payment")}
+                  >
+                    <GrCurrency /> Payment
+                  </div> */}
                   <div className="dropdown-divider"></div>
-                  {/* <div
-                className={`dropdown-item ${
-                  selectedItem === "Payment" ? "active" : ""
-                }`}
-                onClick={() => handleItemClick("Payment")}
-              >
-                <GrCurrency /> Payment
-              </div>
-              <div className="dropdown-divider"></div> */}
                   <div
                     className={`dropdown-item ${selectedItem === "Shop Policies" ? "active" : ""
                       }`}
@@ -184,6 +189,22 @@ function ShopView() {
                   >
                     <MdAccessTime /> Shop Hours
                   </div>
+                  <div className="dropdown-divider"></div>
+                  <div
+                    className={`dropdown-item ${selectedItem === "Login Details" ? "active" : ""
+                      }`}
+                    onClick={() => handleItemClick("Login Details")}
+                  >
+                    <FaRegUserCircle /> Login Details
+                  </div>
+                  <div className="dropdown-divider"></div>
+                  <div
+                    className={`dropdown-item ${selectedItem === "Products" ? "active" : ""
+                      }`}
+                    onClick={() => handleItemClick("Products")}
+                  >
+                    <TiShoppingCart /> Products
+                  </div>
                 </div>
               </div>
 
@@ -194,6 +215,8 @@ function ShopView() {
                   {selectedItem === "Payment" && <Payments />}
                   {selectedItem === "Shop Policies" && <ShopPolicies />}
                   {selectedItem === "Shop Hours" && <ShopHours />}
+                  {selectedItem === "Login Details" && <LoginDetails />}
+                  {selectedItem === "Products" && <Products />}
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import toast from "react-hot-toast";
 import api from "../../../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,8 +22,7 @@ function Register() {
       .email("Invalid email address")
       .required("Email is required"),
 
-    password: Yup.string()
-      .required("*Please Enter your password"),
+    password: Yup.string().required("Password is required"),
 
     cpassword: Yup.string()
       .required("Confirm Password is required")
@@ -93,26 +93,26 @@ function Register() {
   return (
     <div
       className="container-fluid d-flex justify-content-center align-items-center"
-      style={{ backgroundColor: "#f2f2f2" }}
+      style={{ backgroundColor: "#f2f2f2", minHeight: "100vh" }}
     >
       <div
-        className="card shadow-lg p-3 mb-5 rounded"
+        className="card shadow-lg p-3 my-5 rounded"
         style={{ width: "100%", maxWidth: "400px" }}
       >
         <Link to="/">
           <button className="btn btn-link text-start shadow-none h-0">
-            <IoMdArrowBack style={{color:"#ff0060"}} />
+            <IoMdArrowBack style={{ color: "#ef4444" }} />
           </button>
         </Link>
         <div className="d-flex justify-content-around ">
           <h3
             className={`py-2`}
             style={{
-              borderBottom: "2px solid #ff0060",
+              borderBottom: "2px solid #ef4444",
               paddingBottom: "5px",
               width: "100%",
               textAlign: "center",
-              color: "#ff0060",
+              color: "#ef4444",
             }}
           >
             Register
@@ -148,7 +148,7 @@ function Register() {
             ) : null}
           </Form.Group>
 
-          <div className="d-flex justify-content-between align-items-center py-2">
+          {/* <div className="d-flex justify-content-between align-items-center py-2">
             <Form.Label>Password</Form.Label>
           </div>
           <Form.Group controlId="formPassword" className="mb-3">
@@ -165,7 +165,7 @@ function Register() {
                   style={{
                     position: "absolute",
                     right: "40px",
-                    top: "50%",
+                    top: "45%",
                     transform: "translateY(-50%)",
                     cursor: "pointer",
                   }}
@@ -197,7 +197,7 @@ function Register() {
                   style={{
                     position: "absolute",
                     right: "40px",
-                    top: "22%",
+                    top: "45%",
                     transform: "translateY(-50%)",
                     cursor: "pointer",
                   }}
@@ -211,7 +211,76 @@ function Register() {
                 </Form.Control.Feedback>
               ) : null}
             </div>
-          </Form.Group>
+          </Form.Group> */}
+
+          <div className="mb-3">
+            <label className="form-label fw-medium">Password</label>
+            <div className={`input-group mb-3`} style={{outline: "none", boxShadow: "none" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                className={`form-control ${
+                  formik.touched.password && formik.errors.password
+                    ? "is-invalid"
+                    : ""
+                }`}
+                style={{
+                  borderRadius: "3px",
+                  borderRight: "none",
+                  borderTopRightRadius: "0px",
+                  borderBottomRightRadius: "0px",
+                }}
+                name="password"
+                {...formik.getFieldProps("password")}
+              />
+              <span
+                className={`input-group-text iconInputBackground`}
+                id="basic-addon1"
+                onClick={togglePasswordVisibility}
+                style={{ cursor: "pointer", borderRadius: "3px" }}
+              >
+                {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+              </span>
+              {formik.touched.password && formik.errors.password && (
+                <div className="invalid-feedback" typeof="in">{formik.errors.password}</div>
+              )}
+            </div>
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-medium">Confirm Password</label>
+            <div className={`input-group mb-3`} style={{outline: "none", boxShadow: "none" }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter password"
+                className={`form-control ${
+                  formik.touched.cpassword && formik.errors.cpassword
+                    ? "is-invalid"
+                    : ""
+                }`}
+                style={{
+                  borderRadius: "3px",
+                  borderRight: "none",
+                  borderTopRightRadius: "0px",
+                  borderBottomRightRadius: "0px",
+                }}
+                name="cpassword"
+                {...formik.getFieldProps("cpassword")}
+              />
+              <span
+                className={`input-group-text iconInputBackground`}
+                id="basic-addon1"
+                onClick={togglePasswordVisibility}
+                style={{ cursor: "pointer", borderRadius: "3px" }}
+              >
+                {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+              </span>
+              {formik.touched.cpassword && formik.errors.cpassword && (
+                <div className="invalid-feedback">{formik.errors.cpassword}</div>
+              )}
+            </div>
+          </div>
+
+
           {/* <Form.Group controlId="role" className="mb-3 ">
             <div className=" d-flex justify-content-around">
               <Form.Check

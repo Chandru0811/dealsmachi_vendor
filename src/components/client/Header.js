@@ -224,7 +224,7 @@ function Header() {
                       style={{ background: "none", border: "none", color: "#000" }}
                       className="ps-0 nav-link text-center"
                     >
-                      Dealsmachi
+                      Deals
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="custom-dropdown-menu" style={{ width: 'fit-content' }} >
                       <Dropdown.Item>
