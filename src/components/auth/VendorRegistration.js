@@ -55,7 +55,7 @@ export default function VendorRegistration({ handleVendorLogin }) {
       <div className="container">
         <h2
           className="d-flex justify-content-center"
-          style={{ color: "#ef4444" }}
+          style={{ color: "#ff0060" }}
         >
           Dealsmachi - Deals that's Matter !
         </h2>

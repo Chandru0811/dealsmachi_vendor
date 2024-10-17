@@ -59,7 +59,7 @@
 }
 
 .wellcome-btn {
-  background-color: #ef4444;
+  background-color: #ff0060;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -71,7 +71,7 @@
 .dropdown-menu {
   display: flex;
   flex-direction: column;
-  background: #ef4444 !important;
+  background: #ff0060 !important;
 }
 
 .dropdown-item {

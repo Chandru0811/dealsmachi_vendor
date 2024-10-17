@@ -267,7 +267,7 @@ const Store = () => {
                 )}
               </div>
 
-              <h3 className="text-primary py-3">Company Brand Setup</h3>
+              <h3 className="py-3" style={{color: "#ff0060"}}>Company Brand Setup</h3>
               <div className="col-md-4 col-12 mb-5">
                 <label className="form-label">
                   Company Type<span className="text-danger">*</span>

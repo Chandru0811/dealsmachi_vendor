@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/webpixels/css/blob/main/LICENSE)
  */
  :root {
-  --admin-header-color: #ef4444;
+  --admin-header-color: #ff0060;
   --x-gray-50: #fafafa;
   --x-gray-100: #f5f9fc;
   --x-gray-200: #e7eaf0;
@@ -6185,7 +6185,7 @@ fieldset:disabled .btn {
 
 .btn-danger {
   color: #fff;
-  background-color: #ef4444;
+  background-color: #ff0060;
   border-color: #f36;
 }
 

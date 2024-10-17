@@ -9,7 +9,7 @@ function ForgotSuccess() {
     >
       <h2
         className="d-flex justify-content-center mb-5"
-        style={{ color: "#ef4444" }}
+        style={{ color: "#ff0060" }}
       >
         Dealsmachi - Deals that Matter!
       </h2>

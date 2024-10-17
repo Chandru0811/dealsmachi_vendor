@@ -16,6 +16,7 @@ function DealCategory() {
   const [datas, setDatas] = useState();
   const [loading, setLoading] = useState(true);
   const tableRef = useRef(null);
+  const isDisabled = true;
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -88,11 +89,15 @@ function DealCategory() {
           <div className="row">
             <div className="col-12 p-2 d-flex justify-content-between align-items-center">
               <h3 className="mb-0">Deal Category</h3>
-              <Link to="/dealcategories/add">
-                <button className="btn btn-sm btn-button shadow-none border-0">
-                  <PiPlusSquareFill size={20} /> Add Deal Category
-                </button>
-              </Link>
+              <Link 
+  to={isDisabled ? "#" : "/dealcategories/add"} // Disable navigation when disabled
+  onClick={(e) => { if (isDisabled) e.preventDefault(); }} // Prevent link click if disabled
+>
+  <button className="btn btn-sm btn-button shadow-none border-0" disabled={isDisabled}>
+    <PiPlusSquareFill size={20}/> Add Deal Category
+  </button>
+</Link>
+
             </div>
           </div>
         </div>
@@ -164,15 +169,20 @@ function DealCategory() {
 
                     <td className="align-middle text-center">
                       <Link to={`/dealcategories/view/${data.id}`}>
-                        <button className="button-btn btn-sm m-2">View</button>
+                        <button className="button-btn btn-sm m-2" disabled>
+                          View
+                        </button>
                       </Link>
                       <Link to={`/dealcategories/edit/${data.id}`}>
-                        <button className="button-btn btn-sm m-2">Edit</button>
+                        <button className="button-btn btn-sm m-2" disabled>
+                          Edit
+                        </button>
                       </Link>
                       <DeleteModel
                         onSuccess={refreshData}
                         path={`admin/dealCategory/remove/${data.id}`}
                         style={{ display: "inline-block" }}
+                        disabled={true}
                       />
                     </td>
                   </tr>

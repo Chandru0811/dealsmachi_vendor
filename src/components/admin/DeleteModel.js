@@ -5,7 +5,7 @@ import { FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../../config/URL";
 
-function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
+function DeleteModel({disabled, onSuccess, path, staffmsg, teachermsg }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const handleClose = () => setShow(false);
@@ -66,7 +66,7 @@ function DeleteModel({ onSuccess, path, staffmsg, teachermsg }) {
 
   return (
     <>
-      <button className="button-btn btn-sm m-2" onClick={handleShow}>
+      <button className="button-btn btn-sm m-2" onClick={handleShow} disabled={disabled}>
         Delete
       </button>
 

@@ -1,18 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import DeleteModel from '../../../components/admin/DeleteModel';
+import DeleteModel from "../../../components/admin/DeleteModel";
 import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
-import ImageURL from '../../../config/ImageURL';
-import noImage from '../../../assets/noimage.png';
+import ImageURL from "../../../config/ImageURL";
+import noImage from "../../../assets/noimage.png";
 
 function CategoryGroups() {
   const [datas, setDatas] = useState();
   const [loading, setLoading] = useState(true);
   const tableRef = useRef(null);
+  const isDisabled = true;
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -42,10 +43,10 @@ function CategoryGroups() {
     setLoading(true);
     try {
       // Fetch paginated data; adjust URL parameters if server supports pagination
-      const response = await api.get('/admin/categoryGroup');
+      const response = await api.get("/admin/categoryGroup");
       setDatas(response.data.data); // Update data state
     } catch (error) {
-      console.error('Error refreshing data:', error);
+      console.error("Error refreshing data:", error);
     }
     setLoading(false);
     initializeDataTable(); // Reinitialize DataTable after data update
@@ -71,16 +72,12 @@ function CategoryGroups() {
 
     fetchData();
 
-
     return () => {
       if (tableRef.current) {
         $(tableRef.current).DataTable().destroy();
       }
     };
   }, []);
-
-
-
 
   return (
     <section className="px-4">
@@ -89,8 +86,16 @@ function CategoryGroups() {
           <div className="row">
             <div className="col-12 p-2 d-flex justify-content-between align-items-center">
               <h3 className="mb-0">Category Groups</h3>
-              <Link to="/categorygroup/add">
-                <button className="btn btn-sm btn-button shadow-none border-0">
+              <Link
+                to={isDisabled ? "#" : "/categorygroup/add"}
+                onClick={(e) => {
+                  if (isDisabled) e.preventDefault();
+                }}
+              >
+                <button
+                  className="btn btn-sm btn-button shadow-none border-0"
+                  disabled={isDisabled}
+                >
                   <PiPlusSquareFill size={20} /> Add Category Group
                 </button>
               </Link>
@@ -99,7 +104,10 @@ function CategoryGroups() {
         </div>
       </div>
 
-      <div className="container card shadow border-0" style={{ minHeight: "80vh" }}>
+      <div
+        className="container card shadow border-0"
+        style={{ minHeight: "80vh" }}
+      >
         {loading ? (
           <div className="loader-container">
             <div className="loader">
@@ -113,12 +121,18 @@ function CategoryGroups() {
             <table ref={tableRef} className="display table">
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" className='text-start' style={{ whiteSpace: "nowrap" }}>
+                  <th
+                    scope="col"
+                    className="text-start"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
                     S.NO
                   </th>
                   <th scope="col">Name</th>
                   {/* <th scope="col">Slug</th> */}
-                  <th scope="col" className='text-start'>Order</th>
+                  <th scope="col" className="text-start">
+                    Order
+                  </th>
                   <th scope="col">Status</th>
                   <th scope="col" className="text-center">
                     ACTION
@@ -131,7 +145,11 @@ function CategoryGroups() {
                     <td className="text-start align-middle">{index + 1}</td>
                     <td className="text-start">
                       <img
-                        src={data.image_path !== null ? `${ImageURL}${data.image_path}` : noImage}
+                        src={
+                          data.image_path !== null
+                            ? `${ImageURL}${data.image_path}`
+                            : noImage
+                        }
                         alt=""
                         className="img-fluid w-25 me-3"
                         style={{ maxHeight: "70px", maxWidth: "70px" }}
@@ -142,25 +160,47 @@ function CategoryGroups() {
                     <td className="align-middle text-start">{data.order}</td>
                     <td className="align-middle">
                       {data.active ? (
-                        <span className="dot" style={{ backgroundColor: 'green', width: '10px', height: '10px', display: 'inline-block', borderRadius: '50%' }}></span>
+                        <span
+                          className="dot"
+                          style={{
+                            backgroundColor: "green",
+                            width: "10px",
+                            height: "10px",
+                            display: "inline-block",
+                            borderRadius: "50%",
+                          }}
+                        ></span>
                       ) : (
-                        <span className="dot" style={{ backgroundColor: 'red', width: '10px', height: '10px', display: 'inline-block', borderRadius: '50%' }}></span>
+                        <span
+                          className="dot"
+                          style={{
+                            backgroundColor: "red",
+                            width: "10px",
+                            height: "10px",
+                            display: "inline-block",
+                            borderRadius: "50%",
+                          }}
+                        ></span>
                       )}
-                      {data.active ? ' Active' : ' Inactive'}
+                      {data.active ? " Active" : " Inactive"}
                     </td>
-
 
                     <td className="align-middle text-center">
                       <Link to={`/categorygroup/view/${data.id}`}>
-                        <button className="button-btn btn-sm m-2">View</button>
+                        <button className="button-btn btn-sm m-2" disabled>
+                          View
+                        </button>
                       </Link>
                       <Link to={`/categorygroup/edit/${data.id}`}>
-                        <button className="button-btn btn-sm m-2">Edit</button>
+                        <button className="button-btn btn-sm m-2" disabled>
+                          Edit
+                        </button>
                       </Link>
                       <DeleteModel
                         onSuccess={refreshData}
                         path={`admin/categoryGroup/${data.id}`}
                         style={{ display: "inline-block" }}
+                        disabled={true}
                       />
                     </td>
                   </tr>

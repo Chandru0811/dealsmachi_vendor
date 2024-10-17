@@ -301,7 +301,7 @@ function DashboardV() {
           />
         </div>
         <div className="col-12">
-          <button onClick={toggleShowProducts} className="btn m-4" style={{background:"#ef4444",color:"#fff"}}>
+          <button onClick={toggleShowProducts} className="btn m-4" style={{background:"#ff0060",color:"#fff"}}>
             {showProducts ? "Hide Products" : "View Products"}
           </button>
           {showProducts && (
