@@ -48,12 +48,20 @@ function ProductAdd() {
     .test("fileSize", "File size is too large. Max 2MB.", (value) => {
       return !value || (value && value.size <= MAX_FILE_SIZE);
     });
+  const initialCouponCode = "DEALSMACHI";
+  const [couponCode, setCouponCode] = useState(initialCouponCode);
   const validationSchema = Yup.object({
     shop_id: Yup.string().required("Caategory Group is required"),
     name: Yup.string()
       .max(25, "Name must be 25 characters or less")
       .required("Name is required"),
     category_id: Yup.string().required("Category Id is required"),
+    coupon_code: Yup.string()
+      .matches(
+        /^[A-Za-z]+[0-9]{0,2}$/,
+        "Coupon code must end with up to 2 digits"
+      )
+      .required("Coupon code is required"),
     deal_type: Yup.string().required("Deal Type is required"),
     // brand: Yup.string().required("Brand is required"),
     original_price: Yup.number()
@@ -106,6 +114,7 @@ function ProductAdd() {
       end_date: "",
       stock: "",
       sku: "",
+      coupon_code: initialCouponCode,
       image1: null,
       image2: null,
       image3: null,
@@ -127,6 +136,7 @@ function ProductAdd() {
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
       formData.append("stock", values.stock);
+      formData.append("coupon_code", values.coupon_code);
       formData.append("sku", values.sku);
       formData.append("image1", values.image1);
       formData.append("image2", values.image2);
@@ -417,6 +427,36 @@ function ProductAdd() {
     document.querySelector(`input[name='image${index + 1}']`).value = "";
   };
 
+  const handleCouponChange = (e) => {
+    const input = e.target.value;
+    if (input.startsWith(initialCouponCode)) {
+      const numberPart = input.slice(initialCouponCode.length);
+      if (/^\d{0,2}$/.test(numberPart)) {
+        setCouponCode(input);
+        formik.setFieldValue("coupon_code", input);
+      }
+    } else {
+      setCouponCode(initialCouponCode);
+      formik.setFieldValue("coupon_code", initialCouponCode);
+    }
+  };
+
+  const generateRandomNumbers = () => {
+    const randomNumbers = Math.floor(Math.random() * 100)
+      .toString()
+      .padStart(2, "0");
+    return randomNumbers;
+  };
+
+  useEffect(() => {
+    if (couponCode.length === initialCouponCode.length) {
+      const randomNumbers = generateRandomNumbers();
+      const updatedCouponCode = initialCouponCode + randomNumbers;
+      setCouponCode(updatedCouponCode);
+      formik.setFieldValue("coupon_code", updatedCouponCode);
+    }
+  }, [couponCode]);
+
   return (
     <section className="px-4">
       <form onSubmit={formik.handleSubmit}>
@@ -579,7 +619,25 @@ function ProductAdd() {
                 <div className="invalid-feedback">{formik.errors.sku}</div>
               )}
             </div>
-
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">Coupon Code</label>
+              <input
+                type="text"
+                className={`form-control ${
+                  formik.touched.coupon_code && formik.errors.coupon_code
+                    ? "is-invalid"
+                    : ""
+                }`}
+                value={couponCode}
+                onChange={handleCouponChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.coupon_code && formik.errors.coupon_code && (
+                <div className="invalid-feedback">
+                  {formik.errors.coupon_code}
+                </div>
+              )}
+            </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Original Price<span className="text-danger">*</span>
