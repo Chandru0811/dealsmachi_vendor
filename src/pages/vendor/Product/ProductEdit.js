@@ -96,6 +96,7 @@ function ProductAdd() {
       deal_type: "",
       brand: "",
       original_price: "",
+      coupon_code:"",
       discounted_price: "",
       discount_percentage: "",
       start_date: "",
@@ -117,6 +118,7 @@ function ProductAdd() {
       formData.append("category_id", values.category_id);
       formData.append("deal_type", values.deal_type);
       formData.append("brand", values.brand);
+      formData.append("coupon_code", values.coupon_code);
       formData.append("original_price", values.original_price);
       formData.append("discounted_price", values.discounted_price);
       formData.append("discount_percentage", values.discount_percentage);
@@ -617,6 +619,20 @@ function ProductAdd() {
                   />
                   {formik.touched.sku && formik.errors.sku && (
                     <div className="invalid-feedback">{formik.errors.sku}</div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">Coupon Code</label>
+                  <input
+                    type="text"
+                    className={`form-control ${formik.touched.coupon_code && formik.errors.coupon_code
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("coupon_code")}
+                  />
+                  {formik.touched.coupon_code && formik.errors.coupon_code && (
+                    <div className="invalid-feedback">{formik.errors.coupon_code}</div>
                   )}
                 </div>
                 <div className="col-md-6 col-12 mb-3">
