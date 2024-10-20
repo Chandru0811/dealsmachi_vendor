@@ -9,13 +9,17 @@ import graph6 from "../../assets/Graph1.png";
 import graph7 from "../../assets/Graph2.png";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { Button, Card, Form } from "react-bootstrap";
+import { Card } from "react-bootstrap";
+import toast from "react-hot-toast";
+import api from "../../config/URL";
 
 function DashboardV() {
   const [currentWeek, setCurrentWeek] = useState("");
+  const [maxWeek, setMaxWeek] = useState("");
+  const [data, setData] = useState(null);
   const [state, setState] = useState({
     options: {
-      colors: ["#9349ff", "#FFB63A", "#74aef0"],
+      colors: ["#1A2E86", "#237BFF", "#FFB63A", "#eb4034", "#fb8b33"],
       chart: {
         id: "basic-bar",
         toolbar: {
@@ -44,33 +48,10 @@ function DashboardV() {
         ],
       },
     },
-    series: [
-      {
-        name: "series-1",
-        data: [30, 40, 45, 50, 49, 60, 70],
-      },
-      {
-        name: "series-2",
-        data: [3, 70, 5, 30, 22, 50, 80],
-      },
-      {
-        name: "series-3",
-        data: [30, 40, 45, 30, 49, 60, 70],
-      },
-    ],
+    series: [],
   });
   const [showProducts, setShowProducts] = useState(false);
-  const [products, setProducts] = useState([
-    { name: "Laptop", selected: true },
-    { name: "Mobile", selected: true },
-    { name: "TV", selected: true },
-    { name: "Product 4", selected: true },
-    { name: "Product 5", selected: true },
-    { name: "Product 6", selected: true },
-    { name: "Product 7", selected: true },
-    { name: "Product 8", selected: true },
-    { name: "Product 9", selected: true },
-  ]);
+  const [products, setProducts] = useState([]);
   const [selectAll, setSelectAll] = useState(true);
 
   const toggleShowProducts = () => {
@@ -86,33 +67,90 @@ function DashboardV() {
   };
 
   const handleProductSelect = (index) => {
-    const updatedProducts = [...products];
-    updatedProducts[index].selected = !updatedProducts[index].selected;
+    const updatedProducts = products.map((product, i) =>
+      i === index ? { ...product, selected: !product.selected } : product
+    );
     setProducts(updatedProducts);
-
+  
     const allSelected = updatedProducts.every((product) => product.selected);
     setSelectAll(allSelected);
   };
+
+  const fetchDataForWeek = async (week) => {
+    try {
+      const response = await api.post("vendor/dashboard", {
+        week: week,
+      });
+      const { series } = response.data;
+
+      // Update chart data
+      setState((prevState) => ({
+        ...prevState,
+        series: series,
+      }));
+    } catch (error) {
+      toast.error("Error Fetching Chart Data");
+    }
+  };
+
   useEffect(() => {
     const getCurrentWeek = () => {
       const currentDate = new Date();
-      const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
-      const pastDaysOfYear =
-        (currentDate - firstDayOfYear) / (24 * 60 * 60 * 1000);
-      const weekNumber = Math.ceil(
-        (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7
-      );
-      return `${currentDate.getFullYear()}-W${String(weekNumber).padStart(
-        2,
-        "0"
-      )}`;
-    };
+      
+      currentDate.setHours(0, 0, 0, 0);
+    
+      const thursday = new Date(currentDate);
+      thursday.setDate(currentDate.getDate() + (3 - (currentDate.getDay() + 6) % 7));
+    
+      const firstThursday = new Date(thursday.getFullYear(), 0, 1);
+      firstThursday.setDate(firstThursday.getDate() + (3 - (firstThursday.getDay() + 6) % 7));
+    
+      const weekNumber = Math.floor((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
+    
+      return `${thursday.getFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
+    };    
 
     setCurrentWeek(getCurrentWeek());
+    setMaxWeek(getCurrentWeek());
   }, []);
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const response = await api.get(`vendor/dashboard`);
+        const { data } = response.data;
+        
+        // Set initial chart data
+        setState((prevState) => ({
+          ...prevState,
+          series: data.chatdata.series,
+        }));
+
+        // Set other data (total clicks, views, products)
+        setData(data);
+        setProducts(
+          data.products.map((product) => ({
+            ...product,
+            selected: true, // Initially, all products selected
+          }))
+        );
+      } catch (error) {
+        toast.error("Error Fetching Data");
+      }
+    };
+
+    getData();
+  }, []);
+
+  const handleWeekChange = (e) => {
+    const newWeek = e.target.value;
+    setCurrentWeek(newWeek);
+    fetchDataForWeek(newWeek); // Fetch data for the selected week
+  };
 
   return (
     <div className="card shadow border-0 mx-4" style={{ minHeight: "90vh" }}>
+      <div className="row card-container p-5">
       <div className="row card-container p-5">
         <div className="col-12 col-md-6 col-lg-3 mb-4">
           <Card
@@ -124,20 +162,20 @@ function DashboardV() {
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
-                <h2 className="text-white">9.823</h2>
+                <h2 className="text-white">{data?.totaldealclicks}</h2>
                 <div>
                   <IoSettingsOutline className="text-white" />
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-3">Members online</p>
+              <p className="text-white mt-3">Deal Clicks</p>
               <div className="flex-grow-1">
-              <img
-                src={dashgraph}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%", height: "auto" }}
-              />
+                <img
+                  src={dashgraph}
+                  alt=""
+                  className="img-fluid"
+                  style={{ width: "100%", height: "auto" }}
+                />
               </div>
             </div>
           </Card>
@@ -153,13 +191,13 @@ function DashboardV() {
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
-                <h2 className="text-white">9.823</h2>
+                <h2 className="text-white">{data?.totaldealviews}</h2>
                 <div>
                   <IoSettingsOutline className="text-white" />
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-3">Members online</p>
+              <p className="text-white mt-3">Deal Views</p>
               <img
                 src={dashgraph2}
                 alt=""
@@ -180,13 +218,13 @@ function DashboardV() {
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
-                <h2 className="text-white">9.823</h2>
+                <h2 className="text-white">{data?.totaldiscountcopied}</h2>
                 <div>
                   <IoSettingsOutline className="text-white" />
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-4">Members online</p>
+              <p className="text-white mt-4">Discount Copied</p>
               <img
                 src={graph5}
                 alt=""
@@ -207,13 +245,13 @@ function DashboardV() {
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
-                <h2 className="text-white">9.823</h2>
+                <h2 className="text-white">{data?.totaldealshared}</h2>
                 <div>
                   <IoSettingsOutline className="text-white" />
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-3">Members online</p>
+              <p className="text-white mt-3">Deal Shares</p>
               <div className="pt-5">
                 <img
                   src={graph4}
@@ -236,14 +274,14 @@ function DashboardV() {
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
-                <h2 className="text-white">9.823</h2>
+                <h2 className="text-white">{data?.totaldealenquired}</h2>
                 <div>
                   <IoSettingsOutline className="text-white" />
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-3">Members online</p>
-              <div className=" flex-grow-1">
+              <p className="text-white mt-3">Deal Enquiries</p>
+              <div className="flex-grow-1">
                 <img
                   src={graph6}
                   alt=""
@@ -271,8 +309,8 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-2">Members online</p>
-              <div className=" flex-grow-1">
+              <p className="text-white mt-3">Members Online</p>
+              <div className="flex-grow-1">
                 <img
                   src={graph7}
                   alt=""
@@ -284,12 +322,16 @@ function DashboardV() {
           </Card>
         </div>
       </div>
+      </div>
+
       <div className="row">
         <input
           type="week"
           className="form-control w-25 ms-5"
+          style={{ boxShadow: "none" }}
           value={currentWeek}
-          onChange={(e) => setCurrentWeek(e.target.value)}
+          onChange={handleWeekChange} // Call function to fetch data for selected week
+          max={maxWeek} // Disable selection for future weeks
         />
         <div className="col-12">
           <Chart
@@ -301,7 +343,11 @@ function DashboardV() {
           />
         </div>
         <div className="col-12">
-          <button onClick={toggleShowProducts} className="btn m-4" style={{background:"#ff0060",color:"#fff"}}>
+          <button
+            onClick={toggleShowProducts}
+            className="btn m-4"
+            style={{ background: "#ff0060", color: "#fff", boxShadow: "none" }}
+          >
             {showProducts ? "Hide Products" : "View Products"}
           </button>
           {showProducts && (
@@ -312,6 +358,7 @@ function DashboardV() {
                   checked={selectAll}
                   onChange={handleSelectAll}
                   id="selectAll"
+                  disabled
                 />
                 <label htmlFor="selectAll" className="ms-2 fw-medium">
                   Select All
@@ -325,6 +372,7 @@ function DashboardV() {
                       checked={product.selected}
                       onChange={() => handleProductSelect(index)}
                       id={`product-${index}`}
+                      disabled
                     />
                     <label
                       htmlFor={`product-${index}`}
