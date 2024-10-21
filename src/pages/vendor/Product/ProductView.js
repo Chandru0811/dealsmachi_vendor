@@ -15,7 +15,7 @@ function ProductView() {
       setLoading(true);
       try {
         const response = await api.get(`vendor/product/${id}/get`);
-        setData(response.data.data); 
+        setData(response.data.data);
       } catch (error) {
         toast.error("Error Fetching Data");
       }
@@ -27,45 +27,45 @@ function ProductView() {
 
   return (
     <section className="px-4">
-      {loading ? (
-        <div className="loader-container">
-          <div className="loader">
-            <svg viewBox="0 0 80 80">
-              <circle cx="40" cy="40" r="32"></circle>
-            </svg>
+      <>
+        <div className="card shadow border-0 mb-3">
+          <div className="row p-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <h1 className="h4 ls-tight">View Deals</h1>
+              <div>
+                <Link to="/product">
+                  <button type="button" className="btn btn-light btn-sm">
+                    <span>Back</span>
+                  </button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      ) : (
-        <>
-          <div className="card shadow border-0 mb-3">
-            <div className="row p-3">
-              <div className="d-flex justify-content-between align-items-center">
-                <h1 className="h4 ls-tight">View Deals</h1>
-                <div>
-                  <Link to="/product">
-                    <button type="button" className="btn btn-light btn-sm">
-                      <span>Back</span>
-                    </button>
-                  </Link>
-                </div>
+        <div
+          className="container card shadow border-0"
+          style={{ minHeight: "80vh" }}
+        >
+          {loading ? (
+            <div className="loader-container">
+              <div className="loader">
+                <svg viewBox="0 0 80 80">
+                  <circle cx="40" cy="40" r="32"></circle>
+                </svg>
               </div>
             </div>
-          </div>
-          <div
-            className="container card shadow border-0"
-            style={{ minHeight: "80vh" }}
-          >
+          ) : (
             <div className="row mt-5 p-3">
               {/* <div className="col-md-6 col-12">
-            <div className="row mb-3">
-              <div className="col-6 d-flex justify-content-start align-items-center">
-                <p className="text-sm"><b>Category Group</b></p>
-              </div>
-              <div className="col-6">
-                <p className="text-muted text-sm">: {data.category_group}</p>
-              </div>
-            </div>
-          </div> */}
+      <div className="row mb-3">
+        <div className="col-6 d-flex justify-content-start align-items-center">
+          <p className="text-sm"><b>Category Group</b></p>
+        </div>
+        <div className="col-6">
+          <p className="text-muted text-sm">: {data.category_group}</p>
+        </div>
+      </div>
+    </div> */}
               <div className="col-md-6 col-12">
                 <div className="row mb-3">
                   <div className="col-6 d-flex justify-content-start align-items-center">
@@ -191,7 +191,10 @@ function ProductView() {
                   </div>
                   <div className="col-6">
                     <p className="text-muted text-sm">
-                      : {data?.start_date ?new Date(data?.start_date).toLocaleDateString():""}
+                      :{" "}
+                      {data?.start_date
+                        ? new Date(data?.start_date).toLocaleDateString()
+                        : ""}
                     </p>
                   </div>
                 </div>
@@ -205,7 +208,10 @@ function ProductView() {
                   </div>
                   <div className="col-6">
                     <p className="text-muted text-sm">
-                      : {data?.end_date? new Date(data?.end_date).toLocaleDateString():""}
+                      :{" "}
+                      {data?.end_date
+                        ? new Date(data?.end_date).toLocaleDateString()
+                        : ""}
                     </p>
                   </div>
                 </div>
@@ -343,9 +349,9 @@ function ProductView() {
                 </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          )}
+        </div>
+      </>
     </section>
   );
 }

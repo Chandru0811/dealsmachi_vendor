@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, Modal } from "react-bootstrap";
-import { PiPlusSquareFill } from "react-icons/pi";
+// import { Button, Modal } from "react-bootstrap";
+// import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
@@ -117,15 +117,15 @@ function ProductAdd() {
       formData.append("name", values.name);
       formData.append("category_id", values.category_id);
       formData.append("deal_type", values.deal_type);
-      formData.append("brand", values.brand);
+      formData.append("brand", values.brand || "");
       formData.append("coupon_code", values.coupon_code);
       formData.append("original_price", values.original_price);
       formData.append("discounted_price", values.discounted_price);
       formData.append("discount_percentage", values.discount_percentage);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
-      formData.append("stock", values.stock);
-      formData.append("sku", values.sku);
+      formData.append("stock", values.stock || "");
+      formData.append("sku", values.sku || "");
       if (values.image_url1) {
         formData.append("image1", values.image_url1);
       }
@@ -256,22 +256,6 @@ function ProductAdd() {
     getData();
   }, []);
 
-  useEffect(() => {
-    const { original_price, discount_percentage } = formik.values;
-
-    if (original_price) {
-      let discountedPrice;
-      if (discount_percentage === "" || discount_percentage === null) {
-        discountedPrice = original_price;
-      } else {
-        discountedPrice =
-          original_price - (original_price * discount_percentage) / 100;
-      }
-      // Round to two decimal places
-      discountedPrice = Math.round(discountedPrice * 100) / 100;
-      formik.setFieldValue("discounted_price", discountedPrice);
-    }
-  }, [formik.values.discount_percentage, formik.values.original_price]);
 
   useEffect(() => {
     const { original_price, discounted_price } = formik.values;
@@ -693,11 +677,12 @@ function ProductAdd() {
                   </label>
                   <input
                     type="text"
+                    readOnly
                     onInput={(event) => {
                       event.target.value = event.target.value
-                        .replace(/[^0-9.]/g, "") // Allow digits and decimal point
-                        .replace(/(\..*?)\..*/g, "$1") // Ensure only one decimal point
-                        .slice(0, 5); // Limit the length if needed (5 characters for example)
+                        .replace(/[^0-9.]/g, "") 
+                        .replace(/(\..*?)\..*/g, "$1") 
+                        .slice(0, 5); 
                     }}
                     className={`form-control ${formik.touched.discount_percentage &&
                       formik.errors.discount_percentage

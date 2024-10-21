@@ -134,7 +134,7 @@ const Product = () => {
                       /> */}
                       {data.name}
                     </td>
-                    <td className="text-center">{data.brand}</td>
+                    <td className="text-center">{data.brand ? data.brand : ""}</td>
                     <td className="align-middle">
                       {data.active === 1 ? (
                         <span
