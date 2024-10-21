@@ -11,10 +11,10 @@ function Location() {
   const validationSchema = Yup.object({
     street: Yup.string().required("Street 1 is required"),
     // street2: Yup.string().required("Street 2 is required"),
-    // city: Yup.string().required("City is required"),
+    city: Yup.string().required("City is required"),
     zip_code: Yup.string().required("Zip Code is required"),
     country: Yup.string().required("Country is required"),
-    // state: Yup.string().required("State is required"),
+    state: Yup.string().required("State is required"),
   });
 
   const formik = useFormik({
@@ -24,7 +24,7 @@ function Location() {
       city: "",
       zip_code: "",
       country: "",
-      // state: "",
+      state: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
@@ -83,15 +83,18 @@ function Location() {
 
             <div className="row">
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">Street<span className="text-danger">*</span></label>
+                <label className="form-label">
+                  Street<span className="text-danger">*</span>
+                </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.street && formik.errors.street
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.street && formik.errors.street
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="street"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -109,10 +112,11 @@ function Location() {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.street2 && formik.errors.street2
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.street2 && formik.errors.street2
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="street2"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -125,15 +129,18 @@ function Location() {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">City</label>
+                <label className="form-label">
+                  City<span className="text-danger">*</span>
+                </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.city && formik.errors.city
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.city && formik.errors.city
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="city"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -146,15 +153,18 @@ function Location() {
                 )}
               </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">Zip Code<span className="text-danger">*</span></label>
+                <label className="form-label">
+                  Zip Code<span className="text-danger">*</span>
+                </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.zip_code && formik.errors.zip_code
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.zip_code && formik.errors.zip_code
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="zip_code"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -166,16 +176,19 @@ function Location() {
                   </div>
                 )}
               </div>
-              {/* <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">State</label>
-              </div> */}
-              {/* <div className="col-md-8 col-12 mb-5">
+              <div className="col-md-4 col-12 mb-5">
+                <label className="form-label">
+                  State<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.state && formik.errors.state
+                  className={`form-control ${
+                    formik.touched.state && formik.errors.state
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="state"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
@@ -186,17 +199,20 @@ function Location() {
                     <small>{formik.errors.state}</small>
                   </div>
                 )}
-              </div> */}
+              </div>
               <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">Country<span className="text-danger">*</span></label>
+                <label className="form-label">
+                  Country<span className="text-danger">*</span>
+                </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.country && formik.errors.country
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className={`form-control ${
+                    formik.touched.country && formik.errors.country
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="country"
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}

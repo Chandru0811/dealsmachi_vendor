@@ -8,10 +8,10 @@ import { FiAlertTriangle } from "react-icons/fi";
 const validationSchema = Yup.object().shape({
   street: Yup.string().required("Street 1 is required"),
   // street2: Yup.string().required("Street 2 is required"),
-  // city: Yup.string().required("City is required"),
+  city: Yup.string().required("City is required"),
   zip_code: Yup.string().required("Zip Code is required"),
   country: Yup.string().required("Country is required"),
-  // state: Yup.string().required("State is required"),
+  state: Yup.string().required("State is required"),
 });
 
 const Form4 = forwardRef(
@@ -23,7 +23,7 @@ const Form4 = forwardRef(
         city: formData.city,
         zip_code: formData.zip_code,
         country: formData.country,
-        state: "Singapore",
+        state: formData.state,
       },
       validationSchema: validationSchema,
       onSubmit: async (data) => {
@@ -35,7 +35,7 @@ const Form4 = forwardRef(
             `vendor/shopregistration`,
             completeFormData
           );
-          console.log("Response", response);
+          // console.log("Response", response);
           if (response.status === 200) {
             toast.success(response.data.message);
             sessionStorage.setItem("shop_id", response.data.data.id);
@@ -147,7 +147,9 @@ const Form4 = forwardRef(
                 {/* City */}
                 <div className="col-12">
                   <div className="mb-3 row align-items-center">
-                    <label className="col-md-4 form-label">City</label>
+                    <label className="col-md-4 form-label">
+                      City<span className="text-danger">*</span>
+                    </label>
                     <div className="col-md-8">
                       <input
                         type="text"
@@ -171,7 +173,7 @@ const Form4 = forwardRef(
                 </div>
 
                 {/* State */}
-                {/* <div className="col-12">
+                <div className="col-12">
                   <div className="mb-3 row align-items-center">
                     <label className="col-md-4 form-label">
                       State<span className="text-danger">*</span>
@@ -196,7 +198,7 @@ const Form4 = forwardRef(
                       )}
                     </div>
                   </div>
-                </div> */}
+                </div>
 
                 {/* Zip Code */}
                 <div className="col-12">
