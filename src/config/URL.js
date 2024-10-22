@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://dealsmachi.com/api/",
+  baseURL: "https://sgitjobs.com/dealslah/api/",
 });
 
 api.interceptors.request.use(
