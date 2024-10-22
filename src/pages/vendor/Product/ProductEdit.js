@@ -282,10 +282,10 @@ function ProductAdd() {
         ...rest,
         start_date: rest.start_date
           ? new Date(rest.start_date).toISOString().split("T")[0]
-          : undefined,
+          : "",
         end_date: rest.end_date
           ? new Date(rest.end_date).toISOString().split("T")[0]
-          : undefined,
+          : "",
 
         image1: `${ImageURL}${image_url1}`,
         image2: `${ImageURL}${image_url2}`,

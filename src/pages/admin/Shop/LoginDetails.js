@@ -12,7 +12,7 @@ function LoginDetails() {
     const getData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`admin/shop/${id}/location`);
+        const response = await api.get(`admin/shop/${id}/logindetails`);
         setData(response.data.data);
       } catch (error) {
         toast.error("Error Fetching Data ", error);

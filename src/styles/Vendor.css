@@ -113,3 +113,26 @@
   top: 50%;
   transform: translateY(-50%);
 }
+
+.week-input {
+  width: 25%; 
+  box-shadow: none;
+}
+
+@media (max-width: 1200px) {
+  .week-input {
+    width: 50%; 
+  }
+}
+
+@media (max-width: 768px) {
+  .week-input {
+    width: 75%;
+  }
+}
+
+@media (max-width: 576px) {
+  .week-input {
+    width: 70%;
+  }
+}

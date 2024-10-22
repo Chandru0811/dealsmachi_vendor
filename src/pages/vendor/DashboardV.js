@@ -45,8 +45,7 @@ function DashboardV() {
           "Friday",
           "Saturday",
           "Sunday",
-        ],
-      },
+        ],      },
     },
     series: [],
   });
@@ -140,6 +139,36 @@ function DashboardV() {
     };
 
     getData();
+  }, []);
+
+  const getCategories = () => {
+    const width = window.innerWidth;
+    if (width > 1200) {
+      return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+    } else if (width > 768) {
+      return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    } else {
+      return ["M", "T", "W", "T", "F", "S", "S"];
+    }
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setState((prevState) => ({
+        ...prevState,
+        options: {
+          ...prevState.options,
+          xaxis: {
+            categories: getCategories(),
+          },
+        },
+      }));
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const handleWeekChange = (e) => {
@@ -327,7 +356,7 @@ function DashboardV() {
       <div className="row">
         <input
           type="week"
-          className="form-control w-25 ms-5"
+          className="form-control week-input ms-5"
           style={{ boxShadow: "none" }}
           value={currentWeek}
           onChange={handleWeekChange} // Call function to fetch data for selected week
@@ -339,7 +368,7 @@ function DashboardV() {
             series={state.series}
             type="area"
             width="100%"
-            height="350"
+            height={350}
           />
         </div>
         <div className="col-12">

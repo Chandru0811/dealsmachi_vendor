@@ -449,14 +449,17 @@ function ProductAdd() {
   };
 
   useEffect(() => {
-    if (couponCode.length === initialCouponCode.length) {
-      const randomNumbers = generateRandomNumbers();
-      const updatedCouponCode = initialCouponCode + randomNumbers;
-      setCouponCode(updatedCouponCode);
-      formik.setFieldValue("coupon_code", updatedCouponCode);
-    }
+    const generateUniqueCouponCode = async () => {
+      if (couponCode.length === initialCouponCode.length) {
+        const randomNumbers = await generateRandomNumbers();
+        const updatedCouponCode = initialCouponCode + randomNumbers;
+        setCouponCode(updatedCouponCode);
+        formik.setFieldValue("coupon_code", updatedCouponCode);
+      }
+    };
+  
+    generateUniqueCouponCode();
   }, [couponCode]);
-
   return (
     <section className="px-4">
       <form onSubmit={formik.handleSubmit}>

@@ -17,6 +17,7 @@ import { TiShoppingCart } from "react-icons/ti";
 import Products from "./Products";
 import { FaRegUserCircle } from "react-icons/fa";
 import LoginDetails from "./LoginDetails";
+import { BsCart2 } from "react-icons/bs";
 
 function ShopView() {
   const { id } = useParams();
@@ -203,7 +204,7 @@ function ShopView() {
                       }`}
                     onClick={() => handleItemClick("Products")}
                   >
-                    <TiShoppingCart /> Products
+                    <BsCart2 /> Products
                   </div>
                 </div>
               </div>
