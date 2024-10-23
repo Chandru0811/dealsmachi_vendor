@@ -21,7 +21,6 @@
 /* Sidebar */
 .navbar-vertical.navbar-light {
   background-color: #ff0060 !important;
-
 }
 
 .navbar-vertical.navbar-light .navbar-nav .nav-link i,
@@ -361,11 +360,11 @@
 
 /* Page Loader */
 
-.logo_ats {
+/* .logo_ats {
   position: fixed !important;
-  /* min-width: 18.1%; */
+  min-width: 18.1%;
   top: 0;
-}
+} */
 
 @media screen and (max-width:992px) {
   .logo_ats {
@@ -376,8 +375,8 @@
   }
 
   .sidebar-logo {
-    width: 25px !important;
-    height: 25px !important;
+    width: 50px !important;
+    height: 50px !important;
     padding: 0 !important;
   }
 }

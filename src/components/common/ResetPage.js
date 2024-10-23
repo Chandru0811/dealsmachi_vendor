@@ -203,7 +203,7 @@ const ResetPage = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary btn-block mt-3 rounded-0 w-100"
+                className="btn btn-primary common-button btn-block mt-3 rounded-0 w-100"
                 style={{ backgroundColor: "#ff0060", borderColor: "#ff0060" }}
               >
                 RESET PASSWORD

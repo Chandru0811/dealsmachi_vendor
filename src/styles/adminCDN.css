@@ -205,7 +205,6 @@
     z-index: 99;
     box-shadow: 2px 2px 4px #bdbdbd;
     background-color: var(--admin-header-color) !important;
-    /* color:var(--admin-primary-color) !important; */
 
 }
 .admin-settings{
@@ -9934,7 +9933,9 @@ fieldset:disabled .btn {
 .navbar-nav .dropdown-menu {
   position: static;
 }
-
+.logout_button{
+  background: #ff0060 !important;
+}
 .navbar-text {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
@@ -23574,6 +23575,7 @@ a.text-current:hover {
 
 .cursor-pointer {
   cursor: pointer !important;
+  width: 100%;
 }
 
 .cursor-pointer-hover:hover {

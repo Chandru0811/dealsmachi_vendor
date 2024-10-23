@@ -44,9 +44,9 @@ const ForgotPage = () => {
     <section>
       <div
         className="container-fluid d-flex justify-content-center align-items-center vh-100"
-        style={{ backgroundColor: "rgb(242, 242, 242)" }}
+        style={{  minHeight: "100vh",backgroundColor: "rgb(242, 242, 242)" }}
       >
-        <div className="row">
+        <div className="row mt-5">
           <div
             className="card shadow-lg p-3 mb-5 rounded"
             style={{ width: "100%", maxWidth: "400px" }}
@@ -102,7 +102,7 @@ const ForgotPage = () => {
               {/* <Link to="/"> */}
               <button
                 type="submit"
-                className="btn btn-primary btn-block mt-3 rounded-0 w-100"
+                className="btn btn-primary common-button btn-block mt-3 rounded-0 w-100"
                 style={{ backgroundColor: "#ff0060", borderColor: "#ff0060" }}
               >
                 RESET PASSWORD

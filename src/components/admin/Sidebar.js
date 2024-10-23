@@ -19,11 +19,11 @@ function Sidebar({ handleLogout }) {
 
   return (
     <nav
-      className="navbar show navbar-vertical h-screen navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
+      className="navbar show navbar-vertical navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
       id="navbarVertical"
     >
       <div className="container-fluid">
-        <button
+      <button
           className="navbar-toggler mx-2 p-1"
           type="button"
           data-bs-toggle="collapse"
@@ -35,10 +35,11 @@ function Sidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
-            }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
+            leadMenuOpen || activeSubmenu ? "active" : ""
+          }`}
           to="/"
-        // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
+          // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
           <img
             src={deals}
@@ -47,13 +48,17 @@ function Sidebar({ handleLogout }) {
             style={{
               background: "#fff",
               borderRadius: "5px",
-              width: "50px",
-              height: "50px",
+              width: "45px",
+              height: "45px",
             }}
           />
           <p className="text-white">Dealsmachi</p>
         </NavLink>
-        <div className="collapse navbar-collapse" id="sidebarCollapse" style={{ marginTop: "5rem" }}>
+        <div
+          className="collapse navbar-collapse"
+          id="sidebarCollapse"
+          // style={{ marginTop: "5rem" }}
+        >
           <ul className="navbar-nav">
             <li className="nav-item">
               <NavLink className="nav-link" to="/dashboard">
@@ -110,7 +115,7 @@ function Sidebar({ handleLogout }) {
                 <button
                   to={"#"}
                   style={{ width: "100%" }}
-                  className="nav-link ps-6"
+                  className="nav-link ps-6 logout_button"
                   onClick={handelLogOutClick}
                 >
                   <BiLogOut />

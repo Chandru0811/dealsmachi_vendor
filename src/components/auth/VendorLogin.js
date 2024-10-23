@@ -97,10 +97,10 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
   return (
     <div
       className="container-fluid d-flex justify-content-center align-items-center vh-100"
-      style={{ backgroundColor: "#f2f2f2" }}
+      style={{  minHeight: "100vh",backgroundColor: "#f2f2f2" }}
     >
       <div
-        className="card shadow-lg p-3 mb-5 rounded"
+        className="card shadow-lg p-3 mb-5 mt-5 rounded"
         style={{ width: "100%", maxWidth: "400px" }}
       >
         <div className="d-flex justify-content-around ">
@@ -192,12 +192,13 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
             <Link to="/register">
               <Button
                 variant="light"
-                className="w-100 border shadow-none"
+                className="border shadow-none"
                 style={{
                   position: "relative",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  width: "100%"
                 }}
               >
                 Register as a Vendor

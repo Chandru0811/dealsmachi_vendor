@@ -11,6 +11,23 @@ const Products = () => {
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(false);
   const tableRef = useRef(null);
+
+  const initializeDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      return; // DataTable already initialized
+    }
+    $(tableRef.current).DataTable({
+      destroy: true, // Ensure table is destroyed before reinitializing
+      columnDefs: [{ orderable: false, targets: -1 }],
+    });
+  };
+
+  const destroyDataTable = () => {
+    if ($.fn.DataTable.isDataTable(tableRef.current)) {
+      $(tableRef.current).DataTable().clear().destroy(true);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -20,7 +37,7 @@ const Products = () => {
         setDatas(response.data.data);
 
         if (tableRef.current) {
-          $(tableRef.current).DataTable();
+          initializeDataTable(); // Initialize DataTable after data is set
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -31,9 +48,7 @@ const Products = () => {
     fetchData();
 
     return () => {
-      if (tableRef.current) {
-        $(tableRef.current).DataTable().destroy();
-      }
+      destroyDataTable(); // Clean up DataTable on component unmount
     };
   }, []);
 
