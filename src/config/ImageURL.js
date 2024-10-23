@@ -1,3 +1,3 @@
-const ImageURL = "https://dealsmachi.com/";
+const ImageURL = "https://sgitjobs.com/dealslah/";
 
 export default ImageURL;
