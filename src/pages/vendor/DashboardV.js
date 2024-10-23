@@ -45,7 +45,8 @@ function DashboardV() {
           "Friday",
           "Saturday",
           "Sunday",
-        ],      },
+        ],
+      },
     },
     series: [],
   });
@@ -70,7 +71,7 @@ function DashboardV() {
       i === index ? { ...product, selected: !product.selected } : product
     );
     setProducts(updatedProducts);
-  
+
     const allSelected = updatedProducts.every((product) => product.selected);
     setSelectAll(allSelected);
   };
@@ -95,19 +96,19 @@ function DashboardV() {
   useEffect(() => {
     const getCurrentWeek = () => {
       const currentDate = new Date();
-      
+
       currentDate.setHours(0, 0, 0, 0);
-    
+
       const thursday = new Date(currentDate);
       thursday.setDate(currentDate.getDate() + (3 - (currentDate.getDay() + 6) % 7));
-    
+
       const firstThursday = new Date(thursday.getFullYear(), 0, 1);
       firstThursday.setDate(firstThursday.getDate() + (3 - (firstThursday.getDay() + 6) % 7));
-    
+
       const weekNumber = Math.floor((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
-    
+
       return `${thursday.getFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
-    };    
+    };
 
     setCurrentWeek(getCurrentWeek());
     setMaxWeek(getCurrentWeek());
@@ -118,7 +119,7 @@ function DashboardV() {
       try {
         const response = await api.get(`vendor/dashboard`);
         const { data } = response.data;
-        
+
         // Set initial chart data
         setState((prevState) => ({
           ...prevState,
@@ -174,12 +175,13 @@ function DashboardV() {
   const handleWeekChange = (e) => {
     const newWeek = e.target.value;
     setCurrentWeek(newWeek);
-    fetchDataForWeek(newWeek); // Fetch data for the selected week
+    if (newWeek) {
+      fetchDataForWeek(newWeek); // Fetch data for the selected week
+    }
   };
 
   return (
     <div className="card shadow border-0 mx-4" style={{ minHeight: "90vh" }}>
-      <div className="row card-container p-5">
       <div className="row card-container p-5">
         <div className="col-12 col-md-6 col-lg-3 mb-4">
           <Card
@@ -351,7 +353,6 @@ function DashboardV() {
           </Card>
         </div>
       </div>
-      </div>
 
       <div className="row">
         <input
@@ -363,13 +364,17 @@ function DashboardV() {
           max={maxWeek} // Disable selection for future weeks
         />
         <div className="col-12">
-          <Chart
-            options={state.options}
-            series={state.series}
-            type="area"
-            width="100%"
-            height={350}
-          />
+          {currentWeek ? (
+            <Chart
+              options={state.options}
+              series={state.series}
+              type="area"
+              width="100%"
+              height={350}
+            />
+          ) : (
+            <p className="d-flex justify-content-center align-items-center py-5">A week has not yet been selected. Kindly select a week to view the chart.</p>
+          )}
         </div>
         <div className="col-12">
           <button
