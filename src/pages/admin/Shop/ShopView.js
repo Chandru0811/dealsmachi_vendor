@@ -113,7 +113,7 @@ function ShopView() {
                       <span>Back</span>
                     </button>
                   </Link>
-                  {shopStatus == 0 ? (
+                  {/* {shopStatus == 0 ? (
                     <button
                       type="button"
                       onClick={handleActivate}
@@ -141,7 +141,7 @@ function ShopView() {
                     </button>
                   ) : (
                     <></>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

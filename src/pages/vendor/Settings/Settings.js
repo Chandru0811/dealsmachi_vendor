@@ -40,7 +40,7 @@ function Settings() {
       >
         <div className="row mt-5">
           <div
-            className="col-md-3 col-12 card shadow h-50"
+            className="col-md-3 col-12 h-50"
             style={{ zIndex: "0" }}
           >
             <div className="dropdown-menu w-100 p-3">
