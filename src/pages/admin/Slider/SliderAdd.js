@@ -132,8 +132,8 @@ function SliderAdd() {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        const targetWidth = 1750;
-        const targetHeight = 550;
+        const targetWidth = 900;
+        const targetHeight = 400;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
@@ -235,7 +235,7 @@ function SliderAdd() {
                     image={imageSrc}
                     crop={crop}
                     zoom={zoom}
-                    aspect={1750 / 550}
+                    aspect={900 / 400}
                     onCropChange={setCrop}
                     onZoomChange={setZoom}
                     onCropComplete={onCropComplete}
