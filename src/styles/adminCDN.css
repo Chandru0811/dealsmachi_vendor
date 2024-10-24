@@ -7831,7 +7831,7 @@ fieldset:disabled .btn {
 .dropdown-menu {
   position: absolute;
   z-index: 1000;
-  display: none;
+  /* display: none; */
   min-width: 12rem;
   padding: 0.5rem 0rem;
   margin: 0;
@@ -8068,7 +8068,7 @@ fieldset:disabled .btn {
   padding: 0.5rem 1rem;
   clear: both;
   font-weight: 400;
-  color: #16192c;
+  /* color: #16192c; */
   text-align: inherit;
   white-space: nowrap;
   background-color: transparent;
