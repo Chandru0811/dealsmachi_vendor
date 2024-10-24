@@ -278,26 +278,6 @@ function ProductAdd() {
   // };
 
   useEffect(() => {
-    const { original_price, discounted_percentage } = formik.values;
-
-    const timeoutId = setTimeout(() => {
-      if (original_price) {
-        let discountedPrice;
-        if (discounted_percentage === "" || discounted_percentage === null) {
-          discountedPrice = original_price;
-        } else {
-          discountedPrice =
-            original_price - (original_price * discounted_percentage) / 100;
-        }
-        discountedPrice = Math.round(discountedPrice * 100) / 100;
-        formik.setFieldValue("discounted_price", discountedPrice);
-      }
-    }, 1000);
-
-    return () => clearTimeout(timeoutId);
-  }, [formik.values.discounted_percentage, formik.values.original_price]);
-
-  useEffect(() => {
     const { original_price, discounted_price } = formik.values;
 
     const timeoutId = setTimeout(() => {
@@ -316,7 +296,7 @@ function ProductAdd() {
     }, 1000);
 
     return () => clearTimeout(timeoutId);
-  }, [formik.values.discounted_price]);
+  }, [formik.values.discounted_price, formik.values.original_price]);
 
   const handleFileChange = (index, event) => {
     const file = event?.target?.files[0];

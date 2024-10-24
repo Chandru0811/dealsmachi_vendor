@@ -270,7 +270,7 @@ function ProductAdd() {
         formik.setFieldValue("discount_percentage", formattedPercentage);
       }
     }
-  }, [formik.values.discounted_price]);
+  }, [formik.values.discounted_price, formik.values.original_price]);
 
   const getData = async () => {
     try {
