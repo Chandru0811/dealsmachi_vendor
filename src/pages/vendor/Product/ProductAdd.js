@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Button, Modal } from "react-bootstrap";
-import { PiPlusSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
@@ -30,6 +28,8 @@ function ProductAdd() {
   const [croppedAreas, setCroppedAreas] = useState([null, null, null, null]);
   const [showCropper, setShowCropper] = useState([false, false, false, false]);
   const id = sessionStorage.getItem("shop_id");
+  const [couponCode, setCouponCode] = useState("DEALSMACHI");
+  const [isCouponChecked, setIsCouponChecked] = useState(false);
   const navigate = useNavigate();
   const SUPPORTED_FORMATS = [
     "image/jpg",
@@ -48,8 +48,6 @@ function ProductAdd() {
     .test("fileSize", "File size is too large. Max 2MB.", (value) => {
       return !value || (value && value.size <= MAX_FILE_SIZE);
     });
-  const initialCouponCode = "DEALSMACHI";
-  const [couponCode, setCouponCode] = useState(initialCouponCode);
   const validationSchema = Yup.object({
     shop_id: Yup.string().required("Caategory Group is required"),
     name: Yup.string()
@@ -63,7 +61,6 @@ function ProductAdd() {
       )
       .required("Coupon code is required"),
     deal_type: Yup.string().required("Deal Type is required"),
-    // brand: Yup.string().required("Brand is required"),
     original_price: Yup.number()
       .required("Original Price is required")
       .min(1, "Original Price must be greater than zero"),
@@ -76,15 +73,6 @@ function ProductAdd() {
         Yup.ref("original_price"),
         "The Discounted Price must be same or below the Original Price."
       ),
-    // start_date: Yup.date().required("Start Date is required").nullable(),
-    // end_date: Yup.date()
-    //   .required("End Date is required")
-    //   .min(Yup.ref("start_date"), "End Date cannot be before Start Date")
-    //   .nullable(),
-    // stock: Yup.number()
-    //   .required("Stock is required")
-    //   .min(0, "Stock cannot be negative"),
-    // sku: Yup.string().required("SKU is required"),
     image1: imageValidation,
     image2: imageValidation,
     image3: imageValidation,
@@ -93,12 +81,6 @@ function ProductAdd() {
       .required("Description is required")
       .min(10, "Description must be at least 10 characters long"),
   });
-  // const validationSchema1 = Yup.object({
-  //   catagory_group_id: Yup.string().required("Category Group is required"),
-  //   name: Yup.string().required("Name is required"),
-  //   icon: Yup.string().required("Imagei s required"),
-  //   description: Yup.string().required("Description is required"),
-  // });
 
   const formik = useFormik({
     initialValues: {
@@ -114,7 +96,7 @@ function ProductAdd() {
       end_date: "",
       stock: "",
       sku: "",
-      coupon_code: initialCouponCode,
+      coupon_code: couponCode,
       image1: null,
       image2: null,
       image3: null,
@@ -124,7 +106,6 @@ function ProductAdd() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       const formData = new FormData();
-      // formData.append("shop_id", values.shop_id);
       formData.append("shop_id", id);
       formData.append("name", values.name);
       formData.append("category_id", values.category_id);
@@ -184,57 +165,6 @@ function ProductAdd() {
       }
     },
   });
-  // const formik1 = useFormik({
-  //   initialValues: {
-  //     catagory_group_id: "",
-  //     name: "",
-  //     icon: "",
-  //     description: "",
-  //   },
-  //   validationSchema: validationSchema1,
-  //   onSubmit: async (values) => {
-  //     const formData = new FormData();
-  //     formData.append("category_group_id", values.catagory_group_id);
-  //     formData.append("name", values.name);
-  //     formData.append("icon", values.icon);
-  //     formData.append("description", values.description);
-  //     const slug = values.name.toLowerCase().replace(/\s+/g, "_");
-  //     formData.append("slug", slug);
-  //     console.log("Form Data:", values);
-  //     try {
-  //       const response = await api.post(`vendor/categories/create`, formData, {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       });
-  //       console.log("Response", response);
-  //       if (response.status === 200) {
-  //         toast.success(response.data.message);
-  //         setShowModal(false);
-  //       } else {
-  //         toast.error(response.data.message);
-  //       }
-  //     } catch (error) {
-  //       if (error.response && error.response.status === 422) {
-  //         const errors = error.response.data.errors;
-  //         if (errors) {
-  //           Object.keys(errors).forEach((key) => {
-  //             errors[key].forEach((errorMsg) => {
-  //               toast(errorMsg, {
-  //                 icon: <FiAlertTriangle className="text-warning" />,
-  //               });
-  //             });
-  //           });
-  //         }
-  //       } else {
-  //         console.error("API Error", error);
-  //         toast.error("An unexpected error occurred.");
-  //       }
-  //     } finally {
-  //       setLoadIndicator(false);
-  //     }
-  //   },
-  // });
 
   useEffect(() => {
     const getData = async () => {
@@ -264,18 +194,10 @@ function ProductAdd() {
     setCategory([]);
 
     formik.setFieldValue("shop_id", categoryGroup);
-    // formik1.setFieldValue("catagory_group_id", categoryGroup);
 
     setSelectedCategoryGroup(categoryGroup);
     fetchCategory(categoryGroup);
   };
-
-  // const handleCategoryAdd = () => {
-  //   formik1.setFieldValue("name", "");
-  //   formik1.setFieldValue("icon", "");
-  //   formik1.setFieldValue("description", "");
-  //   setShowModal(true);
-  // };
 
   useEffect(() => {
     const { original_price, discounted_price } = formik.values;
@@ -407,39 +329,43 @@ function ProductAdd() {
     document.querySelector(`input[name='image${index + 1}']`).value = "";
   };
 
-  const handleCouponChange = (e) => {
-    const input = e.target.value;
-    if (input.startsWith(initialCouponCode)) {
-      const numberPart = input.slice(initialCouponCode.length);
-      if (/^\d{0,2}$/.test(numberPart)) {
-        setCouponCode(input);
-        formik.setFieldValue("coupon_code", input);
-      }
-    } else {
-      setCouponCode(initialCouponCode);
-      formik.setFieldValue("coupon_code", initialCouponCode);
-    }
+  const formatDiscountPercentage = (discounted_percentage) => {
+    const roundedDiscount = Math.round(discounted_percentage || 0);
+    return roundedDiscount < 10 ? `0${roundedDiscount}` : `${roundedDiscount}`;
   };
 
-  const generateRandomNumbers = () => {
-    const randomNumbers = Math.floor(Math.random() * 100)
-      .toString()
-      .padStart(2, "0");
-    return randomNumbers;
+  const handleRadioChange = (e) => {
+    const selectedValue = e.target.value;
+    setIsCouponChecked(selectedValue === "discount");
+
+    const formattedDiscount = formatDiscountPercentage(
+      formik.values.discounted_percentage
+    );
+    const newCouponCode =
+      selectedValue === "discount"
+        ? `DEALSMACHI${formattedDiscount}`
+        : `DEALSMACHIV${id.padStart(2, "0")}`;
+
+    setCouponCode(newCouponCode);
+    formik.setFieldValue("coupon_code", newCouponCode);
   };
 
   useEffect(() => {
-    const generateUniqueCouponCode = async () => {
-      if (couponCode.length === initialCouponCode.length) {
-        const randomNumbers = await generateRandomNumbers();
-        const updatedCouponCode = initialCouponCode + randomNumbers;
-        setCouponCode(updatedCouponCode);
-        formik.setFieldValue("coupon_code", updatedCouponCode);
-      }
-    };
-  
-    generateUniqueCouponCode();
-  }, [couponCode]);
+    const formattedDiscount = formatDiscountPercentage(
+      formik.values.discounted_percentage
+    );
+
+    if (isCouponChecked) {
+      const updatedCoupon = `DEALSMACHI${formattedDiscount}`;
+      setCouponCode(updatedCoupon);
+      formik.setFieldValue("coupon_code", updatedCoupon);
+    } else {
+      const updatedCoupon = `DEALSMACHIV${id.padStart(2, "0")}`;
+      setCouponCode(updatedCoupon);
+      formik.setFieldValue("coupon_code", updatedCoupon);
+    }
+  }, [formik.values.discounted_percentage, isCouponChecked]);
+
   return (
     <section className="px-4">
       <form onSubmit={formik.handleSubmit}>
@@ -469,7 +395,7 @@ function ProductAdd() {
                 }`}
                 {...formik.getFieldProps("shop_id")}
                 onChange={handleCategorygroupChange}
-                value={formik.values.shop_id} // Ensure value is set from Formik state
+                value={formik.values.shop_id}
               >
                 <option value="">Select a category group</option>
                 {allCategorgroup &&
@@ -496,18 +422,6 @@ function ProductAdd() {
                     : ""
                 }`}
                 {...formik.getFieldProps("category_id")}
-                // onChange={(event) => {
-                //   const selectedValue = event.target.value;
-                //   if (selectedValue === "add_new") {
-                //     // formik1.resetForm();
-                //     formik1.setFieldValue("name", "");
-                //     formik1.setFieldValue("icon", "");
-                //     formik1.setFieldValue("description", "");
-                //     setShowModal(true);
-                //   } else {
-                //     formik.setFieldValue("category_id", selectedValue);
-                //   }
-                // }}
               >
                 <option></option>
                 {category &&
@@ -516,16 +430,6 @@ function ProductAdd() {
                       {cat.name}
                     </option>
                   ))}
-                {/* {selectedCategoryGroup && (
-                  <option
-                    value="add_new"
-                    style={{ background: "#1c2b36", color: "#fff" }}
-                    onClick={handleCategoryAdd}
-                  >
-                    <PiPlusSquareFill size={20} color="#fff" />
-                    Add New Category
-                  </option>
-                )} */}
               </select>
               {formik.touched.category_id && formik.errors.category_id && (
                 <div className="invalid-feedback">
@@ -603,25 +507,6 @@ function ProductAdd() {
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">Coupon Code</label>
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.coupon_code && formik.errors.coupon_code
-                    ? "is-invalid"
-                    : ""
-                }`}
-                value={couponCode}
-                onChange={handleCouponChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.coupon_code && formik.errors.coupon_code && (
-                <div className="invalid-feedback">
-                  {formik.errors.coupon_code}
-                </div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Original Price<span className="text-danger">*</span>
               </label>
@@ -683,6 +568,7 @@ function ProductAdd() {
               </label>
               <input
                 type="text"
+                readOnly
                 onInput={(event) => {
                   let value = event.target.value
                     .replace(/[^0-9.]/g, "") // Only allow numbers and a single decimal point
@@ -800,7 +686,7 @@ function ProductAdd() {
                         image={images[index]}
                         crop={crop[index]}
                         zoom={zooms[index]}
-                        aspect={400 / 266}
+                        aspect={320 / 240}
                         onCropChange={(newCrop) => {
                           const newCrops = [...crop];
                           newCrops[index] = newCrop;
@@ -857,7 +743,61 @@ function ProductAdd() {
                 </div>
               )}
             </div>
+            <div className="col-md-6 col-12 mt-5 d-flex align-items-center">
+              <div className="d-flex align-items-center">
+                <div className="form-check mb-3">
+                  <input
+                    type="radio"
+                    name="changeCouponCode"
+                    id="vendorCoupon"
+                    value="fixed"
+                    className="form-check-input"
+                    style={{ boxShadow: "none" }}
+                    checked={!isCouponChecked}
+                    onChange={handleRadioChange}
+                  />
+                  <label htmlFor="vendorCoupon" className="form-label ms-2">
+                    Vendor Coupon code
+                  </label>
+                </div>
+                &nbsp; &nbsp; &nbsp;
+                <div className="form-check mb-3">
+                  <input
+                    type="radio"
+                    name="changeCouponCode"
+                    id="genricCoupon"
+                    value="discount"
+                    className="form-check-input"
+                    style={{ boxShadow: "none" }}
+                    checked={isCouponChecked}
+                    onChange={handleRadioChange}
+                  />
+                  <label htmlFor="genricCoupon" className="form-label ms-2">
+                    Generic Coupon Code
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">Coupon Code</label>
+              <input
+                type="text"
+                className={`form-control ${
+                  formik.touched.coupon_code && formik.errors.coupon_code
+                    ? "is-invalid"
+                    : ""
+                }`}
+                value={couponCode}
+                readOnly
+              />
+              {formik.touched.coupon_code && formik.errors.coupon_code && (
+                <div className="invalid-feedback">
+                  {formik.errors.coupon_code}
+                </div>
+              )}
+            </div>
           </div>
+
           <div className="hstack p-2">
             <button
               type="submit"
@@ -875,132 +815,6 @@ function ProductAdd() {
           </div>
         </div>
       </form>
-      {/* <Modal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        size="md"
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Add Category</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={formik1.handleSubmit}>
-            <div className="row py-4">
-              <div className="col-12 mb-3">
-                <label className="form-label">
-                  Category Group<span className="text-danger">*</span>
-                </label>
-                <select
-                  type="text"
-                  className={`form-control ${
-                    formik1.touched.catagory_group_id &&
-                    formik1.errors.catagory_group_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik1.getFieldProps("catagory_group_id")}
-                  disabled
-                >
-                  <option></option>
-                  {allCategorgroup &&
-                    allCategorgroup.map((categorygroup) => (
-                      <option key={categorygroup.id} value={categorygroup.id}>
-                        {categorygroup.name}
-                      </option>
-                    ))}
-                </select>
-                {formik1.touched.catagory_group_id &&
-                  formik1.errors.catagory_group_id && (
-                    <div className="invalid-feedback">
-                      {formik1.errors.catagory_group_id}
-                    </div>
-                  )}
-              </div>
-
-              <div className="col-12 mb-3">
-                <label className="form-label">
-                  Name<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control ${
-                    formik1.touched.name && formik1.errors.name
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik1.getFieldProps("name")}
-                />
-                {formik1.touched.name && formik1.errors.name && (
-                  <div className="invalid-feedback">{formik1.errors.name}</div>
-                )}
-              </div>
-              <div className="col-12 mb-3">
-                <label className="form-label">
-                  Image<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="file"
-                  className={`form-control ${
-                    formik1.touched.icon && formik1.errors.icon
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  onChange={(event) => {
-                    const file = event.target.files[0];
-                    formik1.setFieldValue("icon", file);
-                  }}
-                  accept=".png,.jpeg,.jpg,.gif,.svg"
-                  onBlur={formik1.handleBlur}
-                />
-                {formik1.touched.icon && formik1.errors.icon && (
-                  <div className="invalid-feedback">{formik1.errors.icon}</div>
-                )}
-              </div>
-
-              <div className="col-md-12 col-12 mb-3">
-                <label className="form-label">
-                  Description<span className="text-danger">*</span>
-                </label>
-                <textarea
-                  rows={5}
-                  className={`form-control ${
-                    formik1.touched.description && formik1.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik1.getFieldProps("description")}
-                />
-                {formik1.touched.description && formik1.errors.description && (
-                  <div className="invalid-feedback">
-                    {formik1.errors.description}
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="d-flex justify-content-end">
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
-                Close
-              </Button>
-              <Button
-                type="submit"
-                className="btn btn-sm btn-button shadow-none border-0 ms-3"
-                disabled={loadIndicator}
-                onClick={formik1.handleSubmit}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Submit
-              </Button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal> */}
     </section>
   );
 }
