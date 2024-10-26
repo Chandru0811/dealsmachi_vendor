@@ -12,6 +12,8 @@ import { IoMdArrowDropdown } from "react-icons/io";
 import { Card } from "react-bootstrap";
 import toast from "react-hot-toast";
 import api from "../../config/URL";
+import { Link } from "react-router-dom";
+import { PiIntersectSquareFill } from "react-icons/pi";
 
 function DashboardV() {
   const [currentWeek, setCurrentWeek] = useState("");
@@ -100,14 +102,22 @@ function DashboardV() {
       currentDate.setHours(0, 0, 0, 0);
 
       const thursday = new Date(currentDate);
-      thursday.setDate(currentDate.getDate() + (3 - (currentDate.getDay() + 6) % 7));
+      thursday.setDate(
+        currentDate.getDate() + (3 - ((currentDate.getDay() + 6) % 7))
+      );
 
       const firstThursday = new Date(thursday.getFullYear(), 0, 1);
-      firstThursday.setDate(firstThursday.getDate() + (3 - (firstThursday.getDay() + 6) % 7));
+      firstThursday.setDate(
+        firstThursday.getDate() + (3 - ((firstThursday.getDay() + 6) % 7))
+      );
 
-      const weekNumber = Math.floor((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
+      const weekNumber =
+        Math.floor((thursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)) + 1;
 
-      return `${thursday.getFullYear()}-W${String(weekNumber).padStart(2, "0")}`;
+      return `${thursday.getFullYear()}-W${String(weekNumber).padStart(
+        2,
+        "0"
+      )}`;
     };
 
     setCurrentWeek(getCurrentWeek());
@@ -145,7 +155,15 @@ function DashboardV() {
   const getCategories = () => {
     const width = window.innerWidth;
     if (width > 1200) {
-      return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      return [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
     } else if (width > 768) {
       return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
     } else {
@@ -182,14 +200,25 @@ function DashboardV() {
 
   return (
     <div className="card shadow border-0 mx-4" style={{ minHeight: "90vh" }}>
+      <div className="d-flex justify-content-end pt-4 pe-5">
+        <Link to="/product/add">
+          <button className="btn btn-sm btn-button shadow-none border-none py-3">
+            <PiIntersectSquareFill size={20} /> Add Deal
+          </button>
+        </Link>
+      </div>
       <div className="row card-container p-5">
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100 p-5"
             style={{
               background: "#1A2E86",
               borderRadius: "8px",
+              backgroundImage: `url(${dashgraph})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "bottom center",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -200,25 +229,21 @@ function DashboardV() {
                 </div>
               </div>
               <p className="text-white mt-3">Deal Clicks</p>
-              <div className="flex-grow-1">
-                <img
-                  src={dashgraph}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </div>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100 p-5"
             style={{
               background: "#237BFF",
               borderRadius: "8px",
+              backgroundImage: `url(${dashgraph2})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "bottom center",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -229,23 +254,21 @@ function DashboardV() {
                 </div>
               </div>
               <p className="text-white mt-3">Deal Views</p>
-              <img
-                src={dashgraph2}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%", height: "auto" }}
-              />
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100 p-5"
             style={{
               background: "#FFB63A",
               borderRadius: "8px",
+              backgroundImage: `url(${graph5})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "bottom center",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -255,24 +278,22 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div>
               </div>
-              <p className="text-white mt-4">Discount Copied</p>
-              <img
-                src={graph5}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%", height: "auto" }}
-              />
+              <p className="text-white mt-3">Discount Copied</p>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100 p-5"
             style={{
               background: "#eb4034",
               borderRadius: "8px",
+              backgroundImage: `url(${graph4})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "bottom center",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -283,25 +304,21 @@ function DashboardV() {
                 </div>
               </div>
               <p className="text-white mt-3">Deal Shares</p>
-              <div className="pt-5">
-                <img
-                  src={graph4}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%", height: "auto" }}
-                />
-              </div>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100 p-5"
             style={{
               background: "#fb8b33",
               borderRadius: "8px",
+              backgroundImage: `url(${graph6})`,
+              backgroundSize: "contain",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "bottom center",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -312,53 +329,38 @@ function DashboardV() {
                 </div>
               </div>
               <p className="text-white mt-3">Deal Enquiries</p>
-              <div className="flex-grow-1">
-                <img
-                  src={graph6}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%", height: "75px" }}
-                />
-              </div>
             </div>
-          </Card>
+          </div>
         </div>
 
-        <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
-            style={{
-              background: "#52ae55",
-              borderRadius: "8px",
-            }}
-            className="h-100"
-          >
-            <div className="card-content p-2">
-              <div className="d-flex justify-content-between">
-                <h2 className="text-white">9.823</h2>
-                <div>
-                  <IoSettingsOutline className="text-white" />
-                  <IoMdArrowDropdown className="text-white" />
-                </div>
-              </div>
-              <p className="text-white mt-3">Members Online</p>
-              <div className="flex-grow-1">
-                <img
-                  src={graph7}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%", height: "75px" }}
-                />
-              </div>
-            </div>
-          </Card>
+        {/* Uncomment to add more cards */}
+        {/* <div className="col-12 col-md-6 col-lg-3 mb-4">
+    <Card
+      style={{
+        background: "#52ae55",
+        borderRadius: "8px",
+      }}
+      className="h-100"
+    >
+      <div className="card-content p-2">
+        <div className="d-flex justify-content-between">
+          <h2 className="text-white">{data?.totalproductscount}</h2>
+          <div>
+            <IoSettingsOutline className="text-white" />
+            <IoMdArrowDropdown className="text-white" />
+          </div>
         </div>
+        <p className="text-white mt-3">Active Products</p>
+      </div>
+    </Card>
+  </div> */}
       </div>
 
       <div className="row">
         <input
           type="week"
           className="form-control week-input ms-5"
-          style={{ boxShadow: "none" }}
+          style={{ boxShadow: "none", width: "250px" }}
           value={currentWeek}
           onChange={handleWeekChange} // Call function to fetch data for selected week
           max={maxWeek} // Disable selection for future weeks
@@ -373,14 +375,17 @@ function DashboardV() {
               height={350}
             />
           ) : (
-            <p className="d-flex justify-content-center align-items-center py-5">A week has not yet been selected. Kindly select a week to view the chart.</p>
+            <p className="d-flex justify-content-center align-items-center py-5">
+              A week has not yet been selected. Kindly select a week to view the
+              chart.
+            </p>
           )}
         </div>
         <div className="col-12">
           <button
             onClick={toggleShowProducts}
             className="btn m-4"
-            style={{ background: "#ff0060", color: "#fff", boxShadow: "none" }}
+            style={{ background: "#ef4444", color: "#fff", boxShadow: "none" }}
           >
             {showProducts ? "Hide Products" : "View Products"}
           </button>
