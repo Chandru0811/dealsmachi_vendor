@@ -50,11 +50,17 @@ function Register() {
         setLoadIndicator(true);
         const response = await api.post(`register`, payload);
         if (response.status === 200) {
-          //   const { id } = response.data.data;
-          //   console.log("object",id)
+          const responseData = response.data.data;
+          console.log("object", responseData);
           toast.success(response.data.message);
-
-          navigate(`/`);
+          sessionStorage.setItem("token", response.data.data.token);
+          sessionStorage.setItem("name", response.data.data.userDetails.name);
+          sessionStorage.setItem("id", response.data.data.userDetails.id);
+          sessionStorage.setItem("email", response.data.data.userDetails.email);
+          sessionStorage.setItem("role", response.data.data.userDetails.role);
+          sessionStorage.setItem("active", "0");
+          navigate(`/wellcomepage/${response.data.data.userDetails.id}`);
+          // navigate(`/`);
         } else {
           toast.error(response.data.message);
         }
@@ -279,7 +285,6 @@ function Register() {
               )}
             </div>
           </div>
-
 
           {/* <Form.Group controlId="role" className="mb-3 ">
             <div className=" d-flex justify-content-around">
