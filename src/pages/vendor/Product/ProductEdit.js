@@ -86,8 +86,8 @@ function ProductEdit() {
       discount_percentage: "",
       start_date: "",
       end_date: "",
-      stock: "",
-      sku: "",
+      // stock: "",
+      // sku: "",
       image_url1: null,
       image_url2: null,
       image_url3: null,
@@ -109,8 +109,8 @@ function ProductEdit() {
       formData.append("discount_percentage", values.discount_percentage);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
-      formData.append("stock", values.stock || "");
-      formData.append("sku", values.sku || "");
+      // formData.append("stock", values.stock || "");
+      // formData.append("sku", values.sku || "");
       if (values.image_url1) {
         formData.append("image1", values.image_url1);
       }
@@ -212,7 +212,7 @@ function ProductEdit() {
         coupon_code,
         ...rest
       } = response.data.data;
-      setIsCouponChecked(/\d/.test(coupon_code.charAt(10))); // Check if 9th character is a digit
+      setIsCouponChecked(/\d/.test(coupon_code.charAt(8))); // Check if 9th character is a digit
       formik.setValues({
         ...rest,
         coupon_code: coupon_code,
@@ -568,7 +568,7 @@ function ProductEdit() {
                     <div className="invalid-feedback">{formik.errors.name}</div>
                   )}
                 </div>
-                <div className="col-md-6 col-12 mb-3">
+                {/* <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">SKU</label>
                   <input
                     type="text"
@@ -582,7 +582,7 @@ function ProductEdit() {
                   {formik.touched.sku && formik.errors.sku && (
                     <div className="invalid-feedback">{formik.errors.sku}</div>
                   )}
-                </div>
+                </div> */}
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">Coupon Code</label>
                   <input
@@ -683,7 +683,7 @@ function ProductEdit() {
                     )}
                 </div>
 
-                <div className="col-md-6 col-12 mb-3">
+                {/* <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">stock</label>
                   <input
                     type="text"
@@ -705,7 +705,7 @@ function ProductEdit() {
                       {formik.errors.stock}
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">Start Date</label>

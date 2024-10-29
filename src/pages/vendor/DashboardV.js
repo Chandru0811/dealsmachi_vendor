@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import "./../../styles/Vendor.css";
-import dashgraph from "../../assets/dashgraph.png";
-import dashgraph2 from "../../assets/dashgraph2.png";
-import graph5 from "../../assets/graph5.png";
-import graph4 from "../../assets/graph4.png";
-import graph6 from "../../assets/Graph1.png";
-// import graph7 from "../../assets/Graph2.png";
-// import { IoSettingsOutline } from "react-icons/io5";
-// import { IoMdArrowDropdown } from "react-icons/io";
+import dashboardcard1 from "../../assets/dashboard card1.webp";
+import dashboardcard2 from "../../assets/dashboard card2.webp";
+import dashboardcard3 from "../../assets/dashboard card3.webp";
+import dashboardcard4 from "../../assets/dashboard card4.webp";
+import dashboardcard5 from "../../assets/dashboard card5.webp";
+import graph7 from "../../assets/Graph2.png";
+import { IoSettingsOutline } from "react-icons/io5";
+import { IoMdArrowDropdown } from "react-icons/io";
 import { Card } from "react-bootstrap";
 import toast from "react-hot-toast";
 import api from "../../config/URL";
 import { Link } from "react-router-dom";
 import { PiIntersectSquareFill } from "react-icons/pi";
+import { MdAddBox } from "react-icons/md";
 
 function DashboardV() {
   const [currentWeek, setCurrentWeek] = useState("");
@@ -200,21 +201,29 @@ function DashboardV() {
 
   return (
     <div className="card shadow border-0 mx-4" style={{ minHeight: "90vh" }}>
-      <div className="d-flex justify-content-end pt-4 pe-5">
+      <div className="d-flex justify-content-between pt-4 pe-5">
+        <p className="px-5">
+          You currently have{" "}
+          {data?.totaldealcount === 0
+            ? data.totaldealcount
+            : data?.totaldealactivecount}
+          {data?.totaldealcount === 0 ? " deals" : " active deals"} registered
+          with us.
+        </p>
         <Link to="/product/add">
           <button className="btn btn-sm btn-button shadow-none border-none py-3">
-            <PiIntersectSquareFill size={20} /> Add Deal
+            <MdAddBox size={20} /> Add Deal
           </button>
         </Link>
       </div>
       <div className="row card-container p-5">
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100"
             style={{
               background: "#1A2E86",
               borderRadius: "8px",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -224,26 +233,26 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div> */}
               </div>
-              <p className="text-white mt-3">Deal Clicks</p>
+              <p className="text-white">Deal Clicks</p>
               <div className="flex-grow-1">
                 <img
-                  src={dashgraph}
+                  src={dashboardcard1}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%", height: "75px" }}
+                  style={{ width: "100%"}}
                 />
               </div>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100"
             style={{
               background: "#237BFF",
               borderRadius: "8px",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -253,24 +262,26 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div> */}
               </div>
-              <p className="text-white mt-3">Deal Views</p>
-              <img
-                src={dashgraph2}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%", height: "75px" }}
-              />
+              <p className="text-white">Deal Views</p>
+              <div className="flex-grow-1">
+                <img
+                  src={dashboardcard4}
+                  alt=""
+                  className="img-fluid"
+                  style={{ width: "100%"}}
+                />
+              </div>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100"
             style={{
               background: "#FFB63A",
               borderRadius: "8px",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -280,24 +291,26 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div> */}
               </div>
-              <p className="text-white mt-4">Discount Copied</p>
-              <img
-                src={graph5}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%", height: "75px" }}
-              />
+              <p className="text-white">Discount Copied</p>
+              <div className="flex-grow-1">
+                <img
+                  src={dashboardcard3}
+                  alt=""
+                  className="img-fluid"
+                  style={{ width: "100%"}}
+                />
+              </div>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100"
             style={{
               background: "#eb4034",
               borderRadius: "8px",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -307,26 +320,26 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div> */}
               </div>
-              <p className="text-white mt-3 pt-1">Deal Shares</p>
+              <p className="text-white">Deal Shares</p>
               <div className="flex-grow-1">
                 <img
-                  src={graph4}
+                  src={dashboardcard5}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%", height: "75px" }}
+                  style={{ width: "100%"}}
                 />
               </div>
             </div>
-          </Card>
+          </div>
         </div>
 
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
+          <div
+            className="card h-100"
             style={{
               background: "#fb8b33",
               borderRadius: "8px",
             }}
-            className="h-100"
           >
             <div className="card-content p-2">
               <div className="d-flex justify-content-between">
@@ -336,47 +349,40 @@ function DashboardV() {
                   <IoMdArrowDropdown className="text-white" />
                 </div> */}
               </div>
-              <p className="text-white mt-3">Deal Enquiries</p>
+              <p className="text-white">Deal Enquiries</p>
               <div className="flex-grow-1">
                 <img
-                  src={graph6}
+                  src={dashboardcard2}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%", height: "75px" }}
+                  style={{ width: "100%"}}
                 />
               </div>
             </div>
-          </Card>
+          </div>
         </div>
 
+        {/* Uncomment to add more cards */}
         {/* <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <Card
-            style={{
-              background: "#52ae55",
-              borderRadius: "8px",
-            }}
-            className="h-100"
-          >
-            <div className="card-content p-2">
-              <div className="d-flex justify-content-between">
-                <h2 className="text-white">{data?.totalproductscount}</h2>
-                <div>
-                  <IoSettingsOutline className="text-white" />
-                  <IoMdArrowDropdown className="text-white" />
-                </div>
-              </div>
-              <p className="text-white mt-3">Active Products</p>
-              <div className="flex-grow-1">
-                <img
-                  src={graph7}
-                  alt=""
-                  className="img-fluid"
-                  style={{ width: "100%", height: "75px" }}
-                />
-              </div>
-            </div>
-          </Card>
-        </div> */}
+    <Card
+      style={{
+        background: "#52ae55",
+        borderRadius: "8px",
+      }}
+      className="h-100"
+    >
+      <div className="card-content p-2">
+        <div className="d-flex justify-content-between">
+          <h2 className="text-white">{data?.totalproductscount}</h2>
+          <div>
+            <IoSettingsOutline className="text-white" />
+            <IoMdArrowDropdown className="text-white" />
+          </div>
+        </div>
+        <p className="text-white mt-3">Active Products</p>
+      </div>
+    </Card>
+  </div> */}
       </div>
 
       <div className="row">
@@ -408,7 +414,7 @@ function DashboardV() {
           <button
             onClick={toggleShowProducts}
             className="btn m-4"
-            style={{ background: "#ef4444", color: "#fff", boxShadow: "none" }}
+            style={{ background: "#ff0060", color: "#fff", boxShadow: "none" }}
           >
             {showProducts ? "Hide Products" : "View Products"}
           </button>

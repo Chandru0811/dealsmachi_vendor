@@ -19,6 +19,7 @@ import CategoryAdd from "../pages/vendor/Category/CategoryAdd";
 import CategoryEdit from "../pages/vendor/Category/CategoryEdit";
 import CategoryView from "../pages/vendor/Category/CategoryView";
 import ScrollToTop from "../pages/ScrollToTop";
+import ProductPrint from "../pages/vendor/Product/ProductPrint";
 
 function Vendor({ handleLogout }) {
   return (
@@ -41,6 +42,7 @@ function Vendor({ handleLogout }) {
                   <Route path="/product/add" element={<ProductAdd />} />
                   <Route path="/product/edit/:id" element={<ProductEdit />} />
                   <Route path="/product/view/:id" element={<ProductView />} />
+                  <Route path="/product/print/:id" element={<ProductPrint />} />
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/product/view" element={<StorePolicy />} />
                   <Route path="/category" element={<Category />} />

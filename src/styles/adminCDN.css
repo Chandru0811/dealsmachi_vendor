@@ -47194,6 +47194,16 @@ a.text-current:hover {
       margin-top: 8rem !important;
       margin-bottom: 8rem !important;
   }
+  .ok_btn{
+  color: #fff;
+  background-color: #ff0060;
+  border-color: #f36;
+}
+.ok_btn:hover{
+   color: #ff0060;
+  background-color: #fff;
+  border-color: #cc2952;
+}
 
   .my-lg-40 {
       margin-top: 10rem !important;

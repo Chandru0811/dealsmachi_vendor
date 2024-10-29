@@ -94,8 +94,8 @@ function ProductAdd() {
       discounted_percentage: "",
       start_date: "",
       end_date: "",
-      stock: "",
-      sku: "",
+      // stock: "",
+      // sku: "",
       coupon_code: couponCode,
       image1: null,
       image2: null,
@@ -116,9 +116,9 @@ function ProductAdd() {
       formData.append("discount_percentage", values.discounted_percentage);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
-      formData.append("stock", values.stock);
+      // formData.append("stock", values.stock);
       formData.append("coupon_code", values.coupon_code);
-      formData.append("sku", values.sku);
+      // formData.append("sku", values.sku);
       formData.append("image1", values.image1);
       formData.append("image2", values.image2);
       formData.append("image3", values.image3);
@@ -140,7 +140,7 @@ function ProductAdd() {
         if (response.status === 200) {
           toast.success(response.data.message);
           setShowModal(false);
-          navigate("/product");
+          navigate(`/product/print/${response.data.data.id}`);
         } else {
           toast.error(response.data.message);
         }
@@ -493,7 +493,7 @@ function ProductAdd() {
                 <div className="invalid-feedback">{formik.errors.name}</div>
               )}
             </div>
-            <div className="col-md-6 col-12 mb-3">
+            {/* <div className="col-md-6 col-12 mb-3">
               <label className="form-label">SKU</label>
               <input
                 type="text"
@@ -505,7 +505,7 @@ function ProductAdd() {
               {formik.touched.sku && formik.errors.sku && (
                 <div className="invalid-feedback">{formik.errors.sku}</div>
               )}
-            </div>
+            </div> */}
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Original Price<span className="text-danger">*</span>
@@ -593,7 +593,7 @@ function ProductAdd() {
                 )}
             </div>
 
-            <div className="col-md-6 col-12 mb-3">
+            {/* <div className="col-md-6 col-12 mb-3">
               <label className="form-label">Stock</label>
               <input
                 type="text"
@@ -613,7 +613,7 @@ function ProductAdd() {
               {formik.touched.stock && formik.errors.stock && (
                 <div className="invalid-feedback">{formik.errors.stock}</div>
               )}
-            </div>
+            </div> */}
 
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">Start Date</label>
@@ -663,7 +663,7 @@ function ProductAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  name={`image${num}`} // Ensure name attribute matches validation schema
+                  name={`image${num}`}
                   onChange={(e) => handleFileChange(index, e)}
                   onBlur={formik.handleBlur}
                 />
@@ -678,6 +678,7 @@ function ProductAdd() {
                       {formik.errors[`image${num}`]}
                     </div>
                   )}
+                  
 
                 {showCropper[index] && (
                   <>
