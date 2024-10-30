@@ -10,6 +10,7 @@ import axios from "axios";
 import ApprovePopup from "./ApprovePopup";
 import api from "../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
+import headerlogo from "../../assets/header-logo.webp";
 
 function VendorLogin({ handleVendorLogin, handleLogin }) {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,7 +71,7 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
         } else {
           toast.error(response.data.message);
         }
-      }catch (error) {
+      } catch (error) {
         if (error.response.status === 400) {
           const errorMessage = error.response.data.message;
           if (errorMessage) {
@@ -82,9 +83,7 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
           console.error("API Error", error);
           toast.error("An unexpected error occurred.");
         }
-      }
-      
-       finally {
+      } finally {
         setLoadIndicator(false);
       }
     },
@@ -96,116 +95,128 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
 
   return (
     <div
-      className="container-fluid d-flex justify-content-center align-items-center vh-100"
-      style={{  minHeight: "100vh",backgroundColor: "#f2f2f2" }}
+      className="container-fluid m-0 vh-100"
+      style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}
     >
       <div
-        className="card shadow-lg p-3 mb-5 mt-5 rounded"
-        style={{ width: "100%", maxWidth: "400px" }}
+        className="d-flex justify-content-center align-items-center m-0 pt-5"
+        style={{ backgroundColor: "rgb(242, 242, 242)" }}
       >
-        <div className="d-flex justify-content-around ">
-          <h3
-            className={`cursor-pointer py-2`}
-            style={{
-              borderBottom: "2px solid #ff0060",
-              paddingBottom: "5px",
-              width: "100%",
-              textAlign: "center",
-              color: "#ff0060",
-            }}
-          >
-            Login
-          </h3>
-        </div>
-        <Form onSubmit={formik.handleSubmit}>
-          <Form.Group controlId="formEmail" className="mb-3 pt-4">
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter email"
-              {...formik.getFieldProps("email")}
-              isInvalid={formik.touched.email && formik.errors.email}
-            />
-            {formik.touched.email && formik.errors.email ? (
-              <Form.Control.Feedback type="invalid">
-                {formik.errors.email}
-              </Form.Control.Feedback>
-            ) : null}
-          </Form.Group>
-
-          <div className="d-flex justify-content-between align-items-center py-2">
-            <Form.Label>Password</Form.Label>
-            <Link
-              to="/forgot"
-              className="ml-auto"
-              style={{ fontSize: "0.9em", textDecoration: "none" ,color:"#ff0060" }}
+        <img src={headerlogo} className="img-fluid" alt="img" />
+      </div>
+      <div className=" d-flex  justify-content-center align-items-center mt-5">
+        <div
+          className="card shadow-lg p-3 mb-5 mt-0 rounded"
+          style={{ width: "100%", maxWidth: "400px" }}
+        >
+          <div className="d-flex justify-content-around ">
+            <h3
+              className={`cursor-pointer py-2`}
+              style={{
+                borderBottom: "2px solid #ff0060",
+                paddingBottom: "5px",
+                width: "100%",
+                textAlign: "center",
+                color: "#ff0060",
+              }}
             >
-              Forgot Password?
-            </Link>
+              Login
+            </h3>
           </div>
-          <Form.Group controlId="formPassword" className="mb-3">
-            <div style={{ position: "relative" }}>
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Group controlId="formEmail" className="mb-3 pt-4">
+              <Form.Label>Email Address</Form.Label>
               <Form.Control
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
-                {...formik.getFieldProps("password")}
-                isInvalid={formik.touched.password && formik.errors.password}
+                type="email"
+                placeholder="Enter email"
+                {...formik.getFieldProps("email")}
+                isInvalid={formik.touched.email && formik.errors.email}
               />
-              {formik.values.password && (
-                <span
-                  onClick={togglePasswordVisibility}
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    cursor: "pointer",
-                  }}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </span>
-              )}
-              {formik.touched.password && formik.errors.password ? (
+              {formik.touched.email && formik.errors.email ? (
                 <Form.Control.Feedback type="invalid">
-                  {formik.errors.password}
+                  {formik.errors.email}
                 </Form.Control.Feedback>
               ) : null}
-            </div>
-          </Form.Group>
+            </Form.Group>
 
-          <Button
-            type="submit"
-            className="w-100 mt-4 common-button"
-            disabled={loadIndicator}
-          >
-            {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
-            Login
-          </Button>
-
-          <div className="text-center mt-4">
-            <p className="mb-3">or</p>
-            <Link to="/register">
-              <Button
-                variant="light"
-                className="border shadow-none"
+            <div className="d-flex justify-content-between align-items-center py-2">
+              <Form.Label>Password</Form.Label>
+              <Link
+                to="/forgot"
+                className="ml-auto"
                 style={{
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "100%"
+                  fontSize: "0.9em",
+                  textDecoration: "none",
+                  color: "#ff0060",
                 }}
               >
-                Register as a Vendor
-              </Button>
-            </Link>
-          </div>
-        </Form>
+                Forgot Password?
+              </Link>
+            </div>
+            <Form.Group controlId="formPassword" className="mb-3">
+              <div style={{ position: "relative" }}>
+                <Form.Control
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  {...formik.getFieldProps("password")}
+                  isInvalid={formik.touched.password && formik.errors.password}
+                />
+                {formik.values.password && (
+                  <span
+                    onClick={togglePasswordVisibility}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                )}
+                {formik.touched.password && formik.errors.password ? (
+                  <Form.Control.Feedback type="invalid">
+                    {formik.errors.password}
+                  </Form.Control.Feedback>
+                ) : null}
+              </div>
+            </Form.Group>
+
+            <Button
+              type="submit"
+              className="w-100 mt-4 common-button"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Login
+            </Button>
+
+            <div className="text-center mt-4">
+              <p className="mb-3">or</p>
+              <Link to="/register">
+                <Button
+                  variant="light"
+                  className="border shadow-none"
+                  style={{
+                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                  }}
+                >
+                  Register as a Vendor
+                </Button>
+              </Link>
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );

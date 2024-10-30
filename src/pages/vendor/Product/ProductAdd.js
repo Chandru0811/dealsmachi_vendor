@@ -80,6 +80,13 @@ function ProductAdd() {
     description: Yup.string()
       .required("Description is required")
       .min(10, "Description must be at least 10 characters long"),
+    start_date: Yup.date().required("Start date is required"),
+    end_date: Yup.date()
+      .required("End date is required")
+      .min(
+        Yup.ref("start_date"),
+        "End date must be at least the next day after the start date"
+      ),
   });
 
   const formik = useFormik({
@@ -678,7 +685,6 @@ function ProductAdd() {
                       {formik.errors[`image${num}`]}
                     </div>
                   )}
-                  
 
                 {showCropper[index] && (
                   <>
