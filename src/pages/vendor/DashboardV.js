@@ -471,6 +471,7 @@ function DashboardV() {
                           checked={product.selected}
                           onChange={() => handleProductSelect(index)}
                           id={`product-${index}`}
+                          disabled
                         />
                         <label
                           htmlFor={`product-${index}`}
