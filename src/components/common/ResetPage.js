@@ -214,7 +214,7 @@ const ResetPage = () => {
               <Link to="/">
                 <p className="text-muted" style={{ fontSize: "0.9rem" }}>
                   Go Back to &nbsp;
-                  <span style={{ color: "#ff0060" }}>Login In</span>
+                  <span style={{ color: "#ff0060" }}>Login</span>
                 </p>
               </Link>
             </div>
