@@ -31,7 +31,7 @@ function Settings() {
     <section className="px-4">
       <div className="card shadow border-0 mb-3">
         <div className="row p-3">
-          <div className="d-flex justify-content-between align-items-center w-100">
+          <div className="d-flex justify-content-between align-items-center">
             <div>
               {!selectedItem && <h3 className="mb-0">Settings</h3>}
               {selectedItem === "Shop" && (
@@ -59,8 +59,8 @@ function Settings() {
         style={{ minHeight: "90vh" }}
       >
         <div className="row mt-5">
-          <div className="col-md-3 col-12 h-50" style={{ zIndex: "0" }}>
-            <div className="dropdown-menu w-100 p-3">
+          <div className="col-md-3 col-12" style={{ zIndex: "0" }}>
+            <div className="dropdown-menu">
               <div
                 className={`dropdown-item ps-5 ms-5 ${
                   selectedItem === "Shop" ? "active" : ""
@@ -108,7 +108,7 @@ function Settings() {
             </div>
           </div>
           <div className="col-md-9 col-12 ">
-            <div className="">
+            <div>
               {selectedItem === "Shop" && (
                 <Store setValueChange={setValueChange} />
               )}
