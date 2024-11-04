@@ -31,7 +31,7 @@ function CategoryView() {
                             <div className="row mb-3">
                                 <div className="col-6 d-flex justify-content-start align-items-center">
                                     <p className="text-sm">
-                                        <b>Category Group Id</b>
+                                         Category Group Id 
                                     </p>
                                 </div>
                                 <div className="col-6">
@@ -43,7 +43,7 @@ function CategoryView() {
                             <div className="row mb-3">
                                 <div className="col-6 d-flex justify-content-start align-items-center">
                                     <p className="text-sm">
-                                        <b>Name</b>
+                                         Name 
                                     </p>
                                 </div>
                                 <div className="col-6">
@@ -55,7 +55,7 @@ function CategoryView() {
                             <div className="row mb-3">
                                 <div className="col-6 d-flex justify-content-start align-items-center">
                                     <p className="text-sm">
-                                        <b>Slug</b>
+                                         Slug 
                                     </p>
                                 </div>
                                 <div className="col-6">
@@ -67,7 +67,7 @@ function CategoryView() {
                             <div className="row mb-3">
                                 <div className="col-6 d-flex justify-content-start align-items-center">
                                     <p className="text-sm">
-                                        <b>Active</b>
+                                         Active 
                                     </p>
                                 </div>
                                 <div className="col-6">
@@ -79,7 +79,7 @@ function CategoryView() {
                             <div className="row mb-3">
                                 <div className="col-3 d-flex justify-content-start align-items-center">
                                     <p className="text-sm">
-                                        <b>Description</b>
+                                         Description 
                                     </p>
                                 </div>
                                 <div className="col-9">

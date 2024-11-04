@@ -29,7 +29,7 @@ function ProductPrint() {
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
 
-    const imgWidth = 50;
+    const imgWidth = 40;
     const imgHeight = 15;
     const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -58,7 +58,7 @@ function ProductPrint() {
     doc.line(10, startY + 10, pageWidth - 10, startY + 10);
     startY += lineSpacing;
 
-    doc.setFontSize(30);
+    doc.setFontSize(24);
     doc.text("About this Deal", pageWidth / 2, startY + 20, {
       align: "center",
     });
@@ -92,15 +92,22 @@ function ProductPrint() {
     };
 
     doc.setFontSize(14);
-    addField("Product Name", `: ${data?.name}` || "");
-    doc.setFontSize(14);
-    addField("Coupon Code", `: ${data?.coupon_code}` || "");
-    doc.setFontSize(14);
-    addField("Deal Price", `: ${data?.discounted_price || ""}`);
-    doc.setFontSize(14);
-    addField("Start Date", `: ${data?.start_date?.toISOString(0, 10) || "--"}`);
-    doc.setFontSize(14);
-    addField("End Date", `: ${data?.end_date?.toISOString(0, 10) || "--"}`);
+    addField("Product Name", `: ${data?.name || "N/A"}`);
+    addField("Coupon Code", `: ${data?.coupon_code || "N/A"}`);
+    addField("Deal Price", `: ${data?.discounted_price || "N/A"}`);
+
+    // Convert start and end dates to ISO strings or fallback to "--" if invalid
+    const startDate = data?.start_date ? new Date(data.start_date) : null;
+    const endDate = data?.end_date ? new Date(data.end_date) : null;
+
+    addField(
+      "Start Date",
+      `: ${startDate && !isNaN(startDate) ? startDate.toISOString().slice(0, 10) : "--"}`
+    );
+    addField(
+      "End Date",
+      `: ${endDate && !isNaN(endDate) ? endDate.toISOString().slice(0, 10) : "--"}`
+    );
 
 
     detailStartY += 12;

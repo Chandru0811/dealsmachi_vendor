@@ -8,48 +8,73 @@ import api from "../../../config/URL";
 import ImageURL from "../../../config/ImageURL";
 
 const Products = () => {
+  const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(false);
-  const tableRef = useRef(null);
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
-      return; // DataTable already initialized
+      return;
     }
     $(tableRef.current).DataTable({
-      destroy: true, // Ensure table is destroyed before reinitializing
       columnDefs: [{ orderable: false, targets: -1 }],
     });
   };
 
+  useEffect(() => {
+    if (!loading) {
+      initializeDataTable();
+    }
+    return () => {
+      destroyDataTable();
+    };
+  }, [loading]);
+
   const destroyDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
-      $(tableRef.current).DataTable().clear().destroy(true);
+      $(tableRef.current).DataTable().destroy();
     }
+  };
+
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/admin/products");
+      setDatas(response.data.data);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+    initializeDataTable();
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-
       try {
         const response = await api.get("/admin/products");
         setDatas(response.data.data);
-
-        if (tableRef.current) {
-          initializeDataTable(); // Initialize DataTable after data is set
-        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
       setLoading(false);
+      initializeDataTable();
     };
-
     fetchData();
+    refreshData();
 
     return () => {
-      destroyDataTable(); // Clean up DataTable on component unmount
+      destroyDataTable();
+      fetchData();
     };
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
   }, []);
 
   return (
@@ -59,7 +84,7 @@ const Products = () => {
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">Deals</h3>
+                <h3 className="mb-0 ls-tight">Deals</h3>
               </div>
             </div>
           </div>
@@ -86,7 +111,9 @@ const Products = () => {
             >
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>S.NO</th>
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                    S.NO
+                  </th>
                   <th className="text-start">Title</th>
                   <th className="text-start">Orginal Price</th>
                   <th className="text-start">Company Name</th>
@@ -110,7 +137,9 @@ const Products = () => {
                     <td className="align-middle text-start">
                       {data.original_price}
                     </td>
-                    <td className="align-middle text-start">{data.shopName}</td>
+                    <td className="align-middle text-start">
+                      {data.shop.legal_name}
+                    </td>
                     <td className="align-middle text-start">
                       {data.active === 1 ? (
                         <>

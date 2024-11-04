@@ -85,7 +85,7 @@ const Slider = () => {
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0">Slider</h3>
+                <h3 className="mb-0 ls-tight">Slider</h3>
                 <div className="container-fluid d-flex justify-content-end">
                   <Link to="/slider/add">
                     <button className="btn btn-sm btn-button shadow-none border-none py-3">

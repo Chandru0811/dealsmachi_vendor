@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
@@ -38,7 +38,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>PayPal</b>
+                    PayPal
                   </p>
                 </div>
                 <div className="col-6">
@@ -50,7 +50,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Account Holder</b>
+                    Account Holder
                   </p>
                 </div>
                 <div className="col-6">
@@ -62,7 +62,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Account Type</b>
+                    Account Type
                   </p>
                 </div>
                 <div className="col-6">
@@ -74,7 +74,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Account Number</b>
+                    Account Number
                   </p>
                 </div>
                 <div className="col-6">
@@ -86,7 +86,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Bank Name</b>
+                    Bank Name
                   </p>
                 </div>
                 <div className="col-9">
@@ -98,7 +98,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Bank Address</b>
+                    Bank Address
                   </p>
                 </div>
                 <div className="col-9">
@@ -110,7 +110,7 @@ function Payments() {
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Bank Code</b>
+                    Bank Code
                   </p>
                 </div>
                 <div className="col-9">

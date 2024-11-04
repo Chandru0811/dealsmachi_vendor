@@ -73,8 +73,7 @@ function CategoriesAdd() {
             "Content-Type": "multipart/form-data",
           },
         });
-
-        if (response.status === 200) {
+        if (response.status === 200 || response.status === 201) {
           toast.success(response.data.message);
           navigate("/categories");
         } else if (response.status === 422) {

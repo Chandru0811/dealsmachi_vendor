@@ -40,8 +40,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Company Name</b>
-                </p>
+                  Company Name                </p>
               </div>
               <div className="col-9">
                 <p className="text-muted text-sm">: {data?.name}</p>
@@ -52,7 +51,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-4 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Company Legal Name</b>
+                 Company Legal Name
                 </p>
               </div>
               <div className="col-8">
@@ -64,7 +63,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Company Email</b>
+                  Company Email
                 </p>
               </div>
               <div className="col-9">
@@ -76,7 +75,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-4 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Company Phone</b>
+                  Company Phone
                 </p>
               </div>
               <div className="col-8">
@@ -88,28 +87,37 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Company Type</b>
+                  Company Type
                 </p>
               </div>
               <div className="col-9">
-                <p className="text-muted text-sm">
-                  : {data?.shop_type}
-                </p>
+                <div className="col-9">
+                  <p className="text-muted text-sm">
+                    :{" "}
+                    {data?.shop_type === "1" || data?.shop_type === 1
+                      ? "Product"
+                      : data?.shop_type === "2" || data?.shop_type === 2
+                      ? "Services"
+                      : data?.shop_type === "3" || data?.shop_type === 3
+                      ? "Product & Services"
+                      : "Unknown Type"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
           <div className="col-md-5 col-12">
-            <div className="row mb-3">
+            <div className="row mb-3 flex-wrap">
               <div className="col-4 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Banner Logo</b>
+                  Logo
                 </p>
               </div>
               <div className="col-8">
                 <p>
                   :{" "}
                   <img
-                    src={`${ImageURL}${data?.banner}`}
+                    src={`${ImageURL}${data?.logo}`}
                     alt=""
                     style={{ maxWidth: "100px", maxHeight: "100px" }}
                   />
@@ -121,31 +129,7 @@ function Stores() {
             <div className="row mb-3">
               <div className="col-3 d-flex justify-content-start align-items-center">
                 <p className="text-sm">
-                  <b>Company Description</b>
-                </p>
-              </div>
-              <div className="col-9">
-                <p className="text-muted text-sm">: {data?.description}</p>
-              </div>
-            </div>
-          </div>
-          {/* <div className="col-md-5 col-12">
-            <div className="row mb-3">
-              <div className="col-4 d-flex justify-content-start align-items-center">
-                <p className="text-sm">
-                  <b>Shop Rating</b>
-                </p>
-              </div>
-              <div className="col-8">
-                <p className="text-muted text-sm">: {data?.shop_ratings}</p>
-              </div>
-            </div>
-          </div> */}
-          <div className="col-md-7 col-12">
-            <div className="row mb-3">
-              <div className="col-3 d-flex justify-content-start align-items-center">
-                <p className="text-sm">
-                  <b>External URL</b>
+                  External URL
                 </p>
               </div>
               <div className="col-9">
@@ -153,6 +137,28 @@ function Stores() {
               </div>
             </div>
           </div>
+          <div className="row mb-3">
+            <div className="col-3 d-flex justify-content-start align-items-center">
+              <p className="text-sm">
+                Company Description
+              </p>
+            </div>
+            <div className="col-9">
+              <p className="text-muted text-sm"> {data?.description}</p>
+            </div>
+          </div>
+          {/* <div className="col-md-5 col-12">
+            <div className="row mb-3">
+              <div className="col-4 d-flex justify-content-start align-items-center">
+                <p className="text-sm">
+                  Shop Rating
+                </p>
+              </div>
+              <div className="col-8">
+                <p className="text-muted text-sm">: {data?.shop_ratings}</p>
+              </div>
+            </div>
+          </div> */}
         </div>
       )}
     </div>

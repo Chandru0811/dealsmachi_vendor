@@ -99,7 +99,7 @@ function CategoriesView() {
             <div className="row p-3">
               <div className="d-flex justify-content-between align-items-center w-100">
                 <div>
-                  <h3>View Category</h3>
+                <h3 className="ls-tight">View Category</h3>
                 </div>
                 <div>
                   <Link to="/categories">
@@ -143,7 +143,7 @@ function CategoriesView() {
                   <div className="row mb-3">
                     <div className="col-6 d-flex justify-content-start align-items-center">
                       <p className="text-sm">
-                        <b>Category Group Name</b>
+                         Category Group Name 
                       </p>
                     </div>
                     <div className="col-6">
@@ -155,7 +155,7 @@ function CategoriesView() {
                   <div className="row mb-3">
                     <div className="col-6 d-flex justify-content-start align-items-center">
                       <p className="text-sm">
-                        <b>Name</b>
+                         Name 
                       </p>
                     </div>
                     <div className="col-6">
@@ -167,7 +167,7 @@ function CategoriesView() {
                   <div className="row mb-3">
                     <div className="col-6 d-flex justify-content-start align-items-center">
                       <p className="text-sm">
-                        <b>Slug</b>
+                         Slug 
                       </p>
                     </div>
                     <div className="col-6">
@@ -179,7 +179,7 @@ function CategoriesView() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Active</b>
+                     Active 
                   </p>
                 </div>
                 <div className="col-6">
@@ -193,7 +193,7 @@ function CategoriesView() {
                   <div className="row mb-3">
                     <div className="col-6 d-flex justify-content-start align-items-center">
                       <p className="text-sm">
-                        <b>Icon</b>
+                         Icon 
                       </p>
                     </div>
                     <div className="col-6">
@@ -209,7 +209,7 @@ function CategoriesView() {
                   <div className="row mb-3">
                     <div className="col-3 d-flex justify-content-start align-items-center">
                       <p className="text-sm">
-                        <b>Description</b>
+                         Description 
                       </p>
                     </div>
                     <div className="col-9">

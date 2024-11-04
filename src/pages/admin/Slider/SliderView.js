@@ -40,7 +40,7 @@ function SliderView() {
             <div className="row p-3">
               <div className="d-flex justify-content-between align-items-center w-100">
                 <div>
-                  <h3>View Slider</h3>
+                  <h3 className="ls-tight">View Slider</h3>
                 </div>
                 <div>
                   <Link to="/slider">
@@ -59,7 +59,7 @@ function SliderView() {
                 <div className="row mb-3">
                   <div className="col-6 d-flex justify-content-start align-items-center">
                     <p className="text-sm">
-                      <b>Order</b>
+                      Order
                     </p>
                   </div>
                   <div className="col-6">
@@ -71,7 +71,7 @@ function SliderView() {
                 <div className="row mb-3">
                   <div className="col-6 d-flex justify-content-start align-items-center">
                     <p className="text-sm">
-                      <b>Image</b>
+                      Image
                     </p>
                   </div>
                   <div className="col-6">

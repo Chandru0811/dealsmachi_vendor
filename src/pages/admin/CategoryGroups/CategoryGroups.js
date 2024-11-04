@@ -85,7 +85,7 @@ function CategoryGroups() {
         <div className="container-fluid">
           <div className="row">
             <div className="col-12 p-2 d-flex justify-content-between align-items-center">
-              <h3 className="mb-0">Category Groups</h3>
+            <h3 className="mb-0 ls-tight">Category Groups</h3>
               <Link
                 to={isDisabled ? "#" : "/categorygroup/add"}
                 onClick={(e) => {

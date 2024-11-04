@@ -84,7 +84,7 @@ const CategoriesIndex = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-12 p-2 d-flex justify-content-between align-items-center">
-              <h3 class="mb-0">Categories</h3>
+              <h3 class="mb-0 ls-tight">Categories</h3>
               <div class="container-fluid d-flex justify-content-end">
                 <Link to="/categories/add">
                   <button
@@ -161,7 +161,7 @@ const CategoriesIndex = () => {
                       ) : (
                         <span className="dot" style={{ backgroundColor: 'green', width: '10px', height: '10px', display: 'inline-block', borderRadius: '50%' }}></span>
                       )}
-                      {data.active === "1" ? ' Active' : ' Inactive'}
+                      {data.active ? " Active" : " Inactive"}
                     </td>
 
                     <td className="text-center">

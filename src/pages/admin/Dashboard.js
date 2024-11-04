@@ -32,6 +32,18 @@ function Dashboard() {
           },
         },
       },
+      dataLabels: {
+        style: {
+          fontFamily: "Kanit, sans-serif",
+        },
+      },
+      legend: {
+        labels: {
+          style: {
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
+      },
       xaxis: {
         categories: [
           "Monday",
@@ -42,6 +54,23 @@ function Dashboard() {
           "Saturday",
           "Sunday",
         ],
+        labels: {
+          style: {
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
+      },
+      title: {
+        style: {
+          fontFamily: "Kanit, sans-serif",
+        },
       },
     },
     series: [
@@ -113,9 +142,9 @@ function Dashboard() {
 
   return (
     <div className="card shadow border-0 mx-4" style={{ minHeight: "90vh" }}>
-       <div className="row card-container p-5">
+      <div className="row card-container p-5">
         <div className="col-12 col-md-6 col-lg-3 mb-4">
-          <div 
+          <div
             style={{
               background: "#1A2E86",
               borderRadius: "8px",
@@ -161,12 +190,12 @@ function Dashboard() {
               </div>
               <p className="text-white">Deal Views</p>
               <div className="flex-grow-1">
-              <img
-                src={dashboardcard4}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%"}}
-              />
+                <img
+                  src={dashboardcard4}
+                  alt=""
+                  className="img-fluid"
+                  style={{ width: "100%" }}
+                />
               </div>
             </div>
           </div>
@@ -190,12 +219,12 @@ function Dashboard() {
               </div>
               <p className="text-white">Discount Copied</p>
               <div className="flex-grow-1">
-              <img
-                src={dashboardcard3}
-                alt=""
-                className="img-fluid"
-                style={{ width: "100%"}}
-              />
+                <img
+                  src={dashboardcard3}
+                  alt=""
+                  className="img-fluid"
+                  style={{ width: "100%" }}
+                />
               </div>
             </div>
           </div>
@@ -218,12 +247,12 @@ function Dashboard() {
                 </div> */}
               </div>
               <p className="text-white">Deal Shares</p>
-                <div className="flex-grow-1">
+              <div className="flex-grow-1">
                 <img
                   src={dashboardcard5}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -252,7 +281,7 @@ function Dashboard() {
                   src={dashboardcard2}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -288,7 +317,7 @@ function Dashboard() {
           </div>
         </div> */}
       </div>
-<div className="row">
+      <div className="row">
         <input
           type="week"
           className="form-control week-input  ms-5"
@@ -306,41 +335,52 @@ function Dashboard() {
           />
         </div>
         <div className="col-12">
-          <button onClick={toggleShowProducts} className="btn m-4" style={{background:"#ff0060",color:"#fff"}}>
-            {showProducts ? "Hide Products" : "View Products"}
-          </button>
-          {showProducts && (
-            <div className="m-3">
-              <div className="mb-2">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                  id="selectAll"
-                />
-                <label htmlFor="selectAll" className="ms-2 fw-medium">
-                  Select All
-                </label>
-              </div>
-              <div className="row">
-                {products.map((product, index) => (
-                  <div className="col-md-4 mb-2" key={index}>
+          {products.length > 0 ? (
+            <>
+              <button
+                onClick={toggleShowProducts}
+                className="btn m-4"
+                style={{ background: "#ff0060", color: "#fff", boxShadow: "none" }}
+              >
+                {showProducts ? "Hide Products" : "View Products"}
+              </button>
+              {showProducts && (
+                <div className="m-3">
+                  <div className="mb-2">
                     <input
                       type="checkbox"
-                      checked={product.selected}
-                      onChange={() => handleProductSelect(index)}
-                      id={`product-${index}`}
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      id="selectAll"
+                      disabled
                     />
-                    <label
-                      htmlFor={`product-${index}`}
-                      className="ms-3 fw-medium"
-                    >
-                      {product.name}
+                    <label htmlFor="selectAll" className="ms-2 fw-medium">
+                      Select All
                     </label>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="row">
+                    {products.map((product, index) => (
+                      <div className="col-md-4 mb-2" key={index}>
+                        <input
+                          type="checkbox"
+                          checked={product.selected}
+                          onChange={() => handleProductSelect(index)}
+                          id={`product-${index}`}
+                        />
+                        <label
+                          htmlFor={`product-${index}`}
+                          className="ms-3 fw-medium"
+                        >
+                          {product.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="m-4">There is nothing to show at the moment here</p>
           )}
         </div>
       </div>

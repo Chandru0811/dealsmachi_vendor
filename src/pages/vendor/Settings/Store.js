@@ -16,7 +16,9 @@ const validationSchema = Yup.object({
     .matches(/^[0-9]+$/, "mobile number must be numeric")
     .required("mobile number is required!"),
   shop_type: Yup.string().required("Shop Type is required!"),
-  company_registeration_no: Yup.string().required("Company Registration is required!"),
+  company_registeration_no: Yup.string().required(
+    "Company Registration is required!"
+  ),
   logo: Yup.mixed().required("Logo is required"),
   external_url: Yup.string()
     .url("Please enter a valid URL")
@@ -25,13 +27,13 @@ const validationSchema = Yup.object({
     .url("Please enter a valid URL")
     .required("Map URL is required!"),
 
-  banner: Yup.mixed().required("Banner is required!"),
+  // banner: Yup.mixed().required("Banner is required!"),
   description: Yup.string().required("Description is required!"),
 });
 
-const Store = () => {
+const Store = ({ setValueChange }) => {
   const [data, setData] = useState([]);
-  console.log("Data:", data);
+  // console.log("Data:", data);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
   const id = sessionStorage.getItem("shop_id");
@@ -50,7 +52,7 @@ const Store = () => {
       logo: null,
       external_url: "",
       map_url: "",
-      banner: null,
+      // banner: null,
       description: "",
       shop_ratings: "",
     },
@@ -64,7 +66,10 @@ const Store = () => {
       formdata.append("legal_name", data.legal_name);
       formdata.append("email", data.email);
       formdata.append("mobile", data.mobile);
-      formdata.append("company_registeration_no", data.company_registeration_no);
+      formdata.append(
+        "company_registeration_no",
+        data.company_registeration_no
+      );
       formdata.append("shop_type", data.shop_type);
       formdata.append("map_url", data.map_url);
       formdata.append("external_url", data.external_url);
@@ -113,6 +118,7 @@ const Store = () => {
         }
       } finally {
         setLoadIndicator(false);
+        setValueChange(false); 
       }
     },
   });
@@ -125,8 +131,6 @@ const Store = () => {
         setData(response.data);
         const shopData = response.data.data;
         formik.setValues(shopData);
-
-
       } catch (error) {
         toast.error("Error Fetching Data ", error);
       }
@@ -134,6 +138,24 @@ const Store = () => {
     };
     getData();
   }, [id]);
+
+  // const handleFormikChange = (e) => {
+  //   formik.handleChange(e);
+  //   setShowModal(true);
+  // };
+
+  // const handleModalClose = () => {
+  //   setShowModal(false);
+  // };
+
+  // const handleSaveChanges = () => {
+  //   setShowModal(false);
+  //   formik.handleSubmit();
+  // };
+  const handleFormikChange = (e) => {
+    formik.handleChange(e); 
+    setValueChange(true); 
+  };
 
   return (
     <section>
@@ -149,6 +171,19 @@ const Store = () => {
         ) : (
           <div className="container">
             {/* <h3 className='text-primary py-3'>Generat Settings</h3> */}
+            {/* <div className="form-check">
+            <input
+                className="form-check-input"
+                type="checkbox"
+                checked={checked}
+                onChange={() => setChecked(!checked)}
+                id="flexCheckDefault"
+                readOnly 
+              />
+              <label className="form-check-label" htmlFor="flexCheckDefault">
+                
+              </label>
+            </div> */}
 
             <div className="row">
               <div className="col-md-4 col-12 mb-5 ">
@@ -159,12 +194,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.name && formik.errors.name
+                  className={`form-control ${
+                    formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="name"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.name}
                 />
@@ -182,12 +218,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.legal_name && formik.errors.legal_name
+                  className={`form-control ${
+                    formik.touched.legal_name && formik.errors.legal_name
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="legal_name"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.legal_name}
                 />
@@ -205,12 +242,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="email"
-                  className={`form-control ${formik.touched.email && formik.errors.email
+                  className={`form-control ${
+                    formik.touched.email && formik.errors.email
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="email"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
                 />
@@ -228,12 +266,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.mobile && formik.errors.mobile
+                  className={`form-control ${
+                    formik.touched.mobile && formik.errors.mobile
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="mobile"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.mobile}
                 />
@@ -251,23 +290,28 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.company_registeration_no && formik.errors.company_registeration_no
+                  className={`form-control ${
+                    formik.touched.company_registeration_no &&
+                    formik.errors.company_registeration_no
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="company_registeration_no"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.company_registeration_no}
                 />
-                {formik.touched.company_registeration_no && formik.errors.company_registeration_no && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.company_registeration_no}</small>
-                  </div>
-                )}
+                {formik.touched.company_registeration_no &&
+                  formik.errors.company_registeration_no && (
+                    <div className="error text-danger">
+                      <small>{formik.errors.company_registeration_no}</small>
+                    </div>
+                  )}
               </div>
 
-              <h3 className="py-3" style={{color: "#ff0060"}}>Company Brand Setup</h3>
+              <h3 className="py-3" style={{ color: "#ef4444" }}>
+                Company Brand Setup
+              </h3>
               <div className="col-md-4 col-12 mb-5">
                 <label className="form-label">
                   Company Type<span className="text-danger">*</span>
@@ -276,12 +320,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <select
                   type="text"
-                  className={`form-select ${formik.touched.shop_type && formik.errors.shop_type
+                  className={`form-select ${
+                    formik.touched.shop_type && formik.errors.shop_type
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="shop_type"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.shop_type}
                 >
@@ -346,12 +391,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.external_url && formik.errors.external_url
+                  className={`form-control ${
+                    formik.touched.external_url && formik.errors.external_url
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="external_url"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.external_url}
                 />
@@ -369,12 +415,13 @@ const Store = () => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${formik.touched.map_url && formik.errors.map_url
+                  className={`form-control ${
+                    formik.touched.map_url && formik.errors.map_url
                       ? "is-invalid"
                       : ""
-                    }`}
+                  }`}
                   name="map_url"
-                  onChange={formik.handleChange}
+                  onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.map_url}
                 />
@@ -408,7 +455,7 @@ const Store = () => {
                   </div>
                 )}
               </div> */}
-              <div className="col-md-4 col-12 mb-5">
+              {/* <div className="col-md-4 col-12 mb-5">
                 <label className="form-label">
                   Company Banner<span className="text-danger">*</span>
                 </label>
@@ -448,7 +495,7 @@ const Store = () => {
                     )}
                   </div>
                 )}
-              </div>
+              </div> */}
               {/* {formik.values.banner &&
                 typeof formik.values.banner === "string" && (
                   <div className="col-12 mb-3">
@@ -469,12 +516,13 @@ const Store = () => {
                 <div className="col-12">
                   <textarea
                     type="file"
-                    className={`form-control ${formik.touched.description && formik.errors.description
+                    className={`form-control ${
+                      formik.touched.description && formik.errors.description
                         ? "is-invalid"
                         : ""
-                      }`}
+                    }`}
                     name="description"
-                    onChange={formik.handleChange}
+                    onChange={handleFormikChange}
                     onBlur={formik.handleBlur}
                     value={formik.values.description}
                     style={{ cursor: "auto" }}

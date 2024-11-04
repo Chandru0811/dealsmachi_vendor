@@ -39,6 +39,18 @@ function DashboardV() {
           },
         },
       },
+      dataLabels: {
+        style: {
+          fontFamily: "Kanit, sans-serif",
+        },
+      },
+      legend: {
+        labels: {
+          style: {
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
+      },
       xaxis: {
         categories: [
           "Monday",
@@ -49,6 +61,23 @@ function DashboardV() {
           "Saturday",
           "Sunday",
         ],
+        labels: {
+          style: {
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
+      },
+      yaxis: {
+        labels: {
+          style: {
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
+      },
+      title: {
+        style: {
+          fontFamily: "Kanit, sans-serif",
+        },
       },
     },
     series: [],
@@ -411,47 +440,52 @@ function DashboardV() {
           )}
         </div>
         <div className="col-12">
-          <button
-            onClick={toggleShowProducts}
-            className="btn m-4"
-            style={{ background: "#ff0060", color: "#fff", boxShadow: "none" }}
-          >
-            {showProducts ? "Hide Products" : "View Products"}
-          </button>
-          {showProducts && (
-            <div className="m-3">
-              <div className="mb-2">
-                <input
-                  type="checkbox"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                  id="selectAll"
-                  disabled
-                />
-                <label htmlFor="selectAll" className="ms-2 fw-medium">
-                  Select All
-                </label>
-              </div>
-              <div className="row">
-                {products.map((product, index) => (
-                  <div className="col-md-4 mb-2" key={index}>
+          {products.length > 0 ? (
+            <>
+              <button
+                onClick={toggleShowProducts}
+                className="btn m-4"
+                style={{ background: "#ef4444", color: "#fff", boxShadow: "none" }}
+              >
+                {showProducts ? "Hide Products" : "View Products"}
+              </button>
+              {showProducts && (
+                <div className="m-3">
+                  <div className="mb-2">
                     <input
                       type="checkbox"
-                      checked={product.selected}
-                      onChange={() => handleProductSelect(index)}
-                      id={`product-${index}`}
+                      checked={selectAll}
+                      onChange={handleSelectAll}
+                      id="selectAll"
                       disabled
                     />
-                    <label
-                      htmlFor={`product-${index}`}
-                      className="ms-3 fw-medium"
-                    >
-                      {product.name}
+                    <label htmlFor="selectAll" className="ms-2 fw-medium">
+                      Select All
                     </label>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="row">
+                    {products.map((product, index) => (
+                      <div className="col-md-4 mb-2" key={index}>
+                        <input
+                          type="checkbox"
+                          checked={product.selected}
+                          onChange={() => handleProductSelect(index)}
+                          id={`product-${index}`}
+                        />
+                        <label
+                          htmlFor={`product-${index}`}
+                          className="ms-3 fw-medium"
+                        >
+                          {product.name}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="m-4">There is nothing to show at the moment here</p>
           )}
         </div>
       </div>

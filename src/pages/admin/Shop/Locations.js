@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import api from "../../../config/URL";
 
 function Locations() {
@@ -38,7 +38,7 @@ function Locations() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Street</b>
+                    Street
                   </p>
                 </div>
                 <div className="col-6">
@@ -50,7 +50,7 @@ function Locations() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Street 2</b>
+                    Street 2
                   </p>
                 </div>
                 <div className="col-6">
@@ -62,7 +62,7 @@ function Locations() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>City</b>
+                    City
                   </p>
                 </div>
                 <div className="col-6">
@@ -74,7 +74,7 @@ function Locations() {
               <div className="row mb-3">
                 <div className="col-6 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Zip Code</b>
+                    Zip Code
                   </p>
                 </div>
                 <div className="col-6">
@@ -86,7 +86,7 @@ function Locations() {
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>State</b>
+                    State
                   </p>
                 </div>
                 <div className="col-9">
@@ -98,7 +98,7 @@ function Locations() {
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
                   <p className="text-sm">
-                    <b>Country</b>
+                    Country
                   </p>
                 </div>
                 <div className="col-9">

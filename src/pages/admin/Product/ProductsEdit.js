@@ -24,10 +24,10 @@ function ProductsEdit() {
             .required("End Date is required")
             .min(Yup.ref("start_date"), "End Date cannot be before Start Date")
             .nullable(),
-        stock: Yup.number()
-            .required("Stock is required")
-            .min(0, "Stock cannot be negative"),
-        sku: Yup.string().required("SKU is required"),
+        // stock: Yup.number()
+        //     .required("Stock is required")
+        //     .min(0, "Stock cannot be negative"),
+        // sku: Yup.string().required("SKU is required"),
         file: Yup.mixed().required("Image is required"),
         description: Yup.string()
             .required("Description is required")
@@ -44,8 +44,8 @@ function ProductsEdit() {
             discounted_price: "",
             start_date: "",
             end_date: "",
-            stock: "",
-            sku: "",
+            // stock: "",
+            // sku: "",
             file: null,
             description: "",
         },
@@ -284,7 +284,7 @@ function ProductsEdit() {
                                 <div className="invalid-feedback">{formik.errors.file}</div>
                             )}
                         </div>
-                        <div className="col-md-6 col-12 mb-3">
+                        {/* <div className="col-md-6 col-12 mb-3">
                             <label className="form-label">
                                 Stock<span className="text-danger">*</span>
                             </label>
@@ -313,7 +313,7 @@ function ProductsEdit() {
                             {formik.touched.sku && formik.errors.sku && (
                                 <div className="invalid-feedback">{formik.errors.sku}</div>
                             )}
-                        </div>
+                        </div> */}
 
                         <div className="col-md-6 col-12 mb-3">
                             <label className="form-label">

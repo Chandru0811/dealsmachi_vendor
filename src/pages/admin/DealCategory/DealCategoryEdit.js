@@ -205,6 +205,10 @@ function DealCategoryEdit() {
       });
 
       formik.setFieldValue("image_path", file);
+      
+      // Create a URL for the cropped image and set it as the preview image
+      const croppedImageURL = URL.createObjectURL(croppedImageBlob);
+      setPreviewImage(croppedImageURL);
       setShowCropper(false);
     } catch (error) {
       console.error("Error cropping the image:", error);
