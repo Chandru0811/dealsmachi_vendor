@@ -238,11 +238,16 @@ function ProductPrint() {
               </div>
 
               <div className="d-flex justify-content-between align-items-center p-3">
-                <p>
-                  You are requested to kindly honor this coupon code for all
-                  transactions during the deal period. Please make the necessary
-                  arrangements in your system.
-                </p>
+                <div>
+                  <p>
+                    You are requested to kindly honor this coupon code for all
+                    transactions during the deal period.
+                  </p>
+                  <p>
+                    Please make the necessary
+                    arrangements in your system.
+                  </p>
+                </div>
                 <Link to="/product">
                   <button className="btn btn-sm ok_btn">OK</button>
                 </Link>

@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link } from "react-router-dom";
-import { IoMdArrowBack } from "react-icons/io";
 import toast from "react-hot-toast";
-import axios from "axios";
-import ApprovePopup from "./ApprovePopup";
 import api from "../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
 import headerlogo from "../../assets/header-logo.webp";
