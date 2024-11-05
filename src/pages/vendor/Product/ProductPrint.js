@@ -49,7 +49,7 @@ function ProductPrint() {
     });
     startY += lineSpacing;
 
-    doc.text("info@dealslah.com", pageWidth - 10, startY, {
+    doc.text("info@dealsmachi.com", pageWidth - 10, startY, {
       align: "right",
     });
     startY += lineSpacing;
@@ -128,7 +128,7 @@ function ProductPrint() {
     detailStartY += 6;
     doc.text("Thanks,", 155, detailStartY);
     detailStartY += 8;
-    doc.text("Team Dealslah,", 155, detailStartY);
+    doc.text("Team DealsMachi,", 155, detailStartY);
 
     doc.save(`${data?.name}.pdf`);
   };

@@ -1,6 +1,6 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /dealslahVendor/
+  RewriteBase /dealsmachiVendor/
   
   RewriteRule ^index\.html$ - [L]
   

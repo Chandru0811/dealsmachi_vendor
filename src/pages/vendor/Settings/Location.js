@@ -276,7 +276,9 @@ function Location({ setValueChange }) {
                 </label>
               </div>
               <div className="col-md-9 col-12 mb-5">
-                {`${data.street},${data.city},${data.zip_code},${data.state},${data.country}`}
+               {data?.street && data?.city && data?.zip_code && data?.state && data?.country 
+                ? `${data.street}, ${data.city}, ${data.zip_code}, ${data.state}, ${data.country}` 
+                : "There is no address"}
               </div>
               {/*<div className="col-md-4 col-12 mb-5">
                 <label className="form-label">Street2</label>

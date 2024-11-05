@@ -6,7 +6,7 @@ function VendorFooter() {
         <div className="row align-items-center">
           <div className="col">
             <div className="d-flex align-items-center justify-content-center pt-2">
-              <p className="text-muted text-sm mb-0">2024 © Copyright Delasmachi. All Rights Reserved.</p>
+              <p className="text-muted text-sm mb-0">2024 © Copyright DealsMachi. All Rights Reserved.</p>
             </div>
           </div>
         </div>
