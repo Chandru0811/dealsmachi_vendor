@@ -100,7 +100,7 @@ function StorePolicy({ setValueChange }) {
   };
 
   return (
-    <div className="row m-0">
+    <div className="row m-0 mt-4">
       <form onSubmit={formik.handleSubmit} className="w-100">
         {loading ? (
           <div className="loader-container">
