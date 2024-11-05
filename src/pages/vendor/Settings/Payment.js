@@ -20,7 +20,7 @@ const validationSchema = Yup.object().shape({
 
 function Payment() {
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const id = sessionStorage.getItem("shop_id");
+  const id = localStorage.getItem("shop_id");
   const [loading, setLoading] = useState(true);
   const formik = useFormik({
     initialValues: {

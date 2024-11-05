@@ -13,7 +13,7 @@ import RedMarker from "../../../assets/pinRed.png";
 const libraries = ["places"];
 
 function Location({ setValueChange }) {
-  const id = sessionStorage.getItem("shop_id");
+  const id = localStorage.getItem("shop_id");
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
   const [center, setCenter] = useState({ lat: 13.0843007, lng: 80.2704622 });

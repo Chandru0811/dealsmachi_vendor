@@ -10,17 +10,17 @@ function App() {
   const [isVendorLogin, setIsVendorLogin] = useState(false);
 
   const handleLogin = () => {
-    sessionStorage.setItem("isAuthenticated", true);
+    localStorage.setItem("isAuthenticated", true);
     setIsAuthenticated(true);
   };
 
   const handleClientLogin = () => {
-    sessionStorage.setItem("isClientLogin", true);
+    localStorage.setItem("isClientLogin", true);
     setIsClientLogin(true);
   };
 
   const handleVendorLogin = () => {
-    sessionStorage.setItem("isVendorLogin", true);
+    localStorage.setItem("isVendorLogin", true);
     setIsVendorLogin(true);
   };
 
@@ -30,15 +30,15 @@ function App() {
       setIsAuthenticated(false);
       setIsClientLogin(false);
       setIsVendorLogin(false);
-      sessionStorage.removeItem("isAuthenticated");
-      sessionStorage.removeItem("isClientLogin");
-      sessionStorage.removeItem("isVendorLogin");
-      sessionStorage.removeItem("token");
-      sessionStorage.removeItem("name");
-      sessionStorage.removeItem("id");
-      sessionStorage.removeItem("email");
-      sessionStorage.removeItem("role");
-      sessionStorage.removeItem("active");
+      localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("isClientLogin");
+      localStorage.removeItem("isVendorLogin");
+      localStorage.removeItem("token");
+      localStorage.removeItem("name");
+      localStorage.removeItem("id");
+      localStorage.removeItem("email");
+      localStorage.removeItem("role");
+      localStorage.removeItem("active");
     } catch (error) {
       toast.error("Logout Unsuccessfull");
     }
@@ -46,9 +46,9 @@ function App() {
 
   useEffect(() => {
     const isAuthenticatedFromStorage =
-      sessionStorage.getItem("isAuthenticated");
-    const isClientLoginFromStorage = sessionStorage.getItem("isClientLogin");
-    const isVendorLoginFromStorage = sessionStorage.getItem("isVendorLogin");
+      localStorage.getItem("isAuthenticated");
+    const isClientLoginFromStorage = localStorage.getItem("isClientLogin");
+    const isVendorLoginFromStorage = localStorage.getItem("isVendorLogin");
     if (isAuthenticatedFromStorage === "true") {
       setIsAuthenticated(true);
     } else if (isClientLoginFromStorage === "true") {

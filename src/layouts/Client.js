@@ -16,6 +16,7 @@ import ScrollToTop from "../pages/ScrollToTop";
 import ResetPage from "../components/common/ResetPage";
 import ForgotSuccess from "../components/common/ForgotSuccess";
 // import NotFound from "../components/common/NotFound";
+import EmailVerifySuccess from "../components/client/EmailVerifySuccess";
 
 function Client({
   handleLogout,
@@ -64,6 +65,10 @@ function Client({
             />
             <Route path="/forgot" element={<ForgotPage />} />
             <Route path="/resetpassword" element={<ResetPage />} />
+            <Route
+              path="/emailverifysuccess"
+              element={<EmailVerifySuccess />}
+            />
           </Routes>
           {/* <Footer /> */}
         </BrowserRouter>

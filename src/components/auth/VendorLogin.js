@@ -34,13 +34,13 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
         if (response.status === 200) {
           toast.success(response.data.message);
 
-          sessionStorage.setItem("token", response.data.data.token);
-          sessionStorage.setItem("name", response.data.data.userDetails.name);
-          sessionStorage.setItem("id", response.data.data.userDetails.id);
-          sessionStorage.setItem("email", response.data.data.userDetails.email);
-          sessionStorage.setItem("role", response.data.data.userDetails.role);
-          sessionStorage.setItem("active", "0");
-          sessionStorage.setItem(
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("name", response.data.data.userDetails.name);
+          localStorage.setItem("id", response.data.data.userDetails.id);
+          localStorage.setItem("email", response.data.data.userDetails.email);
+          localStorage.setItem("role", response.data.data.userDetails.role);
+          localStorage.setItem("active", "0");
+          localStorage.setItem(
             "shop_id",
             response.data.data.userDetails.shop_id
           );

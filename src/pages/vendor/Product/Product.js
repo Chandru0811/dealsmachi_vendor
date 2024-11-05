@@ -14,7 +14,7 @@ const Product = () => {
   const tableRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
-  const id = sessionStorage.getItem("shop_id");
+  const id = localStorage.getItem("shop_id");
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {

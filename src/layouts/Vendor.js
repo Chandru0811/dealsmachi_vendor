@@ -20,6 +20,7 @@ import CategoryEdit from "../pages/vendor/Category/CategoryEdit";
 import CategoryView from "../pages/vendor/Category/CategoryView";
 import ScrollToTop from "../pages/ScrollToTop";
 import ProductPrint from "../pages/vendor/Product/ProductPrint";
+import EmailVerifySuccess from "../components/client/EmailVerifySuccess";
 
 function Vendor({ handleLogout }) {
   return (
@@ -49,6 +50,10 @@ function Vendor({ handleLogout }) {
                   <Route path="/categorys/add" element={<CategoryAdd />} />
                   <Route path="/categorys/edit" element={<CategoryEdit />} />
                   <Route path="/categorys/view" element={<CategoryView />} />
+                  <Route
+                    path="/emailverifysuccess"
+                    element={<EmailVerifySuccess />}
+                  />
                 </Routes>
               </div>
               <AdminFooter />

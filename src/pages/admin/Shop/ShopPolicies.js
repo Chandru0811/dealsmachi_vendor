@@ -4,7 +4,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
 function ShopPolicies() {
-  // const id = sessionStorage.getItem("id");
+  // const id = localStorage.getItem("id");
   const { id } = useParams();
   const [data, SetData] = useState(null);
   const [loading, setLoading] = useState(false);

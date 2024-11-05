@@ -27,7 +27,7 @@ function ProductAdd() {
   const [images, setImages] = useState([null, null, null, null]);
   const [croppedAreas, setCroppedAreas] = useState([null, null, null, null]);
   const [showCropper, setShowCropper] = useState([false, false, false, false]);
-  const id = sessionStorage.getItem("shop_id");
+  const id = localStorage.getItem("shop_id");
   const [couponCode, setCouponCode] = useState("DEALSMACHI");
   const [isCouponChecked, setIsCouponChecked] = useState(false);
   const navigate = useNavigate();

@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 function ApprovePopup() {
   const [show, setShow] = useState(false);
-  const id = sessionStorage.getItem("shop_id");
+  const id = localStorage.getItem("shop_id");
 
   // useEffect(() => {
   //   const getData = async () => {

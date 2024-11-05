@@ -36,7 +36,7 @@ const Store = ({ setValueChange }) => {
   // console.log("Data:", data);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
-  const id = sessionStorage.getItem("shop_id");
+  const id = localStorage.getItem("shop_id");
   // const convertToSlug = (name) => {
   //   return name.toLowerCase().replace(/\s+/g, "_");
   // };

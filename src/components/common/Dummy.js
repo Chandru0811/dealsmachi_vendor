@@ -28,7 +28,7 @@ function ProductAdd() {
   const [zooms, setZooms] = useState([1, 1, 1, 1]);
   const [showCropper, setShowCropper] = useState([false, false, false, false]);
   const [category, setCategory] = useState([]);
-  const shop_id = sessionStorage.getItem("shop_id");
+  const shop_id = localStorage.getItem("shop_id");
   const { id } = useParams();
   const navigate = useNavigate();
 

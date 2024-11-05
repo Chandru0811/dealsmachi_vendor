@@ -42,7 +42,7 @@ const Form2 = forwardRef(
           console.log("Response", response);
           if (response.status === 200) {
             toast.success(response.data.message);
-            sessionStorage.setItem("shop_id", response.data.data.id);
+            localStorage.setItem("shop_id", response.data.data.id);
           } else {
             toast.error(response.data.message);
           }

@@ -7,7 +7,7 @@ import ImageURL from "../../../config/ImageURL";
 function Stores() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
-  // const id = sessionStorage.getItem("id");
+  // const id = localStorage.getItem("id");
   const { id } = useParams();
 
   useEffect(() => {

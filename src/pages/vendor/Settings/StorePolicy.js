@@ -27,7 +27,7 @@ const validationSchema = Yup.object({
     .required("*Cancellation/Return/Exchange Policy is required"),
 });
 function StorePolicy({ setValueChange }) {
-  const shop_id = sessionStorage.getItem("shop_id");
+  const shop_id = localStorage.getItem("shop_id");
   const [loading, setLoading] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const editor = useRef(null);

@@ -102,7 +102,7 @@ const validationSchema = Yup.object({
 });
 
 function StoreHours({ setValueChange }) {
-  const shop_id = sessionStorage.getItem("shop_id");
+  const shop_id = localStorage.getItem("shop_id");
   const [loading, setLoading] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 

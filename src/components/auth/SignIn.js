@@ -34,15 +34,15 @@ function SignIn({ handleLogin }) {
             toast.success(response.data.message);
             handleLogin(values);
             navigate("/");
-            sessionStorage.setItem("token", response.data.data.token);
-            sessionStorage.setItem("name", response.data.data.userDetails.name);
-            sessionStorage.setItem("id", response.data.data.userDetails.id);
-            sessionStorage.setItem(
+            localStorage.setItem("token", response.data.data.token);
+            localStorage.setItem("name", response.data.data.userDetails.name);
+            localStorage.setItem("id", response.data.data.userDetails.id);
+            localStorage.setItem(
               "email",
               response.data.data.userDetails.email
             );
-            sessionStorage.setItem("role", response.data.data.userDetails.role);
-            sessionStorage.setItem(
+            localStorage.setItem("role", response.data.data.userDetails.role);
+            localStorage.setItem(
               "active",
               response.data.data.userDetails.active
             );

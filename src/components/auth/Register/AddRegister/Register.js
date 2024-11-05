@@ -54,12 +54,12 @@ function Register() {
           const responseData = response.data.data;
           console.log("object", responseData);
           toast.success(response.data.message);
-          sessionStorage.setItem("token", response.data.data.token);
-          sessionStorage.setItem("name", response.data.data.userDetails.name);
-          sessionStorage.setItem("id", response.data.data.userDetails.id);
-          sessionStorage.setItem("email", response.data.data.userDetails.email);
-          sessionStorage.setItem("role", response.data.data.userDetails.role);
-          sessionStorage.setItem("active", "0");
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("name", response.data.data.userDetails.name);
+          localStorage.setItem("id", response.data.data.userDetails.id);
+          localStorage.setItem("email", response.data.data.userDetails.email);
+          localStorage.setItem("role", response.data.data.userDetails.role);
+          localStorage.setItem("active", "0");
           navigate(`/wellcomepage/${response.data.data.userDetails.id}`);
           // navigate(`/`);
         } else {
