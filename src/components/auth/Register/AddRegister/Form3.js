@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
-import Success from "../../../../assets/Success2.png";
+import Success from "../../../../assets/Success2.webp";
 
 
 

@@ -309,7 +309,7 @@ const Store = ({ setValueChange }) => {
                   )}
               </div>
 
-              <h3 className="py-3" style={{ color: "#ef4444" }}>
+              <h3 className="py-3" style={{ color: "#ff0060" }}>
                 Company Brand Setup
               </h3>
               <div className="col-md-4 col-12 mb-5">

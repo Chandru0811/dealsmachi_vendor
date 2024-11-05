@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
+import headerlogo from "../../../../assets/header-logo.webp";
 
 function WelcomeWizard() {
   const { id } = useParams();
@@ -8,6 +9,12 @@ function WelcomeWizard() {
       className="d-flex flex-column align-items-center justify-content-center"
       style={{ backgroundColor: "#f2f2f2", minHeight: "100vh" }}
     >
+       <div
+        className="d-flex justify-content-center align-items-center m-0 pt-2 mb-4"
+        style={{ backgroundColor: "rgb(242, 242, 242)" }}
+      >
+        <img src={headerlogo} className="img-fluid" alt="img" />
+      </div>
       <h2
         className="d-flex justify-content-center mb-5"
         style={{ color: "#ff0060" }}

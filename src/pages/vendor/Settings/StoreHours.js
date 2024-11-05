@@ -215,7 +215,7 @@ function StoreHours({ setValueChange }) {
         </div>
       ) : (
         <>
-          <p className="my-5" style={{ color: "#ef4444" }}>
+          <p className="my-5" style={{ color: "#ff0060" }}>
             Daily Basis Opening & Closing Hours
           </p>
           {formik.values.daily_timing.monday.opening &&
