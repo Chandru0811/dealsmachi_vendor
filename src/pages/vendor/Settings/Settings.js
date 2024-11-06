@@ -16,14 +16,18 @@ function Settings() {
 
   const handleItemClick = (item) => {
     if (valueChange) {
-      const userConfirmed = window.confirm("Are you sure you want to leave the page? You may lose your updated data.");
+      const userConfirmed = window.confirm(
+        "Are you sure you want to leave the page? You may lose your updated data."
+      );
       if (userConfirmed) {
         setSelectedItem(item);
+        setValueChange(false);
       } else {
         console.log("User canceled action.");
       }
     } else {
       setSelectedItem(item);
+      setValueChange(false);
     }
   };
 
