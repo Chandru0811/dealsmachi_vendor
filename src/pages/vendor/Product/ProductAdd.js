@@ -232,6 +232,7 @@ function ProductAdd() {
         return;
       }
     });
+    formik.handleSubmit();
   };
 
   useEffect(() => {
