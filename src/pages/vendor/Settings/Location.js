@@ -20,6 +20,7 @@ function Location({ setValueChange }) {
   const [markerPosition, setMarkerPosition] = useState(null);
   const [autocomplete, setAutocomplete] = useState(null);
   const [data, setData] = useState(null);
+  const [formChanged, setFormChanged] = useState(false); 
   const [place, setPlace] = useState({
     address: "",
     street: "",
@@ -86,6 +87,7 @@ function Location({ setValueChange }) {
         if (response.status === 200) {
           toast.success(response.data.message);
           getData();
+          setFormChanged(false);
         }
       } catch (error) {
         toast.error(error.message);
@@ -136,6 +138,7 @@ function Location({ setValueChange }) {
   const handleFormikChange = (e) => {
     formik.handleChange(e);
     setValueChange(true);
+    setFormChanged(true);
   };
 
   const onPlaceChanged = () => {
@@ -150,7 +153,9 @@ function Location({ setValueChange }) {
         map_url: "",
         lat: "",
         lng: "",
-      });
+        
+      })
+      setFormChanged(true);
 
       const origin = autocomplete.getPlace();
 
@@ -420,7 +425,7 @@ function Location({ setValueChange }) {
                         boxSizing: "border-box",
                         border: "1px solid transparent",
                         width: "400px",
-                        height: "32px",
+                        height: "40px",
                         padding: "0 12px",
                         borderRadius: "3px",
                         boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
@@ -429,7 +434,7 @@ function Location({ setValueChange }) {
                         textOverflow: "ellipses",
                         position: "absolute",
                         left: "50%",
-                        marginLeft: "-120px",
+                        marginLeft: "-130px",
                       }}
                     />
                   </Autocomplete>
@@ -457,7 +462,7 @@ function Location({ setValueChange }) {
           <button
             type="submit"
             className="btn btn-button btn-sm"
-            disabled={loadIndicator}
+            disabled={!formChanged || loadIndicator}
           >
             {loadIndicator && (
               <span
