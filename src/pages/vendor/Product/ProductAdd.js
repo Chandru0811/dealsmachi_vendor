@@ -39,6 +39,15 @@ function ProductAdd() {
     "image/svg+xml",
     "image/webp",
   ];
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const imageValidation = Yup.mixed()
     .required("*Image is required")
@@ -103,7 +112,7 @@ function ProductAdd() {
       original_price: "",
       discounted_price: "",
       discounted_percentage: "",
-      start_date: "",
+      start_date: getCurrentDate(),
       end_date: "",
       coupon_code: couponCode,
       image1: null,
