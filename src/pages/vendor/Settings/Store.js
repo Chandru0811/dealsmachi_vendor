@@ -407,11 +407,11 @@ const Store = ({ setValueChange }) => {
                   </div>
                 )}
               </div>
-              <div className="col-md-4 col-12 mb-5">
+              {/* <div className="col-md-4 col-12 mb-5">
                 <label className="form-label">
                   Company Map Url<span className="text-danger">*</span>
                 </label>
-              </div>
+              </div> 
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
@@ -430,7 +430,7 @@ const Store = ({ setValueChange }) => {
                     <small>{formik.errors.map_url}</small>
                   </div>
                 )}
-              </div>
+              </div> */}
               {/* <div className="col-md-4 col-12 mb-5">
                 <label className="form-label">
                 Company Rating<span className="text-danger">*</span>
