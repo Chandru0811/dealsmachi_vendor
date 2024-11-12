@@ -35,6 +35,8 @@ import DealCategoryAdd from "../pages/admin/DealCategory/DealCategoryAdd";
 import DealCategoryEdit from "../pages/admin/DealCategory/DealCategoryEdit";
 import DealCategoryView from "../pages/admin/DealCategory/DealCategoryView";
 import ScrollToTop from "../pages/ScrollToTop";
+import User from "../pages/admin/User/User";
+import UserView from "../pages/admin/User/UserView";
 
 function Admin({ handleLogout }) {
   return (
@@ -104,6 +106,11 @@ function Admin({ handleLogout }) {
                   <Route path="/slider/add" element={<SliderAdd />} />
                   <Route path="/slider/edit/:id" element={<SliderEdit />} />
                   <Route path="/slider/view/:id" element={<SliderView />} />
+
+                  {/* {/ Slider /} */}
+                  <Route path="/user" element={<User />} />
+                  <Route path="/user/view/:id" element={<UserView />} />
+
                   {/* {/ Product /} */}
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/add" element={<ProductsAdd />} />

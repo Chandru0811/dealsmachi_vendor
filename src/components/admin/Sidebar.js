@@ -5,6 +5,10 @@ import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidCategory, BiLogOut } from "react-icons/bi";
 import { MdCategory } from "react-icons/md";
 import { TbShoppingCartFilled } from "react-icons/tb";
+import { FaBuilding } from "react-icons/fa6";
+import { FaUser } from "react-icons/fa";
+import { FaSliders } from "react-icons/fa6";
+import { BiSolidCategoryAlt } from "react-icons/bi";
 
 function Sidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -23,7 +27,7 @@ function Sidebar({ handleLogout }) {
       id="navbarVertical"
     >
       <div className="container-fluid">
-      <button
+        <button
           className="navbar-toggler mx-2 p-1"
           type="button"
           data-bs-toggle="collapse"
@@ -68,7 +72,7 @@ function Sidebar({ handleLogout }) {
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/slider">
-                <BiSolidCategory />
+                <FaSliders />
                 Slider
               </NavLink>
             </li>
@@ -80,7 +84,7 @@ function Sidebar({ handleLogout }) {
             </li> */}
             <li className="nav-item">
               <NavLink className="nav-link" to="/categorygroup">
-                <MdCategory />
+                <BiSolidCategoryAlt />
                 Category Groups
               </NavLink>
             </li>
@@ -92,7 +96,7 @@ function Sidebar({ handleLogout }) {
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/dealcategories">
-                <BiSolidCategory />
+                <MdCategory />
                 Deal Categories
               </NavLink>
             </li>
@@ -104,8 +108,14 @@ function Sidebar({ handleLogout }) {
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/shop">
-                <TbShoppingCartFilled />
+                <FaBuilding />
                 Company
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/user">
+                <FaUser />
+                User
               </NavLink>
             </li>
           </ul>
