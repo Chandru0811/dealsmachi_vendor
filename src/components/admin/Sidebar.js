@@ -5,7 +5,7 @@ import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidCategory, BiLogOut } from "react-icons/bi";
 import { MdCategory } from "react-icons/md";
 import { TbShoppingCartFilled } from "react-icons/tb";
-import { FaBuilding } from "react-icons/fa6";
+import { FaBuilding, FaFileShield } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa";
 import { FaSliders } from "react-icons/fa6";
 import { BiSolidCategoryAlt } from "react-icons/bi";
@@ -116,6 +116,12 @@ function Sidebar({ handleLogout }) {
               <NavLink className="nav-link" to="/user">
                 <FaUser />
                 User
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/order">
+                <FaFileShield />
+                Orders
               </NavLink>
             </li>
           </ul>
