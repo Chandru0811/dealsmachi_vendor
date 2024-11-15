@@ -1,15 +1,19 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import headerlogo from "../../../../assets/header-logo.webp";
 
 function WelcomeWizard() {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const name = searchParams.get("name");
+  const email = searchParams.get("email");
   return (
     <section
       className="d-flex flex-column align-items-center justify-content-center"
       style={{ backgroundColor: "#f2f2f2", minHeight: "100vh" }}
     >
-       <div
+      <div
         className="d-flex justify-content-center align-items-center m-0 pt-2 mb-4"
         style={{ backgroundColor: "rgb(242, 242, 242)" }}
       >
@@ -35,7 +39,7 @@ function WelcomeWizard() {
           skip and return to the Store!
         </p>
         <div className="button-group">
-          <Link to={`/vendorregistration/${id}`}>
+          <Link to={`/vendorregistration/${id}?name=${name}&email=${email}`}>
             <button className="wellcome-btn" style={{ width: "250px" }}>
               Let's Go!
             </button>
@@ -47,4 +51,3 @@ function WelcomeWizard() {
 }
 
 export default WelcomeWizard;
-

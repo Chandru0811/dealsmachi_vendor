@@ -60,7 +60,9 @@ function Register() {
           localStorage.setItem("email", response.data.data.userDetails.email);
           localStorage.setItem("role", response.data.data.userDetails.role);
           localStorage.setItem("active", "0");
-          navigate(`/wellcomepage/${response.data.data.userDetails.id}`);
+          navigate(
+            `/wellcomepage/${response.data.data.userDetails.id}?name=${response.data.data.userDetails.name}&email=${response.data.data.userDetails.email}`
+          );
           // navigate(`/`);
         } else {
           toast.error(response.data.message);
