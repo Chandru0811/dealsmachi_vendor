@@ -1,7 +1,7 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import api from "../../../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
@@ -35,6 +35,9 @@ const libraries = ["places"];
 const Form1 = forwardRef(
   ({ formData, setFormData, handleNext, setLoadIndicators }, ref) => {
     const { id } = useParams();
+    const [searchParams] = useSearchParams();
+    const name = searchParams.get("name");
+    const email = searchParams.get("email");
     const [center, setCenter] = useState({ lat: 13.0843007, lng: 80.2704622 });
     const [markerPosition, setMarkerPosition] = useState(null);
     const [autocomplete, setAutocomplete] = useState(null);
@@ -56,10 +59,10 @@ const Form1 = forwardRef(
     const formik = useFormik({
       initialValues: {
         owner_id: id,
-        name: formData.name || "",
+        name: formData.name || name || "",
         legal_name: formData.legal_name || "",
         company_registeration_no: formData.company_registeration_no || "",
-        email: formData.email || "",
+        email: formData.email || email || "",
         mobile: formData.mobile || "",
         external_url: formData.external_url || "",
         shop_ratings: 0,
@@ -77,71 +80,73 @@ const Form1 = forwardRef(
       },
       validationSchema: validationSchema,
       onSubmit: async (data) => {
-      if(markerPosition){
-        setLoadIndicators(true);
-        
-        const formDataWithAddress = {
-          ...data,
-          address:place.address,
-          street: place.street,
-          city: place.city,
-          zip_code: place.zip_code,
-          country: place.country,
-          state: place.state,
-          shop_lattitude: markerPosition?.lat, 
-          shop_longtitude: markerPosition?.lng, 
-          // map_url: place.map_url,
-        };
-    
-        const transformedSlug = formDataWithAddress.name.toLowerCase().replace(/\s+/g, "_");
-        
-        const finalDataToSend = {
-          ...formDataWithAddress,
-          slug: transformedSlug,
-        };
-    
-        setFormData((prev) => ({
-          ...prev,
-          ...finalDataToSend,
-        }));
-    
-        try {
-          const response = await api.post(
-            `vendor/shopregistration`,
-            finalDataToSend
-          );
-          console.log("Response", response);
-          if (response.status === 200) {
-            toast.success(response.data.message);
-            localStorage.setItem("shop_id", response.data.data.id);
-            handleNext(); // Move this inside the success block
-          } else {
-            toast.error(response.data.message);
-          }
-        } catch (error) {
-          if (error.response && error.response.status === 422) {
-            const errors = error.response.data.error;
-            if (errors) {
-              Object.keys(errors).forEach((key) => {
-                errors[key].forEach((errorMsg) => {
-                  toast(errorMsg, {
-                    icon: <FiAlertTriangle className="text-warning" />,
+        if (markerPosition) {
+          setLoadIndicators(true);
+
+          const formDataWithAddress = {
+            ...data,
+            address: place.address,
+            street: place.street,
+            city: place.city,
+            zip_code: place.zip_code,
+            country: place.country,
+            state: place.state,
+            shop_lattitude: markerPosition?.lat,
+            shop_longtitude: markerPosition?.lng,
+            // map_url: place.map_url,
+          };
+
+          const transformedSlug = formDataWithAddress.name
+            .toLowerCase()
+            .replace(/\s+/g, "_");
+
+          const finalDataToSend = {
+            ...formDataWithAddress,
+            slug: transformedSlug,
+          };
+
+          setFormData((prev) => ({
+            ...prev,
+            ...finalDataToSend,
+          }));
+
+          try {
+            const response = await api.post(
+              `vendor/shopregistration`,
+              finalDataToSend
+            );
+            console.log("Response", response);
+            if (response.status === 200) {
+              toast.success(response.data.message);
+              localStorage.setItem("shop_id", response.data.data.id);
+              handleNext(); // Move this inside the success block
+            } else {
+              toast.error(response.data.message);
+            }
+          } catch (error) {
+            if (error.response && error.response.status === 422) {
+              const errors = error.response.data.error;
+              if (errors) {
+                Object.keys(errors).forEach((key) => {
+                  errors[key].forEach((errorMsg) => {
+                    toast(errorMsg, {
+                      icon: <FiAlertTriangle className="text-warning" />,
+                    });
                   });
                 });
-              });
+              }
+            } else {
+              console.error("API Error", error);
+              toast.error("An unexpected error occurred.");
             }
-          } else {
-            console.error("API Error", error);
-            toast.error("An unexpected error occurred.");
+          } finally {
+            setLoadIndicators(false);
           }
-        } finally {
-          setLoadIndicators(false);
+        } else {
+          toast("Enter the location", {
+            icon: <FiAlertTriangle className="text-warning" />,
+          });
         }
-      }else{
-        toast("Enter the location", {
-          icon: <FiAlertTriangle className="text-warning" />,
-        });
-      }
       },
     });
 
@@ -367,6 +372,7 @@ const Form1 = forwardRef(
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
+                        readOnly
                       />
                       {formik.touched.email && formik.errors.email && (
                         <div className="error text-danger">

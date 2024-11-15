@@ -118,7 +118,7 @@ const Shop = () => {
                           className="img-fluid"
                           width={50}
                         />
-                        {data.name}
+                        &nbsp;&nbsp;&nbsp;{data.name}
                       </td>
                       {/* <td className="text-center">{data.name}</td> */}
                       <td className="text-start">{data.email}</td>
