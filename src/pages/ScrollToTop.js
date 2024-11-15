@@ -5,12 +5,15 @@ const ScrollToTop = () => {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }, [pathname]);
+    const scrollableElement = document.querySelector('.flex-grow-1');
+    if (scrollableElement) {
+      scrollableElement.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
+  }, [pathname]);  
 
   return null;
 };

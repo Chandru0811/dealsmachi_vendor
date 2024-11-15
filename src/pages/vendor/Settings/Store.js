@@ -20,13 +20,6 @@ const validationSchema = Yup.object({
     "Company Registration is required!"
   ),
   logo: Yup.mixed().required("Logo is required"),
-  external_url: Yup.string()
-    .url("Please enter a valid URL")
-    .required("External URL is required!"),
-  map_url: Yup.string()
-    .url("Please enter a valid URL")
-    .required("Map URL is required!"),
-
   // banner: Yup.mixed().required("Banner is required!"),
   description: Yup.string().required("Description is required!"),
 });
@@ -51,7 +44,6 @@ const Store = ({ setValueChange }) => {
       shop_type: "",
       logo: null,
       external_url: "",
-      map_url: "",
       // banner: null,
       description: "",
       shop_ratings: "",
@@ -71,7 +63,6 @@ const Store = ({ setValueChange }) => {
         data.company_registeration_no
       );
       formdata.append("shop_type", data.shop_type);
-      formdata.append("map_url", data.map_url);
       formdata.append("external_url", data.external_url);
       formdata.append("description", data.description);
       formdata.append("shop_ratings", data.shop_ratings);
@@ -391,46 +382,13 @@ const Store = ({ setValueChange }) => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.external_url && formik.errors.external_url
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control`}
                   name="external_url"
                   onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.external_url}
                 />
-                {formik.touched.external_url && formik.errors.external_url && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.external_url}</small>
-                  </div>
-                )}
               </div>
-              {/* <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">
-                  Company Map Url<span className="text-danger">*</span>
-                </label>
-              </div> 
-              <div className="col-md-8 col-12 mb-5">
-                <input
-                  type="text"
-                  className={`form-control ${
-                    formik.touched.map_url && formik.errors.map_url
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  name="map_url"
-                  onChange={handleFormikChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.map_url}
-                />
-                {formik.touched.map_url && formik.errors.map_url && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.map_url}</small>
-                  </div>
-                )}
-              </div> */}
               {/* <div className="col-md-4 col-12 mb-5">
                 <label className="form-label">
                 Company Rating<span className="text-danger">*</span>

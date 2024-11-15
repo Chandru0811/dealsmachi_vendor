@@ -84,12 +84,7 @@ function ProductEdit() {
       10,
       "Description must be at least 10 characters long"
     ),
-    coupon_code: Yup.string()
-      .matches(
-        /^[A-Za-z]+[0-9]{0,2}$/,
-        "Coupon code must end with up to 2 digits"
-      )
-      .required("Coupon code is required"),
+    coupon_code: Yup.string().required("Coupon code is required"),
   });
 
   const formik = useFormik({
@@ -636,23 +631,6 @@ function ProductEdit() {
                   />
                   {formik.touched.name && formik.errors.name && (
                     <div className="invalid-feedback">{formik.errors.name}</div>
-                  )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">Coupon Code</label>
-                  <input
-                    type="text"
-                    className={`form-control ${
-                      formik.touched.coupon_code && formik.errors.coupon_code
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("coupon_code")}
-                  />
-                  {formik.touched.coupon_code && formik.errors.coupon_code && (
-                    <div className="invalid-feedback">
-                      {formik.errors.coupon_code}
-                    </div>
                   )}
                 </div>
                 <div className="col-md-6 col-12 mb-3">
