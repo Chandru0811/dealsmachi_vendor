@@ -12,7 +12,7 @@ function UserView() {
   const getData = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`admin/slider/${id}`);
+      const response = await api.get(`admin/users/${id}`);
       setData(response.data.data);
     } catch (error) {
       toast.error("Error Fetching Data ", error);
@@ -63,7 +63,7 @@ function UserView() {
                     <p className="text-sm">Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.order}</p>
+                    <p className="text-muted text-sm">: {data.name}</p>
                   </div>
                 </div>
               </div>
@@ -73,7 +73,7 @@ function UserView() {
                     <p className="text-sm">Email</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.order}</p>
+                    <p className="text-muted text-sm">: {data.email}</p>
                   </div>
                 </div>
               </div>

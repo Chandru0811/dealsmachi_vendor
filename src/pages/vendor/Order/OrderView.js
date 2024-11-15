@@ -14,7 +14,7 @@ function OrderView() {
   const getData = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`/admin/order/${id}`);
+      const response = await api.get(`/vendor/order/${id}`);
       // console.log("sec:", response?.data?.data?.items?.unit_price);
       setData(response.data.data);
     } catch (error) {

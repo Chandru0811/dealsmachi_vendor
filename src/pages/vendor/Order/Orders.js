@@ -3,15 +3,15 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import DeleteModel from "../../../components/admin/DeleteModel";
-import { PiPlusSquareFill } from "react-icons/pi";
+// import DeleteModel from "../../../components/admin/DeleteModel";
 import api from "../../../config/URL";
-import ImageURL from "../../../config/ImageURL";
+// import ImageURL from "../../../config/ImageURL";
 
-const User = () => {
+const Orders = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const id = localStorage.getItem("shop_id");
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -41,7 +41,7 @@ const User = () => {
     destroyDataTable();
     setLoading(true);
     try {
-      const response = await api.get("/admin/users");
+      const response = await api.get(`vendor/orders/${id}`);
       setDatas(response.data.data);
     } catch (error) {
       console.error("Error refreshing data:", error);
@@ -54,7 +54,7 @@ const User = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await api.get("admin/users");
+        const response = await api.get(`vendor/orders/${id}`);
         setDatas(response.data.data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -85,14 +85,7 @@ const User = () => {
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0 ls-tight">Users</h3>
-                <div className="container-fluid d-flex justify-content-end">
-                  {/* <Link to="/slider/add">
-                    <button className="btn btn-sm btn-button shadow-none border-none py-3">
-                      <PiPlusSquareFill size={20} /> Add Slider
-                    </button>
-                  </Link> */}
-                </div>
+                <h3 className="mb-0 ls-tight">Orders</h3>
               </div>
             </div>
           </div>
@@ -119,42 +112,33 @@ const User = () => {
             >
               <thead className="thead-light">
                 <tr>
-                  <th
-                    scope="col"
-                    className="text-center"
-                    style={{ whiteSpace: "nowrap" }}
-                  >
+                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     S.NO
                   </th>
-                  <th className="text-center">Name</th>
-                  <th className="text-center">Email</th>
-                  <th className="text-center">ACTION</th>
+                  <th className="text-start">Order number</th>
+                  <th className="text-start">Customer Name</th>
+                  <th className="text-start">Total</th>
+                  <th className="text-start">Shop Name</th>
+                  <th className="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {datas?.map((data, index) => (
                   <tr key={data.id}>
-                    <td className="text-center">{index + 1}</td>
-                    <td className="text-center">{data.name}</td>
-                    <td className="text-center ms-2">{data.email}</td>
-                    <td className="text-center">
-                      <div className="d-flex justify-content-center">
-                        <Link to={`/user/view/${data.id}`}>
-                          <button className="button-btn btn-sm m-2">
-                            View
-                          </button>
-                        </Link>
-                        {/* <Link to={`/slider/edit/${data.id}`}>
-                          <button className="button-btn btn-sm m-2">
-                            Edit
-                          </button>
-                        </Link>
-                        <DeleteModel
-                          onSuccess={refreshData}
-                          path={`/admin/slider/delete/${data.id}`}
-                          style={{ display: "inline-block" }}
-                        /> */}
-                      </div>
+                    <td className="text-start align-middle">{index + 1}</td>
+                    <td className="text-start">{data.order_number}</td>
+                    <td className="align-middle text-start">
+                      {data.first_name}
+                    </td>
+                    <td className="align-middle text-start">{data.total}</td>
+                    <td className="align-middle text-start">
+                      {data.shop.name}
+                    </td>
+                    <td className="align-middle text-center">
+                      <Link to={`/order/view/${data.id}`}>
+                        <button className="button-btn btn-sm m-2">View</button>
+                      </Link>
+                      {/* <DeleteModel /> */}
                     </td>
                   </tr>
                 ))}
@@ -167,4 +151,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Orders;

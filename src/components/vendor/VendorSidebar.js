@@ -21,7 +21,7 @@ function VendorSidebar({ handleLogout }) {
       id="navbarVertical"
     >
       <div className="container-fluid">
-      <button
+        <button
           className="navbar-toggler mx-2 p-1"
           type="button"
           data-bs-toggle="collapse"
@@ -98,6 +98,12 @@ function VendorSidebar({ handleLogout }) {
               <NavLink className="nav-link" to="/product">
                 <BiSolidCategory />
                 Deals
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/order">
+                <BiSolidCategory />
+                Orders
               </NavLink>
             </li>
             {/* <li className="nav-item">
