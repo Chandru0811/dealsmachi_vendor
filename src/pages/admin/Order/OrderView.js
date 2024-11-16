@@ -15,7 +15,6 @@ function OrderView() {
     setLoading(true);
     try {
       const response = await api.get(`/admin/order/${id}`);
-      // console.log("sec:", response?.data?.data?.items?.unit_price);
       setData(response.data.data);
     } catch (error) {
       toast.error("Error Fetching Data ", error);
@@ -78,63 +77,71 @@ function OrderView() {
                       )}
                   </span>
                 </div>
-                <div className="card-body  m-0 p-4">
-                  {data.items?.map((item, index) => (
-                    <div key={index} className="row align-items-center mb-3">
-                      <div className="col-md-3">
-                        <img
-                          src={
-                            data?.product?.image_url1
-                              ? `${ImageURL}${data?.product?.image_url1}`
-                              : noImage
-                          }
-                          alt={item?.product?.name}
-                          style={{ width: "100%" }}
-                        />
+                <div className="card-body m-0 p-4">
+                  {data.items?.map((item, index) =>
+                    item.product ? (
+                      <div key={index} className="row align-items-center mb-3">
+                        <div className="col-md-3">
+                          <img
+                            src={
+                              item?.product?.image_url1
+                                ? `${ImageURL}${item?.product?.image_url1}`
+                                : noImage
+                            }
+                            alt={item?.product?.name}
+                            style={{ width: "100%" }}
+                          />
+                        </div>
+                        <div className="col">
+                          <p>
+                            <b>{item?.product?.category_id}</b>:&nbsp;
+                            {item?.product?.name}
+                          </p>
+                          <p>{item?.product?.description}</p>
+                          <p>
+                            <del>
+                              ₹:
+                              {parseFloat(
+                                item?.product?.original_price
+                              ).toFixed(0)}
+                            </del>
+                            &nbsp;&nbsp;
+                            <span style={{ color: "#dc3545" }}>
+                              ₹:
+                              {parseFloat(
+                                item?.product?.discounted_price
+                              ).toFixed(0)}
+                            </span>
+                            &nbsp;&nbsp;
+                            <span className="badge_danger">
+                              {parseFloat(
+                                item?.product?.discount_percentage
+                              ).toFixed(0)}
+                              % saved
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="col">
-                        <p>
-                          <b>{item?.product?.category_id}</b>:&nbsp;
-                          {item?.product?.name}
+                    ) : (
+                      <>
+                        <p className="text-center my-5 py-5">
+                          No Product Data Found !
                         </p>
-                        <p>{item?.product?.description}</p>
-                        <p>
-                          <del>
-                            ₹:
-                            {parseFloat(item?.product?.original_price).toFixed(
-                              0
-                            )}
-                          </del>
-                          &nbsp;&nbsp;
-                          <span style={{ color: "#dc3545" }}>
-                            ₹:
-                            {parseFloat(
-                              item?.product?.discounted_price
-                            ).toFixed(0)}
-                          </span>
-                          &nbsp;&nbsp;
-                          <span className="badge_danger">
-                            {parseFloat(
-                              item?.product?.discount_percentage
-                            ).toFixed(0)}
-                            % saved
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                      </>
+                    )
+                  )}
 
                   <div className="row">
                     <div className="col-md-3"></div>
                     <div className="col-md-9">
                       {data?.order_type === "service" ? (
                         <div className="d-flex gap-4">
-                          <p>Service Date : {data?.service_date ?? " "}</p>
-                          <p>Service Time : {data?.service_time ?? " "}</p>
+                          <p>Service Date: {data?.service_date ?? " "}</p>
+                          <p>Service Time: {data?.service_time ?? " "}</p>
                         </div>
                       ) : (
                         <div className="d-flex gap-4">
-                          <p>Quantity : {data?.quantity ?? " "}</p>
+                          <p>Quantity: {data?.quantity ?? " "}</p>
                         </div>
                       )}
                     </div>
@@ -235,12 +242,12 @@ function OrderView() {
                     <span>Total </span>
                     <span>₹ {parseFloat(data.total).toFixed(2)}</span>
                   </div>
-                  <div className="d-flex align-items-center gap-1">
+                  {/* <div className="d-flex align-items-center gap-1">
                     <button className="badge_outline_dark">Send Invoice</button>
                     <button className="badge_outline_pink">
                       Collect Payment
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -291,14 +298,7 @@ function OrderView() {
                   <p className="mb-0">Address</p>
                 </div>
                 <div className="card-body  m-0 p-4">
-                  <p>
-                    Shipping :&nbsp;
-                    {data.shipping_address ?? "No shipping address provided"}
-                  </p>
-                  <p>
-                    Billing :&nbsp;
-                    {data.billing_address ?? "No shipping address provided"}
-                  </p>
+                  <p>{data.delivery_address ?? "No address found"}</p>
                 </div>
               </div>
             </div>

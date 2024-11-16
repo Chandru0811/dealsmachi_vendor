@@ -9,13 +9,11 @@ function OrderView() {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log("first:", data);
 
   const getData = async () => {
     setLoading(true);
     try {
       const response = await api.get(`/vendor/order/${id}`);
-      // console.log("sec:", response?.data?.data?.items?.unit_price);
       setData(response.data.data);
     } catch (error) {
       toast.error("Error Fetching Data ", error);
@@ -84,8 +82,8 @@ function OrderView() {
                       <div className="col-md-3">
                         <img
                           src={
-                            data?.product?.image_url1
-                              ? `${ImageURL}${data?.product?.image_url1}`
+                            item?.product?.image_url1
+                              ? `${ImageURL}${item?.product?.image_url1}`
                               : noImage
                           }
                           alt={item?.product?.name}
@@ -235,12 +233,12 @@ function OrderView() {
                     <span>Total </span>
                     <span>₹ {parseFloat(data.total).toFixed(2)}</span>
                   </div>
-                  <div className="d-flex align-items-center gap-1">
+                  {/* <div className="d-flex align-items-center gap-1">
                     <button className="badge_outline_dark">Send Invoice</button>
                     <button className="badge_outline_pink">
                       Collect Payment
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -291,14 +289,7 @@ function OrderView() {
                   <p className="mb-0">Address</p>
                 </div>
                 <div className="card-body  m-0 p-4">
-                  <p>
-                    Shipping :&nbsp;
-                    {data.shipping_address ?? "No shipping address provided"}
-                  </p>
-                  <p>
-                    Billing :&nbsp;
-                    {data.billing_address ?? "No shipping address provided"}
-                  </p>
+                  <p>{data.delivery_address ?? "--"}</p>
                 </div>
               </div>
             </div>

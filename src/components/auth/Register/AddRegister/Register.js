@@ -45,6 +45,7 @@ function Register() {
         name: values.name,
         email: values.email,
         password: values.password,
+        role: 2,
         password_confirmation: values.cpassword,
       };
       try {

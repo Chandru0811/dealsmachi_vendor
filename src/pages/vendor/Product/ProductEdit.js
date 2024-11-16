@@ -589,7 +589,6 @@ function ProductEdit() {
                     <option></option>
                     <option value="1">Product</option>
                     <option value="2">Service</option>
-                    <option value="3">Product & Service</option>
                   </select>
                   {formik.touched.deal_type && formik.errors.deal_type && (
                     <div className="invalid-feedback">
