@@ -268,7 +268,7 @@ function DashboardV() {
                   src={dashboardcard1}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -297,7 +297,7 @@ function DashboardV() {
                   src={dashboardcard4}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -326,7 +326,7 @@ function DashboardV() {
                   src={dashboardcard3}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -355,7 +355,7 @@ function DashboardV() {
                   src={dashboardcard5}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -384,7 +384,36 @@ function DashboardV() {
                   src={dashboardcard2}
                   alt=""
                   className="img-fluid"
-                  style={{ width: "100%"}}
+                  style={{ width: "100%" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-12 col-md-6 col-lg-3 mb-4">
+          <div
+            className="card h-100"
+            style={{
+              background: "#45c457",
+              borderRadius: "8px",
+            }}
+          >
+            <div className="card-content p-2">
+              <div className="d-flex justify-content-between">
+                <h2 className="text-white">{data?.totalorderscount}</h2>
+                {/* <div>
+                  <IoSettingsOutline className="text-white" />
+                  <IoMdArrowDropdown className="text-white" />
+                </div> */}
+              </div>
+              <p className="text-white">Order Counts</p>
+              <div className="flex-grow-1">
+                <img
+                  src={dashboardcard1}
+                  alt=""
+                  className="img-fluid"
+                  style={{ width: "100%" }}
                 />
               </div>
             </div>
@@ -445,7 +474,11 @@ function DashboardV() {
               <button
                 onClick={toggleShowProducts}
                 className="btn m-4"
-                style={{ background: "#ef4444", color: "#fff", boxShadow: "none" }}
+                style={{
+                  background: "#ef4444",
+                  color: "#fff",
+                  boxShadow: "none",
+                }}
               >
                 {showProducts ? "Hide Products" : "View Products"}
               </button>

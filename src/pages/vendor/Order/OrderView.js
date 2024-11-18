@@ -9,6 +9,7 @@ function OrderView() {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log("first:", data);
 
   const getData = async () => {
     setLoading(true);
@@ -42,14 +43,16 @@ function OrderView() {
               <p className="d-flex justify-content-center text-dark">
                 Order ID: {data.order_number ?? "N/A"}&nbsp;
               </p>
-              <span className="badge_warning">
+              &nbsp;
+              <span className="badge_warning text-capitalize">
                 {data?.payment_status ?? "N/A"}
               </span>
+              &nbsp;&nbsp;
               <span
                 className={
                   data?.order_type === "service"
-                    ? "badge_default"
-                    : "badge_payment"
+                    ? "badge_default text-capitalize"
+                    : "badge_payment text-capitalize"
                 }
               >
                 {data?.order_type ?? "N/A"}
@@ -66,73 +69,127 @@ function OrderView() {
             <div className="col-md-8">
               {/* Order Item */}
               <div className="card mb-4">
-                <div className="card-header m-0 p-2 d-flex gap-2 align-items-center">
-                  <p className="mb-0">Order Item</p>
-                  <span className="badge_danger">{data.status ?? "N/A"}</span>
-                  <span className="badge_payment">
-                    {data.items?.length > 0 &&
-                      data.items[0]?.product?.coupon_code && (
-                        <span>{data?.items[0]?.product?.coupon_code}</span>
-                      )}
-                  </span>
+                <div className="card-header m-0 p-2 d-flex justify-content-between gap-2 align-items-center">
+                  <div>
+                    <p className="mb-0">
+                      Order Item &nbsp;
+                      <span className="badge_danger text-capitalize">
+                        {data.status ?? "N/A"}
+                      </span>
+                      &nbsp;
+                      <span className="badge_payment">
+                        {data.items?.length > 0 &&
+                          data.items[0]?.product?.coupon_code && (
+                            <span>{data?.items[0]?.product?.coupon_code}</span>
+                          )}
+                      </span>
+                    </p>
+                  </div>
+                  <div>
+                    <span>
+                      Date :{" "}
+                      {data?.created_at
+                        ? new Date(data.created_at).toISOString().split("T")[0]
+                        : ""}
+                    </span>{" "}
+                    &nbsp;
+                    <span>
+                      Time :{" "}
+                      <span className="text-uppercase">
+                        {" "}
+                        {data?.created_at
+                          ? new Date(data.created_at).toLocaleString("en-IN", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true,
+                            })
+                          : ""}
+                      </span>
+                    </span>
+                  </div>
                 </div>
-                <div className="card-body  m-0 p-4">
-                  {data.items?.map((item, index) => (
-                    <div key={index} className="row align-items-center mb-3">
-                      <div className="col-md-3">
-                        <img
-                          src={
-                            item?.product?.image_url1
-                              ? `${ImageURL}${item?.product?.image_url1}`
-                              : noImage
-                          }
-                          alt={item?.product?.name}
-                          style={{ width: "100%" }}
-                        />
+                <div className="card-body m-0 p-4">
+                  {data.items?.map((item, index) =>
+                    item.product ? (
+                      <div key={index} className="row align-items-center mb-3">
+                        <div className="col-md-3">
+                          <img
+                            src={
+                              item?.product?.image_url1
+                                ? `${ImageURL}${item?.product?.image_url1}`
+                                : noImage
+                            }
+                            alt={item?.product?.name}
+                            style={{ width: "100%" }}
+                          />
+                        </div>
+                        <div className="col">
+                          <h3 className="text-muted text-capitalize">
+                            {item?.product?.name}
+                          </h3>
+                          <p>{item?.product?.description}</p>
+                          <p>
+                            <del>
+                              ₹
+                              {new Intl.NumberFormat("en-IN", {
+                                maximumFractionDigits: 0,
+                              }).format(
+                                parseFloat(item?.product?.original_price)
+                              )}
+                            </del>
+                            &nbsp;&nbsp;
+                            <span style={{ color: "#dc3545" }}>
+                              ₹
+                              {new Intl.NumberFormat("en-IN", {
+                                maximumFractionDigits: 0,
+                              }).format(
+                                parseFloat(item?.product?.discounted_price)
+                              )}
+                            </span>
+                            &nbsp;&nbsp;
+                            <span className="badge_danger">
+                              {parseFloat(
+                                item?.product?.discount_percentage
+                              ).toFixed(0)}
+                              % saved
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="col">
-                        <p>
-                          <b>{item?.product?.category_id}</b>:&nbsp;
-                          {item?.product?.name}
+                    ) : (
+                      <>
+                        <p className="text-center my-5 py-5">
+                          No Product Data Found !
                         </p>
-                        <p>{item?.product?.description}</p>
-                        <p>
-                          <del>
-                            ₹:
-                            {parseFloat(item?.product?.original_price).toFixed(
-                              0
-                            )}
-                          </del>
-                          &nbsp;&nbsp;
-                          <span style={{ color: "#dc3545" }}>
-                            ₹:
-                            {parseFloat(
-                              item?.product?.discounted_price
-                            ).toFixed(0)}
-                          </span>
-                          &nbsp;&nbsp;
-                          <span className="badge_danger">
-                            {parseFloat(
-                              item?.product?.discount_percentage
-                            ).toFixed(0)}
-                            % saved
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  ))}
+                      </>
+                    )
+                  )}
 
                   <div className="row">
                     <div className="col-md-3"></div>
                     <div className="col-md-9">
                       {data?.order_type === "service" ? (
                         <div className="d-flex gap-4">
-                          <p>Service Date : {data?.service_date ?? " "}</p>
-                          <p>Service Time : {data?.service_time ?? " "}</p>
+                          <p>Service Date: {data?.service_date ?? " "}</p>
+                          <p>
+                            Service Time:{" "}
+                            {data?.service_time
+                              ? (() => {
+                                  const [hours, minutes] = data.service_time
+                                    .split(":")
+                                    .map(Number);
+                                  const period = hours >= 12 ? "PM" : "AM";
+                                  const adjustedHours = hours % 12 || 12;
+                                  return `${adjustedHours}:${minutes
+                                    .toString()
+                                    .padStart(2, "0")} ${period}`;
+                                })()
+                              : " "}
+                          </p>
                         </div>
                       ) : (
                         <div className="d-flex gap-4">
-                          <p>Quantity : {data?.quantity ?? " "}</p>
+                          <p>Quantity: {data?.quantity ?? " "}</p>
                         </div>
                       )}
                     </div>
@@ -201,44 +258,60 @@ function OrderView() {
                       className={
                         (data.payment_type?.replace(/_/g, " ") ?? "Pending") ===
                         "online payment"
-                          ? "badge_default"
-                          : "badge_payment"
+                          ? "badge_default text-capitalize"
+                          : "badge_payment text-capitalize"
                       }
                     >
                       {data.payment_type?.replace(/_/g, " ") ?? "Pending"}
                     </span>
                     &nbsp;
-                    <span className="badge_warning">
+                    <span className="badge_warning text-capitalize">
                       {data.payment_status ?? "Pending"}
                     </span>
                   </p>
                 </div>
                 <div className="card-body  m-0 p-4">
                   <div className="d-flex justify-content-between">
-                    <span>Unit Price</span>
+                    <span>Subtotal</span>
                     <span>
-                      {data.items?.length > 0 && data.items[0]?.unit_price && (
-                        <span className="coupon_code">
-                          ₹ {parseFloat(data?.items[0]?.unit_price).toFixed(2)}
-                        </span>
+                      ₹
+                      {new Intl.NumberFormat("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        parseFloat(
+                          data?.items?.[0]?.product?.original_price || 0
+                        ) * parseFloat(data?.quantity || 0)
                       )}
                     </span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span>Subtotal</span>
-                    <span>₹ {parseFloat(data.total).toFixed(2)}</span>
+                    <span>Discount</span>
+                    <span>
+                      ₹
+                      {new Intl.NumberFormat("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        parseFloat(
+                          (data?.items?.[0]?.product?.original_price || 0) -
+                            (data?.items?.[0]?.product?.discounted_price || 0)
+                        ) * parseFloat(data?.quantity || 0)
+                      )}
+                    </span>
                   </div>
+
                   <hr />
                   <div className="d-flex justify-content-between pb-3">
                     <span>Total </span>
-                    <span>₹ {parseFloat(data.total).toFixed(2)}</span>
+                    <span>
+                      ₹
+                      {new Intl.NumberFormat("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      }).format(parseFloat(data.total))}
+                    </span>
                   </div>
-                  {/* <div className="d-flex align-items-center gap-1">
-                    <button className="badge_outline_dark">Send Invoice</button>
-                    <button className="badge_outline_pink">
-                      Collect Payment
-                    </button>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -289,7 +362,7 @@ function OrderView() {
                   <p className="mb-0">Address</p>
                 </div>
                 <div className="card-body  m-0 p-4">
-                  <p>{data.delivery_address ?? "--"}</p>
+                  <p>{data.delivery_address ?? "No address found"}</p>
                 </div>
               </div>
             </div>
