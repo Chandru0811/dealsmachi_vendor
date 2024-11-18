@@ -129,7 +129,13 @@ const Orders = () => {
                     <td className="align-middle text-start">
                       {data.first_name}
                     </td>
-                    <td className="align-middle text-start">{data.total}</td>
+                    <td className="align-middle text-start">
+                      ₹
+                      {new Intl.NumberFormat("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      }).format(parseFloat(data.total))}
+                    </td>
                     <td className="align-middle text-start">
                       {data.shop.name}
                     </td>

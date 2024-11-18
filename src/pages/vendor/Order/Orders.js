@@ -126,11 +126,29 @@ const Orders = () => {
                 {datas?.map((data, index) => (
                   <tr key={data.id}>
                     <td className="text-start align-middle">{index + 1}</td>
-                    <td className="text-start">{data.order_number}</td>
+                    <td className="text-start">
+                      {data.order_number} &nbsp;
+                      {data.approved !== 1 ? (
+                        <span
+                          class="badge text-bg-secondary"
+                          style={{ backgroundColor: "#ff0060" }}
+                        >
+                          New
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </td>
                     <td className="align-middle text-start">
                       {data.first_name}
                     </td>
-                    <td className="align-middle text-start">{data.total}</td>
+                    <td className="align-middle text-start">
+                      ₹
+                      {new Intl.NumberFormat("en-IN", {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      }).format(parseFloat(data.total))}
+                    </td>
                     <td className="align-middle text-start">
                       {data.shop.name}
                     </td>

@@ -74,7 +74,7 @@ function OrderView() {
                     <p className="mb-0">
                       Order Item &nbsp;
                       <span className="badge_danger text-capitalize">
-                        {data.status ?? "N/A"}
+                        {data?.status !== 0 ? "Pending" : "N/A"}
                       </span>
                       &nbsp;
                       <span className="badge_payment">
@@ -272,7 +272,14 @@ function OrderView() {
                 </div>
                 <div className="card-body  m-0 p-4">
                   <div className="d-flex justify-content-between">
-                    <span>Subtotal</span>
+                    <span>
+                      Subtotal&nbsp;
+                      {data?.quantity !== 1 && (
+                        <span style={{ fontSize: "smaller" }}>
+                          (x{data.quantity})
+                        </span>
+                      )}
+                    </span>
                     <span>
                       ₹
                       {new Intl.NumberFormat("en-IN", {
@@ -286,7 +293,14 @@ function OrderView() {
                     </span>
                   </div>
                   <div className="d-flex justify-content-between">
-                    <span>Discount</span>
+                    <span>
+                      Discount&nbsp;
+                      {data?.quantity !== 1 && (
+                        <span style={{ fontSize: "smaller" }}>
+                          (x{data.quantity})
+                        </span>
+                      )}
+                    </span>
                     <span>
                       ₹
                       {new Intl.NumberFormat("en-IN", {
@@ -303,7 +317,14 @@ function OrderView() {
 
                   <hr />
                   <div className="d-flex justify-content-between pb-3">
-                    <span>Total </span>
+                    <span>
+                      Total{" "}
+                      {data?.quantity !== 1 && (
+                        <span style={{ fontSize: "smaller" }}>
+                          (x{data.quantity})
+                        </span>
+                      )}
+                    </span>
                     <span>
                       ₹
                       {new Intl.NumberFormat("en-IN", {
