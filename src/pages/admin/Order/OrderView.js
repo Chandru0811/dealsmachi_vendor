@@ -44,8 +44,26 @@ function OrderView() {
                 Order ID: {data.order_number ?? "N/A"}&nbsp;
               </p>
               &nbsp;
-              <span className="badge_warning text-capitalize">
-                {data?.payment_status ?? "N/A"}
+              <span
+                className={`badge text-capitalize ${
+                  data?.payment_status === "1"
+                    ? "badge_warning"
+                    : "badge_warning"
+                }`}
+              >
+                {data?.payment_status === "1"
+                  ? "Unpaid"
+                  : data?.payment_status === "2"
+                  ? "Pending"
+                  : data?.payment_status === "3"
+                  ? "Paid"
+                  : data?.payment_status === "4"
+                  ? "Refund Initiated"
+                  : data?.payment_status === "5"
+                  ? "Refunded"
+                  : data?.payment_status === "6"
+                  ? "Refund Error"
+                  : "Unknown Status"}
               </span>
               &nbsp;&nbsp;
               <span
@@ -74,13 +92,27 @@ function OrderView() {
                     <p className="mb-0">
                       Order Item &nbsp;
                       <span className="badge_danger text-capitalize">
-                        {data?.status !== 0 ? "Pending" : "N/A"}
+                        {data?.status === "1"
+                          ? "Created"
+                          : data?.status === "2"
+                          ? "Payment Error"
+                          : data?.status === "3"
+                          ? "Confirmed"
+                          : data?.status === "4"
+                          ? "Awaiting Delivery"
+                          : data?.status === "5"
+                          ? "Delivered"
+                          : data?.status === "6"
+                          ? "Returned"
+                          : data?.status === "7"
+                          ? "Cancelled"
+                          : "Unknown Status"}
                       </span>
                       &nbsp;
                       <span className="badge_payment">
                         {data.items?.length > 0 &&
-                          data.items[0]?.product?.coupon_code && (
-                            <span>{data?.items[0]?.product?.coupon_code}</span>
+                          data.items[0]?.coupon_code && (
+                            <span>{data?.items[0]?.coupon_code}</span>
                           )}
                       </span>
                     </p>
@@ -110,7 +142,7 @@ function OrderView() {
                 </div>
                 <div className="card-body m-0 p-4">
                   {data.items?.map((item, index) =>
-                    item.product ? (
+                    item ? (
                       <div key={index} className="row align-items-center mb-3">
                         <div className="col-md-3">
                           <img
@@ -119,38 +151,32 @@ function OrderView() {
                                 ? `${ImageURL}${item?.product?.image_url1}`
                                 : noImage
                             }
-                            alt={item?.product?.name}
+                            alt={item?.deal_name}
                             style={{ width: "100%" }}
                           />
                         </div>
                         <div className="col">
                           <h3 className="text-muted text-capitalize">
-                            {item?.product?.name}
+                            {item?.deal_name}
                           </h3>
-                          <p>{item?.product?.description}</p>
+                          <p>{item?.deal_description}</p>
                           <p>
                             <del>
                               ₹
                               {new Intl.NumberFormat("en-IN", {
                                 maximumFractionDigits: 0,
-                              }).format(
-                                parseFloat(item?.product?.original_price)
-                              )}
+                              }).format(parseFloat(item?.deal_originalprice))}
                             </del>
                             &nbsp;&nbsp;
                             <span style={{ color: "#dc3545" }}>
                               ₹
                               {new Intl.NumberFormat("en-IN", {
                                 maximumFractionDigits: 0,
-                              }).format(
-                                parseFloat(item?.product?.discounted_price)
-                              )}
+                              }).format(parseFloat(item?.deal_price))}
                             </span>
                             &nbsp;&nbsp;
                             <span className="badge_danger">
-                              {parseFloat(
-                                item?.product?.discount_percentage
-                              ).toFixed(0)}
+                              {parseFloat(item?.discount_percentage).toFixed(0)}
                               % saved
                             </span>
                           </p>
@@ -266,7 +292,19 @@ function OrderView() {
                     </span>
                     &nbsp;
                     <span className="badge_warning text-capitalize">
-                      {data.payment_status ?? "Pending"}
+                      {data?.payment_status === "1"
+                        ? "Unpaid"
+                        : data?.payment_status === "2"
+                        ? "Pending"
+                        : data?.payment_status === "3"
+                        ? "Paid"
+                        : data?.payment_status === "4"
+                        ? "Refund Initiated"
+                        : data?.payment_status === "5"
+                        ? "Refunded"
+                        : data?.payment_status === "6"
+                        ? "Refund Error"
+                        : "Unknown Status"}
                     </span>
                   </p>
                 </div>
@@ -286,9 +324,8 @@ function OrderView() {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
                       }).format(
-                        parseFloat(
-                          data?.items?.[0]?.product?.original_price || 0
-                        ) * parseFloat(data?.quantity || 0)
+                        parseFloat(data?.items?.[0]?.deal_originalprice || 0) *
+                          parseFloat(data?.quantity || 0)
                       )}
                     </span>
                   </div>
@@ -308,8 +345,8 @@ function OrderView() {
                         maximumFractionDigits: 2,
                       }).format(
                         parseFloat(
-                          (data?.items?.[0]?.product?.original_price || 0) -
-                            (data?.items?.[0]?.product?.discounted_price || 0)
+                          (data?.items?.[0]?.deal_originalprice || 0) -
+                            (data?.items?.[0]?.deal_price || 0)
                         ) * parseFloat(data?.quantity || 0)
                       )}
                     </span>
@@ -382,8 +419,31 @@ function OrderView() {
                 <div className="card-header m-0 p-2">
                   <p className="mb-0">Address</p>
                 </div>
-                <div className="card-body  m-0 p-4">
-                  <p>{data.delivery_address ?? "No address found"}</p>
+                <div className="card-body m-0 p-4">
+                  {data.delivery_address ? (
+                    (() => {
+                      try {
+                        const deliveryAddress = JSON.parse(
+                          data.delivery_address
+                        );
+                        return (
+                          <>
+                            <p>
+                              {deliveryAddress.street}, {deliveryAddress.city},{" "}
+                              {deliveryAddress.state}, {deliveryAddress.country}
+                              , {deliveryAddress.zipCode}.
+                            </p>
+                            <p></p>
+                          </>
+                        );
+                      } catch (error) {
+                        console.error("Invalid JSON:", error);
+                        return <p>Invalid address format</p>;
+                      }
+                    })()
+                  ) : (
+                    <p>No address found</p>
+                  )}
                 </div>
               </div>
             </div>
