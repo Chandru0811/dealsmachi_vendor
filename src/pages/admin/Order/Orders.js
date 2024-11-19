@@ -137,7 +137,7 @@ const Orders = () => {
                       }).format(parseFloat(data.total))}
                     </td>
                     <td className="align-middle text-start">
-                      {data.shop.name}
+                      {data.shop.legal_name}
                     </td>
                     <td className="align-middle text-center">
                       <Link to={`/order/view/${data.id}`}>
