@@ -135,7 +135,11 @@ const Products = () => {
                       {data.name}
                     </td>
                     <td className="align-middle text-start">
-                      {data.original_price}
+                      ₹{new Intl.NumberFormat("en-IN", {
+                        maximumFractionDigits: 0,
+                      }).format(
+                        parseFloat(data?.original_price)
+                      )}
                     </td>
                     <td className="align-middle text-start">
                       {data?.shop?.legal_name}

@@ -17,12 +17,12 @@ function VendorHeader() {
     <header className="border-bottom py-3 sticky-top-header">
       <div className="container-fluid">
         <div className="mb-npx">
-          <div className="row align-items-center">
-            <div className="col-sm-6 col-12 mb-4 mb-sm-0 admin-settings">
+          <div className="row align-items-center justify-content-end">
+            {/* <div className="col-sm-6 col-12 mb-4 mb-sm-0 admin-settings">
               <span>
                 <i className="bi bi-gear admin-icons"></i> Settings
               </span>
-            </div>
+            </div> */}
             <div className="col-sm-6 col-12 text-sm-end">
               <div className="mx-n1">
                 {/* <span className="position-relative mx-2">

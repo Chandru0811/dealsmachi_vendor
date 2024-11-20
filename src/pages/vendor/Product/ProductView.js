@@ -136,10 +136,10 @@ function ProductView() {
                         {data?.deal_type === 1 || data?.deal_type === "1"
                           ? "Product"
                           : data?.deal_type === 2 || data?.deal_type === "2"
-                          ? "Service"
-                          : data?.deal_type === 3 || data?.deal_type === "3"
-                          ? "Product and Service"
-                          : "Unknown"}
+                            ? "Service"
+                            : data?.deal_type === 3 || data?.deal_type === "3"
+                              ? "Product and Service"
+                              : "Unknown"}
                       </p>
                     </div>
                   </div>
@@ -172,7 +172,11 @@ function ProductView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data?.original_price}
+                        :  ₹{new Intl.NumberFormat("en-IN", {
+                          maximumFractionDigits: 0,
+                        }).format(
+                          parseFloat(data?.original_price)
+                        )}
                       </p>
                     </div>
                   </div>
@@ -184,7 +188,11 @@ function ProductView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data?.discounted_price}
+                        : ₹{new Intl.NumberFormat("en-IN", {
+                          maximumFractionDigits: 0,
+                        }).format(
+                          parseFloat(data?.discounted_price)
+                        )}
                       </p>
                     </div>
                   </div>
@@ -196,7 +204,7 @@ function ProductView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data?.discount_percentage}
+                        : {data?.discount_percentage}%
                       </p>
                     </div>
                   </div>
@@ -292,7 +300,7 @@ function ProductView() {
                           src={`${ImageURL}${data?.image_url1}`}
                           alt="product"
                           className="img-fluid"
-                          // width={150}
+                        // width={150}
                         />
                       </p>
                     </div>
@@ -311,7 +319,7 @@ function ProductView() {
                           src={`${ImageURL}${data?.image_url2}`}
                           alt="product"
                           className="img-fluid"
-                          // width={150}
+                        // width={150}
                         />
                       </p>
                     </div>
@@ -330,7 +338,7 @@ function ProductView() {
                           src={`${ImageURL}${data?.image_url3}`}
                           alt="product"
                           className="img-fluid"
-                          // width={150}
+                        // width={150}
                         />
                       </p>
                     </div>
@@ -349,7 +357,7 @@ function ProductView() {
                           src={`${ImageURL}${data?.image_url4}`}
                           alt="product"
                           className="img-fluid"
-                          // width={150}
+                        // width={150}
                         />
                       </p>
                     </div>

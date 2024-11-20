@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import deals from "../../assets/deals.png";
 import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidCategory, BiLogOut } from "react-icons/bi";
+import { FaBoxOpen } from "react-icons/fa";
 
 function VendorSidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -33,11 +34,10 @@ function VendorSidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
-            leadMenuOpen || activeSubmenu ? "active" : ""
-          }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
+            }`}
           to="/"
-          // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
+        // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
           <img
             src={deals}
@@ -55,7 +55,7 @@ function VendorSidebar({ handleLogout }) {
         <div
           className="collapse navbar-collapse"
           id="sidebarCollapse"
-          // style={{ marginTop: "5rem" }}
+        // style={{ marginTop: "5rem" }}
         >
           <ul className="navbar-nav">
             <li className="nav-item">
@@ -102,7 +102,7 @@ function VendorSidebar({ handleLogout }) {
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="/order">
-                <BiSolidCategory />
+                <FaBoxOpen />
                 Orders
               </NavLink>
             </li>

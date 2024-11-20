@@ -118,7 +118,7 @@ const Orders = () => {
                   <th className="text-start">Order number</th>
                   <th className="text-start">Customer Name</th>
                   <th className="text-start">Total</th>
-                  <th className="text-start">Shop Name</th>
+                  <th className="text-start">Product Name</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
@@ -140,7 +140,7 @@ const Orders = () => {
                       )}
                     </td>
                     <td className="align-middle text-start">
-                      {data.first_name}
+                      {data?.customer?.name}
                     </td>
                     <td className="align-middle text-start">
                       ₹
@@ -150,7 +150,7 @@ const Orders = () => {
                       }).format(parseFloat(data.total))}
                     </td>
                     <td className="align-middle text-start">
-                      {data.shop.legal_name}
+                      {data.items?.[0]?.deal_name}
                     </td>
                     <td className="align-middle text-center">
                       <Link to={`/order/view/${data.id}`}>

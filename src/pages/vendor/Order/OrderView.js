@@ -44,25 +44,24 @@ function OrderView() {
               </p>
               &nbsp;
               <span
-                className={`badge text-capitalize ${
-                  data?.payment_status === "1"
-                    ? "badge_warning"
-                    : "badge_warning"
-                }`}
+                className={`badge text-capitalize ${data?.payment_status === "1"
+                  ? "badge_warning"
+                  : "badge_warning"
+                  }`}
               >
                 {data?.payment_status === "1"
                   ? "Unpaid"
                   : data?.payment_status === "2"
-                  ? "Pending"
-                  : data?.payment_status === "3"
-                  ? "Paid"
-                  : data?.payment_status === "4"
-                  ? "Refund Initiated"
-                  : data?.payment_status === "5"
-                  ? "Refunded"
-                  : data?.payment_status === "6"
-                  ? "Refund Error"
-                  : "Unknown Status"}
+                    ? "Pending"
+                    : data?.payment_status === "3"
+                      ? "Paid"
+                      : data?.payment_status === "4"
+                        ? "Refund Initiated"
+                        : data?.payment_status === "5"
+                          ? "Refunded"
+                          : data?.payment_status === "6"
+                            ? "Refund Error"
+                            : "Unknown Status"}
               </span>
               &nbsp;&nbsp;
               <span
@@ -94,18 +93,18 @@ function OrderView() {
                         {data?.status === "1"
                           ? "Created"
                           : data?.status === "2"
-                          ? "Payment Error"
-                          : data?.status === "3"
-                          ? "Confirmed"
-                          : data?.status === "4"
-                          ? "Awaiting Delivery"
-                          : data?.status === "5"
-                          ? "Delivered"
-                          : data?.status === "6"
-                          ? "Returned"
-                          : data?.status === "7"
-                          ? "Cancelled"
-                          : "Unknown Status"}
+                            ? "Payment Error"
+                            : data?.status === "3"
+                              ? "Confirmed"
+                              : data?.status === "4"
+                                ? "Awaiting Delivery"
+                                : data?.status === "5"
+                                  ? "Delivered"
+                                  : data?.status === "6"
+                                    ? "Returned"
+                                    : data?.status === "7"
+                                      ? "Cancelled"
+                                      : "Unknown Status"}
                       </span>
                       &nbsp;
                       <span className="badge_payment">
@@ -130,10 +129,10 @@ function OrderView() {
                         {" "}
                         {data?.created_at
                           ? new Date(data.created_at).toLocaleString("en-IN", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                              hour12: true,
-                            })
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })
                           : ""}
                       </span>
                     </span>
@@ -206,15 +205,15 @@ function OrderView() {
                             Service Time:{" "}
                             {data?.service_time
                               ? (() => {
-                                  const [hours, minutes] = data.service_time
-                                    .split(":")
-                                    .map(Number);
-                                  const period = hours >= 12 ? "PM" : "AM";
-                                  const adjustedHours = hours % 12 || 12;
-                                  return `${adjustedHours}:${minutes
-                                    .toString()
-                                    .padStart(2, "0")} ${period}`;
-                                })()
+                                const [hours, minutes] = data.service_time
+                                  .split(":")
+                                  .map(Number);
+                                const period = hours >= 12 ? "PM" : "AM";
+                                const adjustedHours = hours % 12 || 12;
+                                return `${adjustedHours}:${minutes
+                                  .toString()
+                                  .padStart(2, "0")} ${period}`;
+                              })()
                               : " "}
                           </p>
                         </div>
@@ -288,7 +287,7 @@ function OrderView() {
                     <span
                       className={
                         (data.payment_type?.replace(/_/g, " ") ?? "Pending") ===
-                        "online payment"
+                          "online payment"
                           ? "badge_default text-capitalize"
                           : "badge_payment text-capitalize"
                       }
@@ -300,16 +299,16 @@ function OrderView() {
                       {data?.payment_status === "1"
                         ? "Unpaid"
                         : data?.payment_status === "2"
-                        ? "Pending"
-                        : data?.payment_status === "3"
-                        ? "Paid"
-                        : data?.payment_status === "4"
-                        ? "Refund Initiated"
-                        : data?.payment_status === "5"
-                        ? "Refunded"
-                        : data?.payment_status === "6"
-                        ? "Refund Error"
-                        : "Unknown Status"}
+                          ? "Pending"
+                          : data?.payment_status === "3"
+                            ? "Paid"
+                            : data?.payment_status === "4"
+                              ? "Refund Initiated"
+                              : data?.payment_status === "5"
+                                ? "Refunded"
+                                : data?.payment_status === "6"
+                                  ? "Refund Error"
+                                  : "Unknown Status"}
                     </span>
                   </p>
                 </div>
@@ -352,7 +351,7 @@ function OrderView() {
                       }).format(
                         parseFloat(
                           (data?.items?.[0]?.deal_originalprice || 0) -
-                            (data?.items?.[0]?.deal_price || 0)
+                          (data?.items?.[0]?.deal_price || 0)
                         ) * parseFloat(data?.quantity || 0)
                       )}
                     </span>
@@ -398,13 +397,8 @@ function OrderView() {
                   <p className="mb-0">Customer</p>
                 </div>
                 <div className="card-body  m-0 p-4">
-                  <p>
-                    Name :&nbsp;
-                    {`${data.first_name}${
-                      data.last_name ? ` ${data.last_name}` : ""
-                    }`}
-                  </p>
-                  <p>Email : {data.email ?? "No Email provided"}</p>
+                  <p>Name : {data?.customer?.name ?? "N/A"}</p>
+                  <p>Email : {data?.customer?.email ?? "N/A"}</p>
                 </div>
               </div>
 
@@ -414,8 +408,10 @@ function OrderView() {
                   <p className="mb-0">Contact Information</p>
                 </div>
                 <div className="card-body  m-0 p-4">
-                  <p>Name : {data?.customer?.name ?? "N/A"}</p>
-                  <p>Email : {data?.customer?.email ?? "N/A"}</p>
+                  <p>
+                    Name : {data.first_name ? `${data.first_name} ${data.last_name || ''}` : "N/A"}
+                  </p>
+                  <p>Email : {data.email ?? "No Email provided"}</p>
                   <p>Phone : {data?.mobile ?? "No phone number provided"}</p>
                 </div>
               </div>

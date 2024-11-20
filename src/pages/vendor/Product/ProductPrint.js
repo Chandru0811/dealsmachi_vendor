@@ -211,7 +211,11 @@ function ProductPrint() {
                         className="text-muted"
                         style={{ fontWeight: "normal", fontSize: "24px" }}
                       >
-                        : {data?.discounted_price}
+                        : ₹{new Intl.NumberFormat("en-IN", {
+                          maximumFractionDigits: 0,
+                        }).format(
+                          parseFloat(data?.discounted_price)
+                        )}
                       </h2>
                     </div>
                   </div>

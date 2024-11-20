@@ -201,10 +201,10 @@ function ProductsView() {
                       {data.deal_type === 1 || data.deal_type === "0"
                         ? "Product"
                         : data.deal_type === 2 || data.deal_type === "1"
-                        ? "Service"
-                        : data.deal_type === 3 || data.deal_type === "2"
-                        ? "Product and Service"
-                        : "Unknown"}
+                          ? "Service"
+                          : data.deal_type === 3 || data.deal_type === "2"
+                            ? "Product and Service"
+                            : "Unknown"}
                     </p>
                   </div>
                 </div>
@@ -236,7 +236,27 @@ function ProductsView() {
                   </div>
                   <div className="col-6">
                     <p className="text-muted text-sm">
-                      : {data.original_price}
+                      : ₹{new Intl.NumberFormat("en-IN", {
+                        maximumFractionDigits: 0,
+                      }).format(
+                        parseFloat(data?.original_price)
+                      )}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-3">
+                  <div className="col-6 d-flex justify-content-start align-items-center">
+                    <p className="text-sm">Discounted Price</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : ₹{new Intl.NumberFormat("en-IN", {
+                        maximumFractionDigits: 0,
+                      }).format(
+                        parseFloat(data?.discounted_price)
+                      )}
                     </p>
                   </div>
                 </div>
@@ -249,18 +269,6 @@ function ProductsView() {
                   <div className="col-6">
                     <p className="text-muted text-sm">
                       : {data.discount_percentage}%
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-3">
-                  <div className="col-6 d-flex justify-content-start align-items-center">
-                    <p className="text-sm">Discounted Price</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.discounted_price}
                     </p>
                   </div>
                 </div>

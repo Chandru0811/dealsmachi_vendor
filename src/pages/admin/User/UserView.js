@@ -40,7 +40,7 @@ function UserView() {
             <div className="row p-3">
               <div className="d-flex justify-content-between align-items-center w-100">
                 <div>
-                  <h3 className="ls-tight">View Slider</h3>
+                  <h3 className="ls-tight">View User</h3>
                 </div>
                 <div>
                   <Link to="/user">

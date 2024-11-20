@@ -128,7 +128,7 @@ const User = () => {
                   </th>
                   <th className="text-center">Name</th>
                   <th className="text-center">Email</th>
-                  <th className="text-center">ACTION</th>
+                  {/* <th className="text-center">ACTION</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -137,14 +137,14 @@ const User = () => {
                     <td className="text-center">{index + 1}</td>
                     <td className="text-center">{data.name}</td>
                     <td className="text-center ms-2">{data.email}</td>
-                    <td className="text-center">
+                    {/* <td className="text-center">
                       <div className="d-flex justify-content-center">
                         <Link to={`/user/view/${data.id}`}>
                           <button className="button-btn btn-sm m-2">
                             View
                           </button>
                         </Link>
-                        {/* <Link to={`/slider/edit/${data.id}`}>
+                        <Link to={`/slider/edit/${data.id}`}>
                           <button className="button-btn btn-sm m-2">
                             Edit
                           </button>
@@ -153,9 +153,9 @@ const User = () => {
                           onSuccess={refreshData}
                           path={`/admin/slider/delete/${data.id}`}
                           style={{ display: "inline-block" }}
-                        /> */}
+                        />
                       </div>
-                    </td>
+                    </td> */}
                   </tr>
                 ))}
               </tbody>
