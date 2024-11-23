@@ -3,261 +3,107 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
-import {
-  useJsApiLoader,
-  GoogleMap,
-  Autocomplete,
-  MarkerF,
-} from "@react-google-maps/api";
-import RedMarker from "../../../assets/pinRed.png";
-const libraries = ["places"];
+import { FiAlertTriangle } from "react-icons/fi";
 
-function Location({ setValueChange }) {
-  const id = localStorage.getItem("shop_id");
+const validationSchema = Yup.object({
+  street: Yup.string().required("Street 1 is required!"),
+  city: Yup.string().required("City is required!"),
+  state: Yup.string().required("State is required!"),
+  country: Yup.string().required("Country is required!"),
+  zip_code: Yup.string().required("Zip Code is required!"),
+});
+
+const Location = ({ setValueChange }) => {
+  const [data, setData] = useState([]);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [center, setCenter] = useState({ lat: 13.0843007, lng: 80.2704622 });
-  const [markerPosition, setMarkerPosition] = useState(null);
-  const [autocomplete, setAutocomplete] = useState(null);
-  const [data, setData] = useState(null);
-  const [formChanged, setFormChanged] = useState(false); 
-  const [place, setPlace] = useState({
-    address: "",
-    street: "",
-    city: "",
-    state: "",
-    zip_code: "",
-    country: "",
-    map_url: "",
-    lat: "",
-    lng: "",
-  });
-
-  const validationSchema = Yup.object({
-    street: Yup.string().required("Street 1 is required"),
-    // street2: Yup.string().required("Street 2 is required"),
-    // city: Yup.string().required("City is required"),
-    zip_code: Yup.string().required("Zip Code is required"),
-    country: Yup.string().required("Country is required"),
-    // state: Yup.string().required("State is required"),
-  });
-
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries,
-  });
+  const id = localStorage.getItem("shop_id");
 
   const formik = useFormik({
     initialValues: {
       street: "",
       street2: "",
       city: "",
-      zip_code: "",
+      state: "",
       country: "",
-      // state: "",
+      zip_code: "",
+      address: ""
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
+      setLoadIndicator(true);
       console.log("Form Data", data);
+      const address = `${data.street}${data.street2 ? `, ${data.street2}` : ''}, ${data.city}, ${data.state}, ${data.country}, ${data.zip_code}`;
+      const formdata = new FormData();
+      formdata.append("_method", "PUT");
+      formdata.append("street", data.street);
+      formdata.append("street2", data.street2);
+      formdata.append("city", data.city);
+      formdata.append("state", data.state);
+      formdata.append("country", data.country);
+      formdata.append("zip_code", data.zip_code);
+      formdata.append("address", address);
       try {
-        setLoadIndicator(true);
-
-        const formDataWithAddress = {
-          ...data,
-          address: place.address,
-          street: place.street,
-          city: place.city,
-          zip_code: place.zip_code,
-          country: place.country,
-          state: place.state,
-          shop_lattitude: place?.lat,
-          shop_longtitude: place?.lng,
-          map_url: place.map_url,
-        };
-        console.log("formDataWithAddress", formDataWithAddress);
-        const response = await api.put(
+        const response = await api.post(
           `vendor/shop/${id}/update/location`,
-          formDataWithAddress,
+          formdata,
           {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "multipart/form-data",
             },
           }
         );
         if (response.status === 200) {
           toast.success(response.data.message);
-          getData();
-          setFormChanged(false);
         }
       } catch (error) {
-        toast.error(error.message);
+        if (error.response.status === 422) {
+          console.log("Full error response:", error.response);
+
+          const errors = error.response.data.error;
+
+          if (errors) {
+            Object.keys(errors).map((key) => {
+              errors[key].map((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          console.error("API Error", error);
+          toast.error("An unexpected error occurred.");
+        }
       } finally {
         setLoadIndicator(false);
-        setValueChange(false);
+        setValueChange(false); 
       }
     },
   });
 
-  const getData = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get(`vendor/shop/location/${id}`);
-      const shopData = response.data.data;
-      console.log("Shop data received:", shopData);
-
-      formik.setValues(shopData);
-      setData(shopData);
-      // Check for valid latitude and longitude values
-      const latitude = parseFloat(shopData.shop_lattitude);
-      const longitude = parseFloat(shopData.shop_longtitude);
-
-      if (!isNaN(latitude) && !isNaN(longitude)) {
-        setCenter({ lat: latitude, lng: longitude });
-        setMarkerPosition({ lat: latitude, lng: longitude });
-      } else {
-        console.warn(
-          "Invalid coordinates received, using default center values."
-        );
-        setCenter({ lat: 13.0843007, lng: 80.2704622 });
-        setMarkerPosition({ lat: 13.0843007, lng: 80.2704622 });
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Error Fetching Data: " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getData = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get(`vendor/shop/location/${id}`);
+        setData(response.data);
+        const shopData = response.data.data;
+        formik.setValues(shopData);
+      } catch (error) {
+        toast.error("Error Fetching Data ", error);
+      }
+      setLoading(false);
+    };
     getData();
-    console.log("center", center);
-    console.log("markposition", markerPosition);
   }, [id]);
 
   const handleFormikChange = (e) => {
-    formik.handleChange(e);
+    const { name, value } = e.target;
+    formik.setFieldValue(name, value === "" ? "" : value); // Set empty strings properly
     setValueChange(true);
-    setFormChanged(true);
   };
-
-  const onPlaceChanged = () => {
-    if (autocomplete) {
-      setPlace({
-        address: "",
-        street: "",
-        city: "",
-        state: "",
-        zip_code: "",
-        country: "",
-        map_url: "",
-        lat: "",
-        lng: "",
-        
-      })
-      setFormChanged(true);
-
-      const origin = autocomplete.getPlace();
-
-      if (!origin.geometry) {
-        console.error("No details available for input:", origin);
-        return;
-      }
-
-      const location = origin.geometry.location;
-      const lat = location.lat();
-      const lng = location.lng();
-
-      // Set formatted address directly
-      setPlace((prev) => ({
-        ...prev,
-        address: origin.formatted_address,
-        map_url: origin.url,
-        lat: lat,
-        lng: lng,
-      }));
-
-      let streetParts = [];
-
-      origin.address_components.forEach((component) => {
-        const types = component.types;
-
-        if (types.includes("plus_code")) {
-          streetParts.push(component.long_name);
-        }
-        if (types.includes("street_number")) {
-          streetParts.push(component.long_name);
-        }
-
-        if (types.includes("route")) {
-          streetParts.push(component.long_name);
-        }
-        if (types.includes("neighborhood")) {
-          streetParts.push(component.long_name);
-        }
-        if (types.includes("route")) {
-          streetParts.push(component.long_name);
-        }
-
-        if (
-          types.includes("sublocality_level_2") ||
-          types.includes("sublocality")
-        ) {
-          streetParts.push(component.long_name);
-        }
-
-        if (types.includes("locality")) {
-          setPlace((prev) => ({
-            ...prev,
-            city: component.long_name,
-          }));
-        }
-
-        if (types.includes("administrative_area_level_1")) {
-          setPlace((prev) => ({
-            ...prev,
-            state: component.long_name,
-          }));
-        }
-
-        if (types.includes("postal_code")) {
-          setPlace((prev) => ({
-            ...prev,
-            zip_code: component.long_name,
-          }));
-        }
-
-        if (types.includes("country")) {
-          setPlace((prev) => ({
-            ...prev,
-            country: component.long_name,
-          }));
-        }
-      });
-
-      setPlace((prev) => ({
-        ...prev,
-        street: streetParts.join(", "),
-      }));
-
-      console.log("Updated place data:", origin);
-      console.log("Latitude:", lat, "Longitude:", lng);
-
-      // Update center and marker position on the map
-      setCenter({ lat, lng });
-      setMarkerPosition({ lat, lng });
-    }
-  };
-
-  if (!isLoaded) {
-    return (
-      <div className="darksoul-layout">
-        <div className="loader-container">
-          <div className="spinner"></div>
-        </div>
-      </div>
-    );
-  }
+  
 
   return (
     <section className="mt-4">
@@ -272,43 +118,51 @@ function Location({ setValueChange }) {
           </div>
         ) : (
           <div className="container">
-            {/* <h3 className='text-primary py-3'>Shop Address</h3> */}
-
+            <h3 className='pt-2 pb-4' style={{ color: "#ff0060" }}>Shop Address</h3>
             <div className="row">
-              <div className="col-md-3 col-12 mb-5">
+              <div className="col-md-4 col-12 mb-5 ">
                 <label className="form-label">
-                  Address<span className="text-danger">*</span>
+                  Street 1<span className="text-danger">*</span>
                 </label>
-              </div>
-              <div className="col-md-9 col-12 mb-5">
-               {data?.street && data?.city && data?.zip_code && data?.state && data?.country 
-                ? `${data.street}, ${data.city}, ${data.zip_code}, ${data.state}, ${data.country}` 
-                : "There is no address"}
-              </div>
-              {/*<div className="col-md-4 col-12 mb-5">
-                <label className="form-label">Street2</label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
                   className={`form-control ${
-                    formik.touched.street2 && formik.errors.street2
+                    formik.touched.street && formik.errors.street
                       ? "is-invalid"
                       : ""
                   }`}
+                  name="street"
+                  onChange={handleFormikChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.street}
+                />
+                {formik.touched.street && formik.errors.street && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.street}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5 ">
+                <label className="form-label">
+                  Street 2
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control`}
                   name="street2"
                   onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.street2}
                 />
-                {formik.touched.street2 && formik.errors.street2 && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.street2}</small>
-                  </div>
-                )}
               </div>
-              <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">City</label>
+              <div className="col-md-4 col-12 mb-5 ">
+                <label className="form-label">
+                  City<span className="text-danger">*</span>
+                </label>
               </div>
               <div className="col-md-8 col-12 mb-5">
                 <input
@@ -329,7 +183,55 @@ function Location({ setValueChange }) {
                   </div>
                 )}
               </div>
-              <div className="col-md-4 col-12 mb-5">
+              <div className="col-md-4 col-12 mb-5 ">
+                <label className="form-label">
+                  State<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.state && formik.errors.state
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="state"
+                  onChange={handleFormikChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.state}
+                />
+                {formik.touched.state && formik.errors.state && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.state}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5 ">
+                <label className="form-label">
+                  Country<span className="text-danger">*</span>
+                </label>
+              </div>
+              <div className="col-md-8 col-12 mb-5">
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.country && formik.errors.country
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  name="country"
+                  onChange={handleFormikChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.country}
+                />
+                {formik.touched.country && formik.errors.country && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.country}</small>
+                  </div>
+                )}
+              </div>
+              <div className="col-md-4 col-12 mb-5 ">
                 <label className="form-label">
                   Zip Code<span className="text-danger">*</span>
                 </label>
@@ -352,117 +254,15 @@ function Location({ setValueChange }) {
                     <small>{formik.errors.zip_code}</small>
                   </div>
                 )}
-              </div> */}
-              {/* <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">State</label>
-              </div> */}
-              {/* <div className="col-md-8 col-12 mb-5">
-                <input
-                  type="text"
-                  className={`form-control ${formik.touched.state && formik.errors.state
-                      ? "is-invalid"
-                      : ""
-                    }`}
-                  name="state"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.state}
-                />
-                {formik.touched.state && formik.errors.state && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.state}</small>
-                  </div>
-                )}
-              </div> */}
-              {/* <div className="col-md-4 col-12 mb-5">
-                <label className="form-label">
-                  Country<span className="text-danger">*</span>
-                </label>
-              </div> */}
-              {/* <div className="col-md-8 col-12 mb-5">
-                <input
-                  type="text"
-                  className={`form-control ${
-                    formik.touched.country && formik.errors.country
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  name="country"
-                  onChange={handleFormikChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.country}
-                />
-                {formik.touched.country && formik.errors.country && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.country}</small>
-                  </div>
-                )}
-              </div> */}
-              <div className="col-12">
-                <GoogleMap
-                  center={center}
-                  zoom={15}
-                  mapContainerStyle={{ width: "100%", height: "400px" }}
-                  options={{
-                    zoomControl: true,
-                    streetViewControl: true,
-                    mapTypeControl: true,
-                    fullscreenControl: true,
-                  }}
-                >
-                  <Autocomplete
-                    onLoad={(autoC) => {
-                      autoC.setComponentRestrictions({ country: "IN" });
-                      setAutocomplete(autoC);
-                    }}
-                    onPlaceChanged={onPlaceChanged}
-                  >
-                    <input
-                      type="text"
-                      placeholder="Enter a location"
-                      className="form-control mt-2 mb-3"
-                      style={{
-                        boxSizing: "border-box",
-                        border: "1px solid transparent",
-                        width: "400px",
-                        height: "40px",
-                        padding: "0 12px",
-                        borderRadius: "3px",
-                        boxShadow: "0 2px 6px rgba(0, 0, 0, 0.3)",
-                        fontSize: "14px",
-                        outline: "none",
-                        textOverflow: "ellipses",
-                        position: "absolute",
-                        left: "50%",
-                        marginLeft: "-130px",
-                      }}
-                    />
-                  </Autocomplete>
-                  {markerPosition ? (
-                    <MarkerF
-                      position={markerPosition}
-                      icon={{
-                        url: RedMarker,
-                        scaledSize: new window.google.maps.Size(40, 40),
-                      }}
-                    />
-                  ) : null}
-                </GoogleMap>
-                {formik.errors.street && (
-                  <div className="error text-danger">
-                    <small>{formik.errors.street}</small>
-                  </div>
-                )}
               </div>
             </div>
           </div>
         )}
-
         <div className="text-end mt-4 mb-3">
           <button
             type="submit"
             className="btn btn-button btn-sm"
-            disabled={!formChanged || loadIndicator}
+            disabled={loadIndicator}
           >
             {loadIndicator && (
               <span
@@ -476,6 +276,6 @@ function Location({ setValueChange }) {
       </form>
     </section>
   );
-}
+};
 
 export default Location;
