@@ -23,7 +23,7 @@ function WelcomeWizard() {
         className="d-flex justify-content-center mb-5"
         style={{ color: "#ff0060" }}
       >
-        Dealsmachi - Deals that's Matter !
+        DealsMachi - Deals that's Matter !
       </h2>
       <div className="wizard-container p-5">
         <h2 className="p-3">Welcome to the Marketplace!</h2>

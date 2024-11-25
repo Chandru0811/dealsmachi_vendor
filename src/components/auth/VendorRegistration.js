@@ -65,7 +65,7 @@ export default function VendorRegistration({ handleVendorLogin }) {
             className="d-flex justify-content-center"
             style={{ color: "#ff0060" }}
           >
-            Dealsmachi - Deals that's Matter !
+            DealsMachi - Deals that's Matter !
           </h2>
           <Stepper className="mt-5" activeStep={activeStep} alternativeLabel>
             {steps.map((step, index) => (

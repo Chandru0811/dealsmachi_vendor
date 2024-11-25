@@ -45,18 +45,28 @@ function Sidebar({ handleLogout }) {
           to="/"
         // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
-          <img
-            src={deals}
-            alt="deals"
-            className="img-fluid sidebar-logo rounded-circle"
+          <div
             style={{
               background: "#fff",
-              borderRadius: "5px",
+              borderRadius: "50%",
               width: "45px",
               height: "45px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
-          />
-          <p className="text-white">Dealsmachi</p>
+          >
+            <img
+              src={deals}
+              alt="deals"
+              className="img-fluid sidebar-logo"
+              style={{
+                width: "40px",
+                height: "40px",
+              }}
+            />
+          </div>
+          <p className="text-white">DealsMachi</p>
         </NavLink>
         <div
           className="collapse navbar-collapse"

@@ -227,7 +227,7 @@ function OrderView() {
                 </div>
               </div>
 
-              <div className="card mb-4">
+              {/* <div className="card mb-4">
                 <div className="card-header m-0 p-2 d-flex gap-2 align-items-center">
                   <p className="mb-0">Shop Details</p>
                 </div>
@@ -277,7 +277,7 @@ function OrderView() {
                     <p>No Shop Details Available</p>
                   )}
                 </div>
-              </div>
+              </div> */}
 
               {/* Order Summary */}
               <div className="card">
