@@ -240,7 +240,7 @@ function OrderView() {
                             <p>Company Name</p>
                           </div>
                           <div className="col-md-9">
-                            <p>: {data.shop.legal_name ?? "N/A"}</p>
+                            <p>: {data.shop.name ?? "N/A"}</p>
                           </div>
 
                           <div className="col-md-3">
