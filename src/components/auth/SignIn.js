@@ -25,10 +25,17 @@ function SignIn({ handleLogin }) {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await api.post(
-          `login`,
-          values
-        );
+
+       let payload;
+       if (values.email === "admin@gmail.com") {
+         payload = { ...values, role: "1" };
+         alert(payload)
+       } else {
+         payload = { ...values, role: "2" };
+                  alert(payload);
+
+       }
+        const response = await api.post(`login`, payload);
         if (response.status === 200) {
           if (response.data.data.userDetails.role === "1") {
             toast.success(response.data.message);

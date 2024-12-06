@@ -30,7 +30,13 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
     onSubmit: async (values) => {
       try {
         setLoadIndicator(true);
-        const response = await api.post(`login`, values);
+        let payload;
+        if (values.email === "admin@gmail.com") {
+          payload = { ...values, role: "1" };
+        } else {
+          payload = { ...values, role: "2" };
+        }
+        const response = await api.post(`login`, payload);
         if (response.status === 200) {
           toast.success(response.data.message);
 
