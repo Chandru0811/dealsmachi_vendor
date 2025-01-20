@@ -30,7 +30,7 @@ function ProductAdd() {
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
   const [category, setCategory] = useState([]);
   const id = localStorage.getItem("shop_id");
-  const [couponCode, setCouponCode] = useState("DEALSLAH");
+  const [couponCode, setCouponCode] = useState("DEALSMACHI");
   const [isCouponChecked, setIsCouponChecked] = useState(false);
 
   const SUPPORTED_FORMATS = [
@@ -60,7 +60,7 @@ function ProductAdd() {
     });
 
   const validationSchema = Yup.object({
-    shop_id: Yup.string().required("Category Group is required"),
+    categoryGroupId: Yup.string().required("Category Group is required"),
     category_id: Yup.string().required("Category is required"),
     name: Yup.string()
       .max(25, "Name must be 25 characters or less")
@@ -135,7 +135,7 @@ function ProductAdd() {
 
   const formik = useFormik({
     initialValues: {
-      shop_id: "",
+      categoryGroupId: "",
       name: "",
       category_id: "",
       deal_type: "",
@@ -168,6 +168,7 @@ function ProductAdd() {
       const formData = new FormData();
       formData.append("shop_id", id);
       formData.append("name", values.name);
+      formData.append("categoryGroupId", values.categoryGroupId);
       formData.append("category_id", values.category_id);
       formData.append("deal_type", values.deal_type);
       formData.append("brand", values.brand);
@@ -235,7 +236,7 @@ function ProductAdd() {
 
     formik.validateForm().then((errors) => {
       formik.setTouched({
-        shop_id: true,
+        categoryGroupId: true,
         name: true,
         category_id: true,
         deal_type: true,
@@ -260,7 +261,7 @@ function ProductAdd() {
       const formErrors = formik.errors;
       if (Object.keys(formErrors).length > 0) {
         const fieldLabels = {
-          shop_id: "Category Group",
+          categoryGroupId: "Category Group",
           name: "Name",
           category_id: "Category",
           deal_type: "Deal Type",
@@ -345,7 +346,7 @@ function ProductAdd() {
     const categoryGroup = event.target.value;
     setCategory([]);
 
-    formik.setFieldValue("shop_id", categoryGroup);
+    formik.setFieldValue("categoryGroupId", categoryGroup);
 
     setSelectedCategoryGroup(categoryGroup);
     fetchCategory(categoryGroup);
@@ -512,8 +513,8 @@ function ProductAdd() {
     );
     const newCouponCode =
       selectedValue === "discount"
-        ? `DEALSLAH${formattedDiscount}`
-        : `DEALSLAHV${id.padStart(2, "0")}`;
+        ? `DEALSMACHI${formattedDiscount}`
+        : `DEALSMACHIV${id.padStart(2, "0")}`;
 
     setCouponCode(newCouponCode);
     formik.setFieldValue("coupon_code", newCouponCode);
@@ -525,11 +526,11 @@ function ProductAdd() {
     );
 
     if (isCouponChecked) {
-      const updatedCoupon = `DEALSLAH${formattedDiscount}`;
+      const updatedCoupon = `DEALSMACHI${formattedDiscount}`;
       setCouponCode(updatedCoupon);
       formik.setFieldValue("coupon_code", updatedCoupon);
     } else {
-      const updatedCoupon = `DEALSLAHV${id.padStart(2, "0")}`;
+      const updatedCoupon = `DEALSMACHI${id.padStart(2, "0")}`;
       setCouponCode(updatedCoupon);
       formik.setFieldValue("coupon_code", updatedCoupon);
     }
@@ -628,13 +629,13 @@ function ProductAdd() {
               </label>
               <select
                 className={`form-select form-select-sm ${
-                  formik.touched.shop_id && formik.errors.shop_id
+                  formik.touched.categoryGroupId && formik.errors.categoryGroupId
                     ? "is-invalid"
                     : ""
                 }`}
-                {...formik.getFieldProps("shop_id")}
+                {...formik.getFieldProps("categoryGroupId")}
                 onChange={handleCategorygroupChange}
-                value={formik.values.shop_id}
+                value={formik.values.categoryGroupId}
               >
                 <option value="">Select a category group</option>
                 {allCategorgroup &&
@@ -644,8 +645,8 @@ function ProductAdd() {
                     </option>
                   ))}
               </select>
-              {formik.touched.shop_id && formik.errors.shop_id && (
-                <div className="invalid-feedback">{formik.errors.shop_id}</div>
+              {formik.touched.categoryGroupId && formik.errors.categoryGroupId && (
+                <div className="invalid-feedback">{formik.errors.categoryGroupId}</div>
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
