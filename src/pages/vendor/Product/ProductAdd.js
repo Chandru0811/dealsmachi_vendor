@@ -274,7 +274,7 @@ function ProductAdd() {
           coupon_code: "Coupon Code",
           image: "Main Image",
           description: "Description",
-          specifications: "Specifications",
+          specifications: "Specification cannot be more than 250 characters long",
           ...mediaFields.reduce((acc, _, index) => {
             acc[`image-${index}`] = `Image ${index + 1}`;
             acc[`video-${index}`] = `Youtube ${index + 1}`;
@@ -536,19 +536,6 @@ function ProductAdd() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.discounted_percentage, isCouponChecked]);
 
-  const addRow = () => {
-    formik.setFieldValue("additional_details", [
-      ...formik.values.additional_details,
-      { video_url: "", order: "" },
-    ]);
-  };
-
-  const removeRow = (index) => {
-    const updatedRows = [...formik.values.additional_details];
-    updatedRows.splice(index, 1);
-    formik.setFieldValue("additional_details", updatedRows);
-  };
-
   const handleDelete = (indexToDelete) => {
     if (mediaFields.length > 1 && indexToDelete !== 0) {
       // Remove the specific row from mediaFields
@@ -700,6 +687,13 @@ function ProductAdd() {
                     : ""
                 }`}
                 {...formik.getFieldProps("deal_type")}
+                onChange={(e) => {
+                  const selectedDealType = e.target.value;
+                  formik.setFieldValue("deal_type", selectedDealType);
+                  if (selectedDealType !== "1") {
+                    formik.setFieldValue("delivery_days", "");
+                  }
+                }}
               >
                 <option></option>
                 <option value="1">Product</option>
@@ -845,51 +839,6 @@ function ProductAdd() {
                   </div>
                 )}
             </div>
-            {formik.values.deal_type === "1" && (
-              <div className="col-md-12 mb-3">
-                <label className="form-label">Variants</label>
-                <div className="row">
-                  {formik.values.variants.map((variant, index) => (
-                    <div className="col-md-6 col-12 mb-2" key={variant.id}>
-                      <div className="input-group mb-2">
-                        <input
-                          type="text"
-                          className="form-control form-control-sm"
-                          name={`variants[${index}].value`}
-                          value={variant.value}
-                          onChange={(e) => {
-                            const valueWithoutComma = e.target.value.replace(
-                              /,/g,
-                              ""
-                            );
-                            formik.setFieldValue(
-                              `variants[${index}].value`,
-                              valueWithoutComma
-                            );
-                          }}
-                          placeholder={`Variant ${index + 1}`}
-                        />
-
-                        <button
-                          type="button"
-                          className="btn btn-light btn-sm"
-                          onClick={() => removeVariant(variant.id)}
-                        >
-                          <FaTrash />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="btn btn-sm btn-button"
-                  onClick={addVariant}
-                >
-                  Add Variant
-                </button>
-              </div>
-            )}
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Start Date <span className="text-danger">*</span>
@@ -1154,6 +1103,51 @@ function ProductAdd() {
                   </div>
                 )}
             </div>
+            {formik.values.deal_type === "1" && (
+              <div className="col-md-12 mb-3">
+                <label className="form-label">Variants</label>
+                <div className="row">
+                  {formik.values.variants.map((variant, index) => (
+                    <div className="col-md-6 col-12 mb-2" key={variant.id}>
+                      <div className="input-group mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          name={`variants[${index}].value`}
+                          value={variant.value}
+                          onChange={(e) => {
+                            const valueWithoutComma = e.target.value.replace(
+                              /,/g,
+                              ""
+                            );
+                            formik.setFieldValue(
+                              `variants[${index}].value`,
+                              valueWithoutComma
+                            );
+                          }}
+                          placeholder={`Variant ${index + 1}`}
+                        />
+
+                        <button
+                          type="button"
+                          className="btn btn-light btn-sm"
+                          onClick={() => removeVariant(variant.id)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-button"
+                  onClick={addVariant}
+                >
+                  Add Variant
+                </button>
+              </div>
+            )}
             <div className="col-md-6 col-12 mt-5 d-flex align-items-center">
               <div className="d-flex align-items-center">
                 <div className="form-check mb-3">

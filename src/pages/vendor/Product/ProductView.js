@@ -375,7 +375,7 @@ function ProductView() {
                                   item.path
                                 )}`}
                                 width="320" // Reduced width
-                                height="180" // Reduced height
+                                height="213" // Reduced height
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                                 title={`Video ${index + 1}`}

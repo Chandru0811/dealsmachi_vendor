@@ -22,6 +22,12 @@ function OrderView() {
     }
     setLoading(false);
   };
+  const calculateDeliveryDate = (createdAt, deliveryDays) => {
+    if (!createdAt || !deliveryDays) return "N/A";
+    const createdDate = new Date(createdAt);
+    createdDate.setDate(createdDate.getDate() + parseInt(deliveryDays, 10));
+    return createdDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+  };
 
   useEffect(() => {
     getData();
@@ -53,7 +59,7 @@ function OrderView() {
                 }`}
               >
                 {data?.order?.payment_status === "1"
-                  ? "Unpaid"
+                  ? "Not Paid"
                   : data?.order?.payment_status === "2"
                   ? "Pending"
                   : data?.order?.payment_status === "3"
@@ -210,6 +216,13 @@ function OrderView() {
                       ) : (
                         <div className="d-flex gap-4">
                           <p>Quantity: {data?.quantity ?? " "}</p>
+                          <p>
+                            Delivery Date:{" "}
+                            {calculateDeliveryDate(
+                              data?.created_at,
+                              data?.product?.delivery_days ?? "N/A"
+                            )}
+                          </p>
                         </div>
                       )}
                     </div>
@@ -257,7 +270,7 @@ function OrderView() {
                     &nbsp;
                     <span className="badge_warning text-capitalize">
                       {data?.order?.payment_status === "1"
-                        ? "Unpaid"
+                        ? "Not Paid"
                         : data?.order?.payment_status === "2"
                         ? "Pending"
                         : data?.order?.payment_status === "3"
