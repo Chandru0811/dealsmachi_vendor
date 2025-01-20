@@ -9,7 +9,7 @@ import { LuCopyCheck } from "react-icons/lu";
 
 function ProductView() {
   const { id } = useParams();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -17,7 +17,16 @@ function ProductView() {
       setLoading(true);
       try {
         const response = await api.get(`vendor/product/${id}/get`);
-        setData(response.data.data);
+        const { additional_details, ...rest } = response.data.data;
+
+        const decodedAdditionalDetails = additional_details
+          ? JSON.parse(additional_details)
+          : [];
+
+        setData({
+          ...rest,
+          additional_details: decodedAdditionalDetails,
+        });
       } catch (error) {
         toast.error("Error Fetching Data");
       }
@@ -40,6 +49,12 @@ function ProductView() {
       console.error("Failed to copy!", err);
     }
   };
+  function extractVideoId(url) {
+    const regExp =
+      /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/([a-zA-Z0-9_-]+))|youtu\.be\/([a-zA-Z0-9_-]+))/;
+    const match = url?.match(regExp);
+    return match ? match[1] || match[2] : null;
+  }
 
   return (
     <section className="px-4">
@@ -136,10 +151,10 @@ function ProductView() {
                         {data?.deal_type === 1 || data?.deal_type === "1"
                           ? "Product"
                           : data?.deal_type === 2 || data?.deal_type === "2"
-                            ? "Service"
-                            : data?.deal_type === 3 || data?.deal_type === "3"
-                              ? "Product and Service"
-                              : "Unknown"}
+                          ? "Service"
+                          : data?.deal_type === 3 || data?.deal_type === "3"
+                          ? "Product and Service"
+                          : "Unknown"}
                       </p>
                     </div>
                   </div>
@@ -172,11 +187,7 @@ function ProductView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        :  ₹{new Intl.NumberFormat("en-IN", {
-                          maximumFractionDigits: 0,
-                        }).format(
-                          parseFloat(data?.original_price)
-                        )}
+                        : {data?.original_price}
                       </p>
                     </div>
                   </div>
@@ -188,11 +199,7 @@ function ProductView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : ₹{new Intl.NumberFormat("en-IN", {
-                          maximumFractionDigits: 0,
-                        }).format(
-                          parseFloat(data?.discounted_price)
-                        )}
+                        : {data?.discounted_price}
                       </p>
                     </div>
                   </div>
@@ -204,7 +211,27 @@ function ProductView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data?.discount_percentage}%
+                        : {data?.discount_percentage}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">Varient</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {data?.varient?.split(",").map((variant, index) => (
+                          <div
+                            key={index}
+                            className="badge badge-success badge-outlined mx-1"
+                          >
+                            {variant.trim()}
+                          </div>
+                        ))}
                       </p>
                     </div>
                   </div>
@@ -235,6 +262,21 @@ function ProductView() {
                         {data?.end_date
                           ? new Date(data?.end_date).toLocaleDateString()
                           : ""}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">Delivery Days</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :
+                        {data?.delivery_days
+                          ? ` ${data.delivery_days} Days`
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -287,81 +329,63 @@ function ProductView() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-12">
                   <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Image1</p>
+                    <div className="col-3 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">Specification</p>
                     </div>
-                    <div className="col-6">
+                    <div className="col-9">
                       <p className="text-muted text-sm">
-                        {" "}
-                        :
-                        <img
-                          src={`${ImageURL}${data?.image_url1}`}
-                          alt="product"
-                          className="img-fluid"
-                        // width={150}
-                        />
+                        : {data?.specifications}
                       </p>
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Image2</p>
+                <div className="row mt-5 p-3">
+                  {data.product_media?.map((item, index) => (
+                    <div className="col-md-4 col-12 mb-3" key={item.id}>
+                      {item.type === "image" ? (
+                        <>
+                          <p className="text-sm">Thumbnail {index + 1}</p>
+                          <img
+                            src={`${ImageURL}${
+                              item.path.startsWith("/")
+                                ? item.path
+                                : "/" + item.path
+                            }`}
+                            alt={`Media ${index + 1}`}
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </>
+                      ) : item.type === "video" ? (
+                        <>
+                          <p className="text-sm">Thumbnail {index + 1}</p>
+                          <div
+                            className="d-flex gap-4"
+                            id={`video-container-${index}`}
+                          >
+                            {/* Embed YouTube video */}
+                            {item.path && (
+                              <iframe
+                                src={`https://www.youtube.com/embed/${extractVideoId(
+                                  item.path
+                                )}`}
+                                width="320" // Reduced width
+                                height="180" // Reduced height
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                title={`Video ${index + 1}`}
+                              ></iframe>
+                            )}
+                          </div>
+                        </>
+                      ) : null}
                     </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        {" "}
-                        :
-                        <img
-                          src={`${ImageURL}${data?.image_url2}`}
-                          alt="product"
-                          className="img-fluid"
-                        // width={150}
-                        />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Image3</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        {" "}
-                        :
-                        <img
-                          src={`${ImageURL}${data?.image_url3}`}
-                          alt="product"
-                          className="img-fluid"
-                        // width={150}
-                        />
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Image4</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        {" "}
-                        :
-                        <img
-                          src={`${ImageURL}${data?.image_url4}`}
-                          alt="product"
-                          className="img-fluid"
-                        // width={150}
-                        />
-                      </p>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </>

@@ -6,62 +6,94 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
 import Cropper from "react-easy-crop";
+import { FaTrash } from "react-icons/fa";
 import ImageURL from "../../../config/ImageURL";
 
 function ProductEdit() {
+  const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+  const [mediaFields, setMediaFields] = useState([
+    { image: "", video: "", selectedType: "image" },
+  ]);
+  const [cropperStates, setCropperStates] = useState([]);
+  const [imageSrc, setImageSrc] = useState([]);
+  const [crop, setCrop] = useState([]);
+  const [zoom, setZoom] = useState([]);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState([]);
+  const [originalFileName, setOriginalFileName] = useState([]);
+  const [originalFileType, setOriginalFileType] = useState("");
+  const MAX_FILE_SIZE = 2 * 1024 * 1024;
 
   const [showModal, setShowModal] = useState(false);
   const [allCategorgroup, setAllCategorgroup] = useState([]);
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
-  const [images, setImages] = useState([null, null, null, null]);
-  const [croppedAreas, setCroppedAreas] = useState([null, null, null, null]);
-  const [crops, setCrops] = useState([
-    { x: 0, y: 0 },
-    { x: 0, y: 0 },
-    { x: 0, y: 0 },
-    { x: 0, y: 0 },
-  ]);
-  const [zooms, setZooms] = useState([1, 1, 1, 1]);
-  const [showCropper, setShowCropper] = useState([false, false, false, false]);
   const [category, setCategory] = useState([]);
   const shop_id = localStorage.getItem("shop_id");
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [couponCode, setCouponCode] = useState("DEALSMACHI");
+  const [couponCode, setCouponCode] = useState("DEALSLAH");
   const [isCouponChecked, setIsCouponChecked] = useState(false);
 
   const SUPPORTED_FORMATS = [
     "image/jpg",
     "image/jpeg",
     "image/png",
+    "image/gif",
     "image/svg+xml",
     "image/webp",
   ];
-  const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, "0");
+    const day = String(today.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const imageValidation = Yup.mixed()
-    .nullable()
+    .required("*Image is required")
     .test("fileFormat", "Unsupported format", (value) => {
       return !value || (value && SUPPORTED_FORMATS.includes(value.type));
+    })
+    .test("fileSize", "File size is too large. Max 2MB.", (value) => {
+      return !value || (value && value.size <= MAX_FILE_SIZE);
     });
+
   const validationSchema = Yup.object({
-    categoryGroupId: Yup.string().required("Category Group is required"),
+    shop_id: Yup.string().required("Category Group is required"),
+    category_id: Yup.string().required("Category is required"),
     name: Yup.string()
       .max(25, "Name must be 25 characters or less")
       .required("Name is required"),
-    category_id: Yup.string().required("Category is required"),
     deal_type: Yup.string().required("Deal Type is required"),
+    delivery_days: Yup.string()
+      .test(
+        "delivery-days-required",
+        "Delivery Days is required when Deal Type is Product",
+        function (value) {
+          const { deal_type } = this.parent;
+          if (deal_type === "1") {
+            return !!value;
+          }
+          return true;
+        }
+      )
+      .notRequired(),
     original_price: Yup.number()
       .required("Original Price is required")
       .min(1, "Original Price must be greater than zero"),
     discounted_price: Yup.number()
       .required("Discounted Price is required")
-      .max(
-        Yup.ref("original_price"),
-        "The Discounted Price must be same or below the Original Price."
+      .test(
+        "discountedPriceValidation",
+        "The Discounted Price must be same or below the Original Price.",
+        function (value) {
+          const { original_price } = this.parent;
+          if (!original_price || !value) return true;
+          return value <= original_price;
+        }
       ),
-    discount_percentage: Yup.number()
+    discounted_percentage: Yup.number()
       .required("Discount is required")
       .max(100, "Discount must be less than 100"),
     start_date: Yup.string().required("Start Date is required"),
@@ -76,70 +108,120 @@ function ProductEdit() {
           return new Date(value) >= new Date(start_date);
         }
       ),
-    image_url1: imageValidation,
-    image_url2: imageValidation,
-    image_url3: imageValidation,
-    image_url4: imageValidation,
-    description: Yup.string().min(
-      10,
-      "Description must be at least 10 characters long"
-    ),
-    coupon_code: Yup.string().required("Coupon code is required"),
+    description: Yup.string()
+      .required("Description is required")
+      .min(10, "Description must be at least 10 characters long")
+      .max(250, "Description cannot be more than 250 characters long"),
+
+    specifications: Yup.string()
+      .notRequired("Specification is required")
+      .min(10, "Specification must be at least 10 characters long")
+      .max(250, "Specification cannot be more than 250 characters long"),
+    coupon_code: Yup.string()
+      .matches(
+        /^[A-Za-z]+[0-9]{0,4}$/,
+        "Coupon code must end with up to 4 digits"
+      )
+      .required("Coupon code is required"),
+    mediaFields: Yup.array()
+      .of(
+        Yup.object().shape({
+          selectedType: Yup.string()
+            .required("Media type is required")
+            .oneOf(["image", "video"], "Invalid media type"),
+          path: Yup.string().test("pathValidation", function (value, context) {
+            const { selectedType } = context.parent;
+            // Validate only for the selectedType
+            if (selectedType === "image") {
+              return value && /\.(jpg|jpeg|png|gif|webp)$/i.test(value)
+                ? true
+                : this.createError({
+                    message: "Invalid image format or missing file",
+                  });
+            }
+            if (selectedType === "video") {
+              return value && /^(http|https):\/\/[^\s]+$/i.test(value)
+                ? true
+                : this.createError({
+                    message: "Invalid YouTube link or missing URL",
+                  });
+            }
+            return true; // No validation if selectedType is missing
+          }),
+        })
+      )
+      .required("Media fields are required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      categoryGroupId: "",
+      shop_id: "",
       name: "",
       category_id: "",
       deal_type: "",
       brand: "",
       original_price: "",
-      coupon_code: "",
       discounted_price: "",
-      discount_percentage: "",
-      start_date: "",
+      discounted_percentage: "",
+      start_date: getCurrentDate(),
       end_date: "",
-      image_url1: null,
-      image_url2: null,
-      image_url3: null,
-      image_url4: null,
+      coupon_code: couponCode,
+      image: null,
       description: "",
+      variants: [{ id: Date.now(), value: "" }],
+      delivery_days: "",
+      specifications: "",
+      mediaFields: [{ selectedType: "image", path: "" }],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      const formattedVariants = values.variants
+        .map((variant) => variant.value.trim())
+        .filter((value) => value !== "")
+        .map((value) => value.replace(/,\s*$/, ""));
+      console.log("Submitted value", values);
       const formData = new FormData();
-      formData.append("_method", "PUT");
-      formData.append("shop_id", shop_id);
+      formData.append("shop_id", values.shop_id);
       formData.append("name", values.name);
       formData.append("category_id", values.category_id);
       formData.append("deal_type", values.deal_type);
-      formData.append("brand", values.brand || "");
-      formData.append("coupon_code", values.coupon_code);
+      formData.append("brand", values.brand);
       formData.append("original_price", values.original_price);
       formData.append("discounted_price", values.discounted_price);
-      formData.append("discount_percentage", values.discount_percentage);
+      formData.append("discount_percentage", values.discounted_percentage);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
-      if (values.image_url1) {
-        formData.append("image1", values.image_url1);
-      }
-      if (values.image_url2) {
-        formData.append("image2", values.image_url2);
-      }
-      if (values.image_url3) {
-        formData.append("image3", values.image_url3);
-      }
-      if (values.image_url4) {
-        formData.append("image4", values.image_url4);
-      }
+      formData.append("coupon_code", values.coupon_code);
+      formData.append("varient", formattedVariants);
       formData.append("description", values.description);
-
+      formData.append("delivery_days", values.delivery_days);
+      formData.append("specifications", values.specifications);
       const slug = values.name.toLowerCase().replace(/\s+/g, "_");
-      const finalSlug = `${slug}_${shop_id}`;
+      const finalSlug = `${slug}_${id}`;
       formData.append("slug", finalSlug);
 
-      console.log("Form Data:", formData);
+      formik.values.mediaFields.forEach((field, index) => {
+        const mediaIndex = index + 1;
+
+        if (field.selectedType === "image") {
+          if (
+            field.binaryData instanceof File ||
+            field.binaryData instanceof Blob
+          ) {
+            formData.append(
+              `media[${mediaIndex}]`,
+              field.binaryData,
+              field.path
+            );
+          }
+        } else if (field.selectedType === "video") {
+          if (field.path) {
+            formData.append(`media_url[${mediaIndex}]`, field.path);
+          }
+        }
+      });
+
+      formData.append("_method", "PUT");
       setLoadIndicator(true);
       try {
         const response = await api.post(
@@ -155,7 +237,7 @@ function ProductEdit() {
         if (response.status === 200) {
           toast.success(response.data.message);
           setShowModal(false);
-          navigate("/product");
+          navigate(`/product/view/${response.data.data.id}`);
         } else {
           toast.error(response.data.message);
         }
@@ -183,12 +265,14 @@ function ProductEdit() {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
+
     formik.validateForm().then((errors) => {
       formik.setTouched({
-        categoryGroupId: true,
+        shop_id: true,
         name: true,
         category_id: true,
         deal_type: true,
+        delivery_days: true,
         brand: true,
         original_price: true,
         discounted_price: true,
@@ -196,20 +280,20 @@ function ProductEdit() {
         start_date: true,
         end_date: true,
         coupon_code: true,
-        image_url1: true,
-        image_url2: true,
-        image_url3: true,
-        image_url4: true,
+        image: true,
         description: true,
+        specifications: true,
+        mediaFields: true,
       });
 
       const formErrors = formik.errors;
       if (Object.keys(formErrors).length > 0) {
         const fieldLabels = {
-          categoryGroupId: "Category Group",
+          shop_id: "Category Group",
           name: "Name",
           category_id: "Category",
           deal_type: "Deal Type",
+          delivery_days: "Delivery Days",
           brand: "Brand",
           original_price: "Original Price",
           discounted_price: "Discounted Price",
@@ -217,17 +301,18 @@ function ProductEdit() {
           start_date: "Start Date",
           end_date: "End Date",
           coupon_code: "Coupon Code",
-          image_url1: "Image 1",
-          image_url2: "Image 2",
-          image_url3: "Image 3",
-          image_url4: "Image 4",
+          image: "Main Image",
           description: "Description",
+          mediaFields: "Media Fields",
+          specifications:
+            "Specification cannot be more than 250 characters long",
         };
 
         const missedFields = Object.keys(formErrors)
-          .map((key) => fieldLabels[key])
+          .map((key) => fieldLabels[key] || key) // Fallback to key if no label found
           .join(", ");
 
+        // Ensure toast is displayed
         toast.error(
           `Please fill in the following required fields: ${missedFields}`,
           {
@@ -242,190 +327,216 @@ function ProductEdit() {
         );
         return;
       }
+
+      // Proceed to submit the form
+      formik.handleSubmit();
     });
-    formik.handleSubmit();
+  };
+
+  const addVariant = () => {
+    const newVariant = { id: Date.now(), value: "" };
+    formik.setFieldValue("variants", [...formik.values.variants, newVariant]);
+  };
+
+  const removeVariant = (id) => {
+    const updatedVariants = formik.values.variants.filter(
+      (variant) => variant.id !== id
+    );
+    formik.setFieldValue("variants", updatedVariants);
   };
 
   useEffect(() => {
-    const getData1 = async () => {
-      setLoading(true);
+    const getData = async () => {
       try {
         const response = await api.get(`vendor/categorygroups`);
+
         setAllCategorgroup(response.data.data);
       } catch (error) {
-        toast.error("Error Fetching Data ", error.message);
+        toast.error("Error Fetching Data ", error);
       }
-      setLoading(false);
     };
-    getData1();
     getData();
   }, []);
 
-  useEffect(() => {
-    const { original_price, discounted_price } = formik.values;
-    if (original_price) {
-      if (discounted_price === null || discounted_price === "0") {
-        formik.setFieldValue("discounted_percentage", 100);
-      } else {
-        const discountedPercentage =
-          ((original_price - discounted_price) / original_price) * 100;
-
-        const formattedPercentage = Math.floor(discountedPercentage * 10) / 10;
-        formik.setFieldValue("discount_percentage", formattedPercentage);
-      }
-    }
-  }, [formik.values.discounted_price, formik.values.original_price]);
-
-  const getData = async () => {
-    try {
-      const response = await api.get(`vendor/product/${id}/get`);
-      const {
-        image_url1,
-        image_url2,
-        image_url3,
-        image_url4,
-        coupon_code,
-        ...rest
-      } = response.data.data;
-      setIsCouponChecked(/\d/.test(coupon_code.charAt(8))); // Check if 9th character is a digit
-      formik.setValues({
-        ...rest,
-        coupon_code: coupon_code,
-        start_date: rest.start_date
-          ? new Date(rest.start_date).toISOString().split("T")[0]
-          : "",
-        end_date: rest.end_date
-          ? new Date(rest.end_date).toISOString().split("T")[0]
-          : "",
-
-        image1: `${ImageURL}${image_url1}`,
-        image2: `${ImageURL}${image_url2}`,
-        image3: `${ImageURL}${image_url3}`,
-        image4: `${ImageURL}${image_url4}`,
-      });
-      setCouponCode(coupon_code);
-    } catch (error) {
-      toast.error("Error Fetching Data", error.message);
-    }
-  };
-
   const fetchCategory = async (categoryId) => {
-    if (categoryId) {
-      try {
-        const category = await api.get(
-          `vendor/categories/categorygroups/${categoryId}`
-        );
-        setCategory(category.data.data);
-      } catch (error) {
-        toast.error(error.message);
-      }
+    try {
+      const category = await api.get(
+        `vendor/categories/categorygroups/${categoryId}`
+      );
+      setCategory(category.data.data);
+    } catch (error) {
+      toast.error(error);
     }
   };
-
   const handleCategorygroupChange = (event) => {
     const categoryGroup = event.target.value;
     setCategory([]);
-    formik.setFieldValue("categoryGroupId", categoryGroup);
+
+    formik.setFieldValue("shop_id", categoryGroup);
+
     setSelectedCategoryGroup(categoryGroup);
     fetchCategory(categoryGroup);
   };
 
   useEffect(() => {
-    fetchCategory(formik.values.categoryGroupId);
-  }, [formik.values.categoryGroupId]);
+    const { original_price, discounted_price } = formik.values;
 
-  const handleFileChange = (index, event) => {
+    const timeoutId = setTimeout(() => {
+      if (original_price) {
+        if (discounted_price === null || discounted_price === "0") {
+          formik.setFieldValue("discounted_percentage", 100);
+        } else {
+          const discountedPercentage =
+            ((original_price - discounted_price) / original_price) * 100;
+
+          const formattedPercentage = parseFloat(
+            (Math.round(discountedPercentage * 10) / 10).toFixed(1)
+          );
+          formik.setFieldValue("discounted_percentage", formattedPercentage);
+        }
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formik.values.discounted_price, formik.values.original_price]);
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`vendor/product/${id}/get`);
+
+      const data = response.data.data;
+      console.log("data", data.product_media);
+
+      formik.setValues({
+        category_id: data.category_id || "",
+        name: data.name || "",
+        shop_id: data.shop_id || "",
+        deal_type: data.deal_type || "",
+        delivery_days: data.delivery_days || "",
+        brand: data.brand || "",
+        original_price: data.original_price || "",
+        discounted_price: data.discounted_price || "",
+        discounted_percentage: data.discount_percentage || "",
+        start_date: data.start_date.slice(0, 10) || "",
+        end_date: data.end_date.slice(0, 10) || "",
+        coupon_code: data.coupon_code || "",
+        description: data.description || "",
+        variants: data.varient
+          ? data.varient.split(",").map((value) => ({ value: value.trim() }))
+          : [{ id: Date.now(), value: "" }],
+        specifications: data.specifications || "",
+        mediaFields: data.product_media
+          ? data.product_media.map((mediaItem) => ({
+              id: mediaItem.id,
+              selectedType: mediaItem.type,
+              path: mediaItem.path,
+            }))
+          : [],
+      });
+
+      fetchCategory(data.categoryGroupId);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const updateCrop = (index, newCrop) => {
+    setCrop((prevCrop) => {
+      const newCropArray = [...prevCrop];
+      newCropArray[index] = newCrop;
+      return newCropArray;
+    });
+  };
+
+  const handleFileChange = (event, index, type) => {
     const file = event.target.files[0];
     if (file) {
-      if (file.size > MAX_FILE_SIZE) {
-        formik.setFieldError(
-          `image_url${index + 1}`,
-          "File size is too large. Max 2MB."
-        );
-        return;
-      }
       const reader = new FileReader();
-      reader.onload = () => {
-        const newImages = [...images];
-        newImages[index] = reader.result;
-        setImages(newImages);
 
-        const newShowCropper = [...showCropper];
-        newShowCropper[index] = true;
-        setShowCropper(newShowCropper);
-        formik.setFieldValue(
-          `image_url${index + 1}_originalFileName`,
-          file.name
-        );
-        formik.setFieldValue(
-          `image_url${index + 1}_originalFileFormat`,
-          file.type
-        );
+      // Read the file as a binary string
+      reader.onload = () => {
+        // Update the preview (imageSrc) for the cropper
+        const updatedImageSrc = [...imageSrc];
+        updatedImageSrc[index] = reader.result;
+        setImageSrc(updatedImageSrc);
+
+        // Enable the cropper
+        const updatedCropperStates = [...cropperStates];
+        updatedCropperStates[index] = true;
+        setCropperStates(updatedCropperStates);
+
+        // Update Formik values
+        const updatedFields = [...formik.values.mediaFields];
+        updatedFields[index] = {
+          ...updatedFields[index],
+          path: file.name, // Store the file name
+          binaryData: file, // Store the raw file
+        };
+        formik.setFieldValue("mediaFields", updatedFields);
       };
-      reader.readAsDataURL(file);
+
+      reader.readAsDataURL(file); // Read file for preview
+    }
+  };
+
+  const handleAddMediaField = () => {
+    formik.setFieldValue("mediaFields", [
+      ...formik.values.mediaFields,
+      { selectedType: "image", path: "" },
+    ]);
+  };
+  const handleDelete = async (index, mediaId) => {
+    if (mediaId) {
+      try {
+        const response = await api.delete(
+          `vendor/product/media/${mediaId}/delete`
+        );
+
+        if (response.status === 200) {
+          const updatedFields = [...formik.values.mediaFields];
+          updatedFields.splice(index, 1);
+          formik.setFieldValue("mediaFields", updatedFields);
+          toast.success("Media deleted successfully");
+        } else {
+          toast.error("Failed to delete media");
+        }
+      } catch (error) {
+        toast.error("An error occurred while deleting the media");
+      }
+    } else {
+      const updatedMediaFields = formik.values.mediaFields.filter(
+        (_, i) => i !== index
+      );
+      formik.setFieldValue("mediaFields", updatedMediaFields);
     }
   };
 
   const onCropComplete = (index, croppedArea, croppedAreaPixels) => {
-    const newCroppedAreas = [...croppedAreas];
-    newCroppedAreas[index] = croppedAreaPixels;
-    setCroppedAreas(newCroppedAreas);
-  };
-
-  const handleCropCancel = (index) => {
-    const newShowCropper = [...showCropper];
-    newShowCropper[index] = false; // Hide cropper for the specific index
-    setShowCropper(newShowCropper);
-
-    const newImages = [...images];
-    newImages[index] = null; // Clear the image for this specific index
-    setImages(newImages);
-
-    // Reset the Formik field value for this specific image field
-    formik.setFieldValue(`image${index + 1}`, "");
-
-    // Reset the specific file input by targeting it using its index
-    const fileInput = document.querySelectorAll("input[type='file']")[index];
-    if (fileInput) {
-      fileInput.value = ""; // Clear the file input value
-    }
-  };
-
-  const handleCropSave = async (index) => {
-    const croppedImageBlob = await getCroppedImg(
-      images[index],
-      crops[index],
-      croppedAreas[index]
-    );
-
-    const originalFileName =
-      formik.values[`image_url${index + 1}_originalFileName`];
-    const originalFileFormat =
-      formik.values[`image_url${index + 1}_originalFileFormat`];
-
-    const file = new File([croppedImageBlob], originalFileName, {
-      type: originalFileFormat,
+    setCroppedAreaPixels((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[index] = croppedAreaPixels;
+      return updatedState;
     });
-
-    formik.setFieldValue(`image_url${index + 1}`, file);
-    console.log("file", file);
-
-    const newShowCropper = [...showCropper];
-    newShowCropper[index] = false;
-    setShowCropper(newShowCropper);
   };
 
-  const getCroppedImg = (imageSrc, crop, croppedAreaPixels) => {
+  const getCroppedImg = (imageSrc, crop, croppedAreaPixels, index) => {
     return new Promise((resolve, reject) => {
       const image = new Image();
       image.src = imageSrc;
       image.onload = () => {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
+
         const targetWidth = 320;
         const targetHeight = 240;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
+
         ctx.drawImage(
           image,
           croppedAreaPixels.x,
@@ -437,27 +548,70 @@ function ProductEdit() {
           targetWidth,
           targetHeight
         );
+
         canvas.toBlob((blob) => {
           if (!blob) {
             reject(new Error("Canvas is empty"));
             return;
           }
-          blob.name = "croppedImage.jpeg";
+          blob.name = `croppedImage-${index}.jpeg`;
           resolve(blob);
         }, "image/jpeg");
       };
     });
   };
 
-  useEffect(() => {
-    if (isCouponChecked) {
-      const newCouponCode = `DEALSMACHI${formatDiscountPercentage(
-        formik.values.discount_percentage
-      )}`;
-      setCouponCode(newCouponCode);
-      formik.setFieldValue("coupon_code", newCouponCode);
+  const handleCropSave = async (index) => {
+    try {
+      const croppedImageBlob = await getCroppedImg(
+        imageSrc[index],
+        crop[index],
+        croppedAreaPixels[index],
+        index
+      );
+
+      // Create a new File object
+      const file = new File([croppedImageBlob], `croppedImage-${index}.jpeg`, {
+        type: "image/jpeg",
+      });
+
+      // Update Formik values for the specific index
+      const updatedFields = [...formik.values.mediaFields];
+      updatedFields[index] = {
+        ...updatedFields[index],
+        path: file.name, // Store file name
+        binaryData: file, // Store binary blob
+      };
+      formik.setFieldValue("mediaFields", updatedFields);
+
+      // Disable the cropper
+      const updatedCropperStates = [...cropperStates];
+      updatedCropperStates[index] = false;
+      setCropperStates(updatedCropperStates);
+    } catch (error) {
+      console.error("Error cropping the image:", error);
     }
-  }, [formik.values.discount_percentage, isCouponChecked]);
+  };
+
+  const handleCropCancel = (index) => {
+    const updatedCropperStates = [...cropperStates];
+    updatedCropperStates[index] = false;
+    setCropperStates(updatedCropperStates);
+
+    const updatedImageSrc = [...imageSrc];
+    updatedImageSrc[index] = null;
+    setImageSrc(updatedImageSrc);
+
+    formik.setFieldValue(`image-${index}`, null);
+    // Reset the file input
+    const fileInput = document.querySelector(`input[name="image-${index}"]`);
+    if (fileInput) fileInput.value = "";
+  };
+
+  const formatDiscountPercentage = (discounted_percentage) => {
+    const roundedDiscount = Math.round(discounted_percentage || 0);
+    return roundedDiscount < 10 ? `0${roundedDiscount}` : `${roundedDiscount}`;
+  };
 
   const handleRadioChange = (e) => {
     const selectedValue = e.target.value;
@@ -468,463 +622,654 @@ function ProductEdit() {
     );
     const newCouponCode =
       selectedValue === "discount"
-        ? `DEALSMACHI${formattedDiscount}`
-        : `DEALSMACHIV${shop_id.padStart(2, "0")}`;
+        ? `DEALSLAH${formattedDiscount}`
+        : `DEALSLAHV${shop_id.padStart(2, "0")}`;
 
     setCouponCode(newCouponCode);
     formik.setFieldValue("coupon_code", newCouponCode);
   };
 
-  const formatDiscountPercentage = (value) => {
-    const percentage = Math.round(value || 0);
-    return percentage < 10 ? `0${percentage}` : `${percentage}`;
+  useEffect(() => {
+    const formattedDiscount = formatDiscountPercentage(
+      formik.values.discounted_percentage
+    );
+
+    if (isCouponChecked) {
+      const updatedCoupon = `DEALSLAH${formattedDiscount}`;
+      setCouponCode(updatedCoupon);
+      formik.setFieldValue("coupon_code", updatedCoupon);
+    } else {
+      const updatedCoupon = `DEALSLAHV${shop_id.padStart(2, "0")}`;
+      setCouponCode(updatedCoupon);
+      formik.setFieldValue("coupon_code", updatedCoupon);
+    }
+  }, [formik.values.discounted_percentage, isCouponChecked]);
+
+  const handleVideoChange = (e, index) => {
+    const updatedFields = [...formik.values.mediaFields];
+    updatedFields[index].path = e.target.value;
+    formik.setFieldValue("mediaFields", updatedFields);
   };
 
+  const handleTypeChange = (index, type) => {
+    const updatedFields = [...formik.values.mediaFields];
+    updatedFields[index].selectedType = type;
+    updatedFields[index].path = "";
+    formik.setFieldValue("mediaFields", updatedFields);
+  };
   return (
     <section className="px-4">
       <form onSubmit={formik.handleSubmit}>
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader">
-              <svg viewBox="0 0 80 80">
-                <circle cx="40" cy="40" r="32"></circle>
-              </svg>
+        <div className="card shadow border-0 mb-3">
+          <div className="row p-3">
+            <div className="d-flex justify-content-between align-items-center">
+              <h1 className="h4 ls-tight">Edit Deals</h1>
+              <Link to="/product">
+                <button type="button" className="btn btn-light btn-sm">
+                  <span>Back</span>
+                </button>
+              </Link>
             </div>
           </div>
-        ) : (
-          <>
-            <div className="card shadow border-0 mb-3">
-              <div className="row p-3">
-                <div className="d-flex justify-content-between align-items-center">
-                  <h1 className="h4 ls-tight">Edit Deals</h1>
-                  <Link to="/product">
-                    <button type="button" className="btn btn-light btn-sm">
-                      <span>Back</span>
-                    </button>
-                  </Link>
-                </div>
-              </div>
+        </div>
+        <div className="container card shadow border-0 pb-5">
+          <div className="row mt-3">
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Category Group<span className="text-danger">*</span>
+              </label>
+              <select
+                className={`form-select form-select-sm ${
+                  formik.touched.shop_id && formik.errors.shop_id
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("shop_id")}
+                onChange={handleCategorygroupChange}
+                value={formik.values.shop_id}
+              >
+                <option value="">Select a category group</option>
+                {allCategorgroup &&
+                  allCategorgroup.map((categorygroup) => (
+                    <option key={categorygroup.id} value={categorygroup.id}>
+                      {categorygroup.name}
+                    </option>
+                  ))}
+              </select>
+              {formik.touched.shop_id && formik.errors.shop_id && (
+                <div className="invalid-feedback">{formik.errors.shop_id}</div>
+              )}
             </div>
-            <div className="container card shadow border-0 pb-5">
-              <div className="row mt-3">
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Category Group<span className="text-danger">*</span>
-                  </label>
-                  <select
-                    className={`form-select ${formik.touched.categoryGroupId &&
-                        formik.errors.categoryGroupId
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("categoryGroupId")}
-                    onChange={handleCategorygroupChange}
-                    value={formik.values.categoryGroupId} // Ensure value is set from Formik state
-                  >
-                    <option value="">Select a category group</option>
-                    {allCategorgroup &&
-                      allCategorgroup.map((categorygroup) => (
-                        <option key={categorygroup.id} value={categorygroup.id}>
-                          {categorygroup.name}
-                        </option>
-                      ))}
-                  </select>
-                  {formik.touched.categoryGroupId &&
-                    formik.errors.categoryGroupId && (
-                      <div className="invalid-feedback">
-                        {formik.errors.categoryGroupId}
-                      </div>
-                    )}
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Category<span className="text-danger">*</span>
+              </label>
+              <select
+                type="text"
+                className={`form-select form-select-sm ${
+                  formik.touched.category_id && formik.errors.category_id
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("category_id")}
+              >
+                <option></option>
+                {category &&
+                  category.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+              </select>
+              {formik.touched.category_id && formik.errors.category_id && (
+                <div className="invalid-feedback">
+                  {formik.errors.category_id}
                 </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Category<span className="text-danger">*</span>
-                  </label>
-                  <select
-                    type="text"
-                    className={`form-select ${formik.touched.category_id && formik.errors.category_id
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("category_id")}
-                    onChange={(event) => {
-                      const selectedValue = event.target.value;
-                      if (selectedValue === "add_new") {
-                        setShowModal(true);
-                      } else {
-                        formik.setFieldValue("category_id", selectedValue);
-                      }
-                    }}
-                  >
-                    <option></option>
-                    {category &&
-                      category.map((cat) => (
-                        <option key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </option>
-                      ))}
-                  </select>
-                  {formik.touched.category_id && formik.errors.category_id && (
-                    <div className="invalid-feedback">
-                      {formik.errors.category_id}
-                    </div>
-                  )}
+              )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Deal Type<span className="text-danger">*</span>
+              </label>
+              <select
+                type="text"
+                className={`form-select form-select-sm ${
+                  formik.touched.deal_type && formik.errors.deal_type
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("deal_type")}
+              >
+                <option></option>
+                <option value="1">Product</option>
+                <option value="2">Service</option>
+              </select>
+              {formik.touched.deal_type && formik.errors.deal_type && (
+                <div className="invalid-feedback">
+                  {formik.errors.deal_type}
                 </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Deal Type<span className="text-danger">*</span>
-                  </label>
-                  <select
-                    type="text"
-                    className={`form-select ${formik.touched.deal_type && formik.errors.deal_type
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("deal_type")}
-                  >
-                    <option></option>
-                    <option value="1">Product</option>
-                    <option value="2">Service</option>
-                  </select>
-                  {formik.touched.deal_type && formik.errors.deal_type && (
-                    <div className="invalid-feedback">
-                      {formik.errors.deal_type}
-                    </div>
-                  )}
-                </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">Brand</label>
-                  <input
-                    type="text"
-                    className={`form-control ${formik.touched.brand && formik.errors.brand
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("brand")}
-                  />
-                  {formik.touched.brand && formik.errors.brand && (
-                    <div className="invalid-feedback">
-                      {formik.errors.brand}
-                    </div>
-                  )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Name<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`form-control ${formik.touched.name && formik.errors.name
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("name")}
-                    maxLength={825}
-                  />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className="invalid-feedback">{formik.errors.name}</div>
-                  )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Original Price<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    onInput={(event) => {
-                      event.target.value = event.target.value
-                        .replace(/[^0-9.]/g, "") // Allow only numbers and decimal point
-                        .replace(/(\..*)\./g, "") // Prevent multiple decimal points
-                    }}
-                    className={`form-control ${formik.touched.original_price &&
-                        formik.errors.original_price
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("original_price")}
-                  />
-                  {formik.touched.original_price &&
-                    formik.errors.original_price && (
-                      <div className="invalid-feedback">
-                        {formik.errors.original_price}
-                      </div>
-                    )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Discounted Price<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    onInput={(event) => {
-                      event.target.value = event.target.value
-                        .replace(/[^0-9.]/g, "") // Allow only numbers and decimal point
-                        .replace(/(\..*)\./g, "") // Prevent multiple decimal points
-                    }}
-                    className={`form-control ${formik.touched.discounted_price &&
-                        formik.errors.discounted_price
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("discounted_price")}
-                  />
-                  {formik.touched.discounted_price &&
-                    formik.errors.discounted_price && (
-                      <div className="invalid-feedback">
-                        {formik.errors.discounted_price}
-                      </div>
-                    )}
-                </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Discounted Percentage<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    readOnly
-                    onInput={(event) => {
-                      event.target.value = event.target.value
-                        .replace(/[^0-9.]/g, "")
-                        .replace(/(\..*?)\..*/g, "$1")
-                        .slice(0, 5);
-                    }}
-                    className={`form-control ${formik.touched.discount_percentage &&
-                        formik.errors.discount_percentage
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("discount_percentage")}
-                  />
-                  {formik.touched.discount_percentage &&
-                    formik.errors.discount_percentage && (
-                      <div className="invalid-feedback">
-                        {formik.errors.discount_percentage}
-                      </div>
-                    )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Start Date <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    className={`form-control ${formik.touched.start_date && formik.errors.start_date
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("start_date")}
-                  />
-                  {formik.touched.start_date && formik.errors.start_date && (
-                    <div className="invalid-feedback">
-                      {formik.errors.start_date}
-                    </div>
-                  )}
-                </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    End Date <span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    className={`form-control ${formik?.touched?.end_date && formik.errors.end_date
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("end_date")}
-                  />
-                  {formik.touched.end_date && formik.errors.end_date && (
-                    <div className="invalid-feedback">
-                      {formik.errors.end_date}
-                    </div>
-                  )}
-                </div>
-
-                {[1, 2, 3, 4].map((num, index) => (
-                  <div key={num} className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Image {num}
-                      <span className="text-danger">*</span>
-                    </label>
-                    <input
-                      type="file"
-                      accept=".png,.jpeg,.jpg,.svg,.webp"
-                      className={`form-control ${formik.touched[`image_url${num}`] &&
-                          formik.errors[`image_url${num}`]
-                          ? "is-invalid"
-                          : ""
-                        }`}
-                      name={`image_url${num}`}
-                      onChange={(e) => handleFileChange(index, e)}
-                      onBlur={formik.handleBlur}
-                    />
-                    <p style={{ fontSize: "13px" }}>
-                      Note: Maximum file size is 2MB. Allowed: .png, .jpg,
-                      .jpeg, .svg, .webp.
-                    </p>
-                    {formik.touched[`image_url${num}`] &&
-                      formik.errors[`image_url${num}`] && (
-                        <div className="invalid-feedback">
-                          {formik.errors[`image_url${num}`]}
-                        </div>
-                      )}
-
-                    {/* Show the image preview if it exists */}
-                    {formik.values[`image${num}`] && (
-                      <div className="image-preview mt-2">
-                        <img
-                          src={formik.values[`image${num}`]}
-                          alt={`Image ${num} Preview`}
-                          style={{
-                            width: "100px",
-                            height: "100px",
-                            borderRadius: "8px",
-                          }}
-                        />
-                      </div>
-                    )}
-
-                    {showCropper[index] && (
-                      <>
-                        <div className="crop-container">
-                          <Cropper
-                            image={images[index]}
-                            crop={crops[index]}
-                            zoom={zooms[index]}
-                            aspect={320 / 240}
-                            onCropChange={(crop) => {
-                              const newCrops = [...crops];
-                              newCrops[index] = crop;
-                              setCrops(newCrops);
-                            }}
-                            onZoomChange={(zoom) => {
-                              const newZooms = [...zooms];
-                              newZooms[index] = zoom;
-                              setZooms(newZooms);
-                            }}
-                            onCropComplete={(croppedArea, croppedAreaPixels) =>
-                              onCropComplete(
-                                index,
-                                croppedArea,
-                                croppedAreaPixels
-                              )
-                            }
-                          />
-                        </div>
-                        <div className="d-flex justify-content-start mt-3 gap-2">
-                          <button
-                            type="button"
-                            className="btn btn-primary mt-3"
-                            onClick={() => handleCropSave(index)}
-                          >
-                            Save Cropped Image {num}
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-secondary mt-3"
-                            onClick={() => handleCropCancel(index)}
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                ))}
-                <div className="col-12 mb-5">
-                  <label className="form-label">
-                    Description<span className="text-danger">*</span>
-                  </label>
-                  <textarea
-                    type="text"
-                    rows={5}
-                    className={`form-control ${formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    {...formik.getFieldProps("description")}
-                  />
-                  {formik.touched.description && formik.errors.description && (
-                    <div className="invalid-feedback">
-                      {formik.errors.description}
-                    </div>
-                  )}
-                </div>
-                <div className="col-md-6 col-12 mt-5 d-flex align-items-center">
-                  <div className="d-flex align-items-center">
-                    <div className="form-check mb-3">
-                      <input
-                        type="radio"
-                        name="changeCouponCode"
-                        id="vendorCoupon"
-                        value="fixed"
-                        className="form-check-input"
-                        style={{ boxShadow: "none" }}
-                        checked={!isCouponChecked}
-                        onChange={handleRadioChange}
-                      />
-                      <label htmlFor="vendorCoupon" className="form-label ms-2">
-                        Vendor Coupon code
-                      </label>
-                    </div>
-                    &nbsp; &nbsp; &nbsp;
-                    <div className="form-check mb-3">
-                      <input
-                        type="radio"
-                        name="changeCouponCode"
-                        id="genricCoupon"
-                        value="discount"
-                        className="form-check-input"
-                        style={{ boxShadow: "none" }}
-                        checked={isCouponChecked}
-                        onChange={handleRadioChange}
-                      />
-                      <label htmlFor="genricCoupon" className="form-label ms-2">
-                        Generic Coupon Code
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">Coupon Code</label>
-                  <input
-                    type="text"
-                    className={`form-control ${formik.touched.coupon_code && formik.errors.coupon_code
-                        ? "is-invalid"
-                        : ""
-                      }`}
-                    value={couponCode}
-                    readOnly
-                  />
-                  {formik.touched.coupon_code && formik.errors.coupon_code && (
-                    <div className="invalid-feedback">
-                      {formik.errors.coupon_code}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <div className="hstack p-2">
-                <button
-                  type="submit"
-                  className="btn btn-sm btn-button"
-                  disabled={loadIndicator}
-                  onClick={handlePlaceOrder}
+              )}
+            </div>
+            {(formik.values.deal_type === "1" ||
+              formik.values.deal_type === 1) && (
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Delivery Days<span className="text-danger">*</span>
+                </label>
+                <select
+                  type="text"
+                  className={`form-select form-select-sm ${
+                    formik.touched.delivery_days && formik.errors.delivery_days
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("delivery_days")}
                 >
-                  {loadIndicator && (
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      aria-hidden="true"
-                    ></span>
+                  <option></option>
+                  <option value="1">1 Day</option>
+                  <option value="2">2 Days</option>
+                  <option value="3">3 Days</option>
+                  <option value="4">4 Days</option>
+                  <option value="5">5 Days</option>
+                  <option value="6">6 Days</option>
+                  <option value="7">7 Days</option>
+                  <option value="8">8 Days</option>
+                  <option value="9">9 Days</option>
+                  <option value="10">10 Days</option>
+                </select>
+                {formik.touched.delivery_days &&
+                  formik.errors.delivery_days && (
+                    <div className="invalid-feedback">
+                      {formik.errors.delivery_days}
+                    </div>
                   )}
-                  Update
+              </div>
+            )}
+
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">Brand</label>
+              <input
+                type="text"
+                className={`form-control form-control-sm ${
+                  formik.touched.brand && formik.errors.brand
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("brand")}
+              />
+              {formik.touched.brand && formik.errors.brand && (
+                <div className="invalid-feedback">{formik.errors.brand}</div>
+              )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Name<span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className={`form-control form-control-sm ${
+                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
+                }`}
+                {...formik.getFieldProps("name")}
+                maxLength={825}
+              />
+              {formik.touched.name && formik.errors.name && (
+                <div className="invalid-feedback">{formik.errors.name}</div>
+              )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Original Price<span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                onInput={(event) => {
+                  event.target.value = event.target.value
+                    .replace(/[^0-9.]/g, "")
+                    .replace(/(\..*)\./g, "$1")
+                    .replace(/(\.\d{1})./g, "$1");
+                }}
+                className={`form-control form-control-sm ${
+                  formik.touched.original_price && formik.errors.original_price
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("original_price")}
+              />
+              {formik.touched.original_price &&
+                formik.errors.original_price && (
+                  <div className="invalid-feedback">
+                    {formik.errors.original_price}
+                  </div>
+                )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Discounted Price<span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                onInput={(event) => {
+                  event.target.value = event.target.value
+                    .replace(/[^0-9.]/g, "")
+                    .replace(/(\..*)\./g, "$1")
+                    .replace(/(\.\d{1})./g, "$1");
+                }}
+                className={`form-control form-control-sm ${
+                  formik.touched.discounted_price &&
+                  formik.errors.discounted_price
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("discounted_price")}
+                value={formik.values.discounted_price}
+              />
+              {formik.touched.discounted_price &&
+                formik.errors.discounted_price && (
+                  <div className="invalid-feedback">
+                    {formik.errors.discounted_price}
+                  </div>
+                )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Discounted Percentage (%)<span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                readOnly
+                onInput={(event) => {
+                  let value = event.target.value
+                    .replace(/[^0-9.]/g, "")
+                    .replace(/(\..*)\./g, "$1")
+                    .replace(/^(\d*\.\d{1}).*/, "$1");
+
+                  formik.setFieldValue("discounted_percentage", value);
+                }}
+                {...formik.getFieldProps("discounted_percentage")}
+                className={`form-control form-control-sm ${
+                  formik.touched.discounted_percentage &&
+                  formik.errors.discounted_percentage
+                    ? "is-invalid"
+                    : ""
+                }`}
+              />
+              {formik.touched.discounted_percentage &&
+                formik.errors.discounted_percentage && (
+                  <div className="invalid-feedback">
+                    {formik.errors.discounted_percentage}
+                  </div>
+                )}
+            </div>
+            {(formik.values.deal_type === "1" ||
+              formik.values.deal_type === 1) && (
+              <div className="col-md-12 mb-3">
+                <label className="form-label">Variants</label>
+                <div className="row">
+                  {formik.values.variants.map((variant, index) => (
+                    <div className="col-md-6 col-12 mb-2" key={variant.id}>
+                      <div className="input-group mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-control-sm"
+                          name={`variants[${index}].value`}
+                          value={variant.value}
+                          onChange={(e) => {
+                            const valueWithoutComma = e.target.value.replace(
+                              /,/g,
+                              ""
+                            );
+                            formik.setFieldValue(
+                              `variants[${index}].value`,
+                              valueWithoutComma
+                            );
+                          }}
+                          placeholder={`Variant ${index + 1}`}
+                        />
+
+                        <button
+                          type="button"
+                          className="btn btn-light btn-sm"
+                          onClick={() => removeVariant(variant.id)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-button"
+                  onClick={addVariant}
+                >
+                  Add Variant
                 </button>
               </div>
+            )}
+
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Start Date <span className="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                className={`form-control form-control-sm ${
+                  formik.touched.start_date && formik.errors.start_date
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("start_date")}
+              />
+              {formik.touched.start_date && formik.errors.start_date && (
+                <div className="invalid-feedback">
+                  {formik.errors.start_date}
+                </div>
+              )}
             </div>
-          </>
-        )}
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                End Date <span className="text-danger">*</span>
+              </label>
+              <input
+                type="date"
+                className={`form-control form-control-sm ${
+                  formik?.touched?.end_date && formik.errors.end_date
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("end_date")}
+              />
+              {formik.touched.end_date && formik.errors.end_date && (
+                <div className="invalid-feedback">{formik.errors.end_date}</div>
+              )}
+            </div>
+            <>
+              <>
+                {formik.values.mediaFields.map((field, index) => (
+                  <div key={index} className="row">
+                    <p>Thumbnail {index + 1}</p>
+                    <div className="col-12 d-flex align-items-center mb-3">
+                      <div className="form-check me-3">
+                        <input
+                          type="radio"
+                          name={`media-type-${index}`}
+                          id={`image-${index}`}
+                          className="form-check-input"
+                          checked={field.selectedType === "image"}
+                          onChange={() => handleTypeChange(index, "image")}
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={`image-${index}`}
+                        >
+                          Image
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          name={`media-type-${index}`}
+                          id={`video-${index}`}
+                          className="form-check-input"
+                          checked={field.selectedType === "video"}
+                          onChange={() => handleTypeChange(index, "video")}
+                          disabled={index === 0} // Disable video for the first entry
+                        />
+                        <label
+                          className="form-check-label"
+                          htmlFor={`video-${index}`}
+                        >
+                          Youtube
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 col-12 mb-3">
+                      <label className="form-label">
+                        {field.selectedType === "image" && "Image"}
+                        {field.selectedType === "image" && (
+                          <span className="text-danger">*</span>
+                        )}
+                      </label>
+                      <input
+                        type="file"
+                        accept=".png,.jpeg,.jpg,.svg,.webp"
+                        className={`form-control ${
+                          formik.errors.mediaFields?.[index]?.path &&
+                          field.selectedType === "image"
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        disabled={field.selectedType !== "image"}
+                        onChange={(e) => handleFileChange(e, index)}
+                      />
+                      {field.selectedType === "image" && field.path && (
+                        <div className="mt-3">
+                          <img
+                            src={`${ImageURL}${field.path}`}
+                            alt="Preview"
+                            className="img-thumbnail"
+                            style={{ maxWidth: "200px", maxHeight: "150px" }}
+                          />
+                        </div>
+                      )}
+                      {cropperStates[index] &&
+                        imageSrc[index] &&
+                        field.selectedType === "image" && (
+                          <>
+                            <div className="crop-container">
+                              <Cropper
+                                image={imageSrc[index]}
+                                crop={crop[index] || { x: 0, y: 0 }}
+                                zoom={zoom[index] || 1}
+                                aspect={320 / 240}
+                                onCropChange={(newCrop) =>
+                                  updateCrop(index, newCrop)
+                                }
+                                onCropComplete={(
+                                  croppedArea,
+                                  croppedAreaPixels
+                                ) =>
+                                  onCropComplete(
+                                    index,
+                                    croppedArea,
+                                    croppedAreaPixels
+                                  )
+                                }
+                              />
+                            </div>
+                            <div className="d-flex justify-content-start mt-3 gap-2">
+                              <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={() => handleCropSave(index)}
+                              >
+                                Save Cropped Image
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={() => handleCropCancel(index)}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      <div className="invalid-feedback">
+                        {formik.errors.mediaFields?.[index]?.path &&
+                          field.selectedType === "image" &&
+                          formik.errors.mediaFields[index].path}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 col-12 mb-3">
+                      <label className="form-label">
+                        Youtube Link
+                        {field.selectedType === "video" && (
+                          <span className="text-danger">*</span>
+                        )}
+                      </label>
+                      <input
+                        type="text"
+                        className={`form-control ${
+                          formik.errors.mediaFields?.[index]?.path &&
+                          field.selectedType === "video"
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        value={field.selectedType === "video" ? field.path : ""}
+                        disabled={field.selectedType !== "video"}
+                        onChange={(e) => handleVideoChange(e, index)}
+                      />
+                      <div className="invalid-feedback">
+                        {formik.errors.mediaFields?.[index]?.path &&
+                          field.selectedType === "video" &&
+                          formik.errors.mediaFields[index].path}
+                      </div>
+                    </div>
+
+                    <div className="text-end">
+                      {formik.values.mediaFields.length > 1 && (
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDelete(index, field.id ?? null)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </>
+
+              <div className="text-end mt-3">
+                {formik.values.mediaFields.length < 7 && (
+                  <button
+                    type="button"
+                    onClick={handleAddMediaField}
+                    className="btn btn-success btn-sm"
+                  >
+                    Add More
+                  </button>
+                )}
+              </div>
+            </>
+
+            <div className="col-12 mb-5">
+              <label className="form-label">
+                Description<span className="text-danger">*</span>
+              </label>
+              <textarea
+                type="text"
+                rows={5}
+                className={`form-control form-control-sm ${
+                  formik.touched.description && formik.errors.description
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("description")}
+              />
+              {formik.touched.description && formik.errors.description && (
+                <div className="invalid-feedback">
+                  {formik.errors.description}
+                </div>
+              )}
+            </div>
+            <div className="col-12 mb-5">
+              <label className="form-label">Specification</label>
+              <textarea
+                type="text"
+                rows={5}
+                className={`form-control form-control-sm ${
+                  formik.touched.specifications && formik.errors.specifications
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("specifications")}
+              />
+              {formik.touched.specifications &&
+                formik.errors.specifications && (
+                  <div className="invalid-feedback">
+                    {formik.errors.specifications}
+                  </div>
+                )}
+            </div>
+            <div className="col-md-6 col-12 mt-5 d-flex align-items-center">
+              <div className="d-flex align-items-center">
+                <div className="form-check mb-3">
+                  <input
+                    type="radio"
+                    name="changeCouponCode"
+                    id="vendorCoupon"
+                    value="fixed"
+                    className="form-check-input"
+                    style={{ boxShadow: "none" }}
+                    checked= {formik.values.coupon_code === "DEALSLAHV02"}
+                    onChange={handleRadioChange}
+                  />
+                  <label htmlFor="vendorCoupon" className="form-label ms-2">
+                    Vendor Coupon code
+                  </label>
+                </div>
+                &nbsp; &nbsp; &nbsp;
+                <div className="form-check mb-3">
+                  <input
+                    type="radio"
+                    name="changeCouponCode"
+                    id="genricCoupon"
+                    value="discount"
+                    className="form-check-input"
+                    style={{ boxShadow: "none" }}
+                    // checked={isCouponChecked}
+                    checked= {formik.values.coupon_code === "DEALSLAH23"}
+                    onChange={handleRadioChange}
+                  />
+                  <label htmlFor="genricCoupon" className="form-label ms-2">
+                    Generic Coupon Code
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">Coupon Code</label>
+              <input
+                type="text"
+                className={`form-control form-control-sm ${
+                  formik.touched.coupon_code && formik.errors.coupon_code
+                    ? "is-invalid"
+                    : ""
+                }`}
+                value={couponCode}
+                readOnly
+              />
+              {formik.touched.coupon_code && formik.errors.coupon_code && (
+                <div className="invalid-feedback">
+                  {formik.errors.coupon_code}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="hstack p-2">
+            <button
+              type="submit"
+              className="btn btn-sm btn-button"
+              disabled={loadIndicator}
+              onClick={handlePlaceOrder}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Submit
+            </button>
+          </div>
+        </div>
       </form>
     </section>
   );

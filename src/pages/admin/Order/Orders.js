@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
-import $ from "jquery";
+import $, { data } from "jquery";
 import { Link } from "react-router-dom";
 // import DeleteModel from "../../../components/admin/DeleteModel";
 import api from "../../../config/URL";
@@ -118,36 +118,32 @@ const Orders = () => {
                   <th className="text-start">Customer Name</th>
                   <th className="text-start">Total</th>
                   <th className="text-start">Product Name</th>
+                  <th className="text-start">Shop Name</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {datas?.map((data, index) => (
-                  <tr key={data.id}>
-                    <td className="text-start align-middle">{index + 1}</td>
-                    <td className="text-start">{data.order_number}</td>
-                    <td className="align-middle text-start">
-                      {data?.customer?.name}
-                    </td>
-                    <td className="align-middle text-start">
-                      ₹
-                      {new Intl.NumberFormat("en-IN", {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 2,
-                      }).format(parseFloat(data.total))}
-                    </td>
-                    <td className="align-middle text-start">
-                      {data.items?.[0]?.deal_name}
-                    </td>
-                    <td className="align-middle text-center">
-                      <Link to={`/order/view/${data.id}`}>
-                        <button className="button-btn btn-sm m-2">View</button>
-                      </Link>
-                      {/* <DeleteModel /> */}
-                    </td>
-                  </tr>
-                ))}
+                {datas?.map((data, index) => {
+                  const total = (parseFloat(data.quantity) * parseFloat(data.discount)).toFixed(2); // Calculate total
+                  return (
+                    <tr key={data.id}>
+                      <td className="text-start align-middle">{index + 1}</td>
+                      <td className="text-start">{data?.order?.order_number}</td>
+                      <td className="align-middle text-start">{data?.order?.customer?.name}</td>
+                      <td className="align-middle text-start">{total}</td>
+                      <td className="align-middle text-start">{data.item_description}</td>
+                      <td className="align-middle text-start">{data?.shop?.legal_name}</td>
+                      <td className="align-middle text-center">
+                        <Link to={`/order/view/${data.order_id}/${data.product_id}`}>
+                          <button className="button-btn btn-sm m-2">View</button>
+                        </Link>
+                        {/* <DeleteModel /> */}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
+
             </table>
           </div>
         )}

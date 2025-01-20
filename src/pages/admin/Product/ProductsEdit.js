@@ -19,23 +19,23 @@ function ProductsEdit() {
         Yup.ref("original_price"),
         "Discounted Price must be less than Original Price"
       ),
-    start_date: Yup.string().required("Start Date is required"),
-    end_date: Yup.date()
-      .required("End date is required")
-      .test(
-        "endDateValidation",
-        "End date must be the same or after the start date",
-        function (value) {
-          const { start_date } = this.parent;
-          if (!start_date || !value) return true;
-          return new Date(value) >= new Date(start_date);
-        }
-      ),
+      start_date: Yup.string().required("Start Date is required"),
+      end_date: Yup.date()
+        .required("End date is required")
+        .test(
+          "endDateValidation",
+          "End date must be the same or after the start date",
+          function (value) {
+            const { start_date } = this.parent;
+            if (!start_date || !value) return true;
+            return new Date(value) >= new Date(start_date);
+          }
+        ),
     // start_date: Yup.date().required("Start Date is required").nullable(),
     // end_date: Yup.date()
-    //     .required("End Date is required")
-    //     .min(Yup.ref("start_date"), "End Date cannot be before Start Date")
-    //     .nullable(),
+    //   .required("End Date is required")
+    //   .min(Yup.ref("start_date"), "End Date cannot be before Start Date")
+    //   .nullable(),
     // stock: Yup.number()
     //     .required("Stock is required")
     //     .min(0, "Stock cannot be negative"),
