@@ -219,23 +219,24 @@ function ProductView() {
                 <div className="col-md-6 col-12">
                   <div className="row mb-3">
                     <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Varient</p>
+                      <p className="text-sm">Variant</p>
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
                         :{" "}
-                        {data?.varient?.split(",").map((variant, index) => (
-                          <div
+                        {data?.varient?.split(",").map((varient, index) => (
+                          <span
                             key={index}
                             className="badge badge-success badge-outlined mx-1"
                           >
-                            {variant.trim()}
-                          </div>
+                            {varient.trim()}
+                          </span>
                         ))}
                       </p>
                     </div>
                   </div>
                 </div>
+
                 <div className="col-md-6 col-12">
                   <div className="row mb-3">
                     <div className="col-6 d-flex justify-content-start align-items-center">
@@ -342,50 +343,52 @@ function ProductView() {
                   </div>
                 </div>
                 <div className="row mt-5 p-3">
-                  {data.product_media?.map((item, index) => (
-                    <div className="col-md-4 col-12 mb-3" key={item.id}>
-                      {item.type === "image" ? (
-                        <>
-                          <p className="text-sm">Thumbnail {index + 1}</p>
-                          <img
-                            src={`${ImageURL}${
-                              item.path.startsWith("/")
-                                ? item.path
-                                : "/" + item.path
-                            }`}
-                            alt={`Media ${index + 1}`}
-                            style={{
-                              maxWidth: "100%",
-                              maxHeight: "100%",
-                              objectFit: "cover",
-                            }}
-                          />
-                        </>
-                      ) : item.type === "video" ? (
-                        <>
-                          <p className="text-sm">Thumbnail {index + 1}</p>
-                          <div
-                            className="d-flex gap-4"
-                            id={`video-container-${index}`}
-                          >
-                            {/* Embed YouTube video */}
-                            {item.path && (
-                              <iframe
-                                src={`https://www.youtube.com/embed/${extractVideoId(
-                                  item.path
-                                )}`}
-                                width="320" // Reduced width
-                                height="213" // Reduced height
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                title={`Video ${index + 1}`}
-                              ></iframe>
-                            )}
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-                  ))}
+                  {data.product_media
+                    ?.sort((a, b) => a.order - b.order)
+                    .map((item, index) => (
+                      <div className="col-md-4 col-12 mb-3" key={item.id}>
+                        {item.type === "image" ? (
+                          <>
+                            <p className="text-sm">Thumbnail {index + 1}</p>
+                            <img
+                              src={`${ImageURL}${
+                                item.path.startsWith("/")
+                                  ? item.path
+                                  : "/" + item.path
+                              }`}
+                              alt={`Media ${index + 1}`}
+                              style={{
+                                maxWidth: "100%",
+                                maxHeight: "100%",
+                                objectFit: "cover",
+                              }}
+                            />
+                          </>
+                        ) : item.type === "video" ? (
+                          <>
+                            <p className="text-sm">Thumbnail {index + 1}</p>
+                            <div
+                              className="d-flex gap-4"
+                              id={`video-container-${index}`}
+                            >
+                              {/* Embed YouTube video */}
+                              {item.path && (
+                                <iframe
+                                  src={`https://www.youtube.com/embed/${extractVideoId(
+                                    item.path
+                                  )}`}
+                                  width="320" // Adjust width as needed
+                                  height="213" // Adjust height as needed
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                  title={`Video ${index + 1}`}
+                                ></iframe>
+                              )}
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    ))}
                 </div>
               </div>
             </>

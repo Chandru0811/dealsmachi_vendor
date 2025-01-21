@@ -18,6 +18,7 @@ function ProductEdit() {
   ]);
   const [cropperStates, setCropperStates] = useState([]);
   const [imageSrc, setImageSrc] = useState([]);
+  console.log("Image is ", imageSrc)
   const [crop, setCrop] = useState([]);
   const [zoom, setZoom] = useState([]);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState([]);
@@ -163,7 +164,7 @@ function ProductEdit() {
         .map((value) => value.replace(/,\s*$/, ""));
       console.log("Submitted value", values);
       const formData = new FormData();
-      formData.append("shop_id", values.shop_id);
+      formData.append("shop_id", shop_id);
       formData.append("categoryGroupId", values.categoryGroupId);
       formData.append("name", values.name);
       formData.append("category_id", values.category_id);
@@ -179,7 +180,7 @@ function ProductEdit() {
       formData.append("description", values.description);
       formData.append("delivery_days", values.delivery_days);
       formData.append("specifications", values.specifications);
-      const slug = values.name.toLowerCase().replace(/\s+/g, "_");
+      const slug = values.name.toLowerCase().replace(/[\s/\\]+/g, "_");
       const finalSlug = `${slug}_${id}`;
       formData.append("slug", finalSlug);
 
@@ -285,7 +286,7 @@ function ProductEdit() {
           end_date: "End Date",
           coupon_code: "Coupon Code",
           image: "Main Image",
-          description: "Description",
+          description: "Description cannot be more than 250 characters long",
           mediaFields: "Media Fields",
           specifications:
             "Specification cannot be more than 250 characters long",
@@ -325,7 +326,12 @@ function ProductEdit() {
     const updatedVariants = formik.values.variants.filter(
       (variant) => variant.id !== id
     );
-    formik.setFieldValue("variants", updatedVariants);
+    formik.setFieldValue(
+      "variants",
+      updatedVariants.length > 0
+        ? updatedVariants
+        : [{ id: Date.now(), value: "" }]
+    );
   };
 
   useEffect(() => {
@@ -398,7 +404,6 @@ function ProductEdit() {
       formik.setValues({
         category_id: data.category_id || "",
         name: data.name || "",
-        shop_id: data.shop_id || "",
         categoryGroupId: data.categoryGroupId || "",
         deal_type: data.deal_type || "",
         delivery_days: data.delivery_days || "",
@@ -411,15 +416,20 @@ function ProductEdit() {
         coupon_code: data.coupon_code || "",
         description: data.description || "",
         variants: data.varient
-          ? data.varient.split(",").map((value) => ({ value: value.trim() }))
+          ? data.varient.split(",").map((value, index) => ({
+              id: Date.now() + index,
+              value: value.trim(),
+            }))
           : [{ id: Date.now(), value: "" }],
         specifications: data.specifications || "",
         mediaFields: data.product_media
-          ? data.product_media.map((mediaItem) => ({
-              id: mediaItem.id,
-              selectedType: mediaItem.type,
-              path: mediaItem.path,
-            }))
+          ? data.product_media
+              .sort((a, b) => a.order - b.order) 
+              .map((mediaItem) => ({
+                id: mediaItem.id,
+                selectedType: mediaItem.type,
+                path: mediaItem.path,
+              }))
           : [],
       });
 
@@ -446,7 +456,6 @@ function ProductEdit() {
     if (file) {
       const reader = new FileReader();
 
-      // Read the file as a binary string
       reader.onload = () => {
         // Update the preview (imageSrc) for the cropper
         const updatedImageSrc = [...imageSrc];
@@ -478,6 +487,7 @@ function ProductEdit() {
       { selectedType: "image", path: "" },
     ]);
   };
+
   const handleDelete = async (index, mediaId) => {
     if (mediaId) {
       try {
@@ -562,6 +572,7 @@ function ProductEdit() {
       const file = new File([croppedImageBlob], `croppedImage-${index}.jpeg`, {
         type: "image/jpeg",
       });
+      console.log("Image actual get", file)
 
       // Update Formik values for the specific index
       const updatedFields = [...formik.values.mediaFields];
@@ -576,6 +587,13 @@ function ProductEdit() {
       const updatedCropperStates = [...cropperStates];
       updatedCropperStates[index] = false;
       setCropperStates(updatedCropperStates);
+
+      // Clear the temporary imageSrc for the index
+      const updatedImageSrc = [...imageSrc];
+      updatedImageSrc[index] = URL.createObjectURL(file); // Temporarily store the preview URL
+      setImageSrc(updatedImageSrc);
+
+      console.log("Cropped image saved successfully!");
     } catch (error) {
       console.error("Error cropping the image:", error);
     }
@@ -669,7 +687,8 @@ function ProductEdit() {
               </label>
               <select
                 className={`form-select form-select-sm ${
-                  formik.touched.categoryGroupId && formik.errors.categoryGroupId
+                  formik.touched.categoryGroupId &&
+                  formik.errors.categoryGroupId
                     ? "is-invalid"
                     : ""
                 }`}
@@ -685,9 +704,12 @@ function ProductEdit() {
                     </option>
                   ))}
               </select>
-              {formik.touched.categoryGroupId && formik.errors.categoryGroupId && (
-                <div className="invalid-feedback">{formik.errors.categoryGroupId}</div>
-              )}
+              {formik.touched.categoryGroupId &&
+                formik.errors.categoryGroupId && (
+                  <div className="invalid-feedback">
+                    {formik.errors.categoryGroupId}
+                  </div>
+                )}
             </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
@@ -728,6 +750,16 @@ function ProductEdit() {
                     : ""
                 }`}
                 {...formik.getFieldProps("deal_type")}
+                onChange={(e) => {
+                  const selectedDealType = e.target.value;
+                  formik.setFieldValue("deal_type", selectedDealType);
+                  if (selectedDealType !== "1") {
+                    formik.setFieldValue("delivery_days", "");
+                    formik.setFieldValue("variants", [
+                      { id: Date.now(), value: "" },
+                    ]);
+                  }
+                }}
               >
                 <option></option>
                 <option value="1">Product</option>
@@ -813,10 +845,10 @@ function ProductEdit() {
               <input
                 type="text"
                 onInput={(event) => {
-                  event.target.value = event.target.value
-                    .replace(/[^0-9.]/g, "")
-                    .replace(/(\..*)\./g, "$1")
-                    .replace(/(\.\d{1})./g, "$1");
+                  event.target.value = event.target.value.replace(
+                    /[^0-9]/g,
+                    ""
+                  );
                 }}
                 className={`form-control form-control-sm ${
                   formik.touched.original_price && formik.errors.original_price
@@ -839,10 +871,10 @@ function ProductEdit() {
               <input
                 type="text"
                 onInput={(event) => {
-                  event.target.value = event.target.value
-                    .replace(/[^0-9.]/g, "")
-                    .replace(/(\..*)\./g, "$1")
-                    .replace(/(\.\d{1})./g, "$1");
+                  event.target.value = event.target.value.replace(
+                    /[^0-9]/g,
+                    ""
+                  );
                 }}
                 className={`form-control form-control-sm ${
                   formik.touched.discounted_price &&
@@ -928,163 +960,182 @@ function ProductEdit() {
             </div>
             <>
               <>
-                {formik.values.mediaFields.map((field, index) => (
-                  <div key={index} className="row">
-                    <p>Thumbnail {index + 1}</p>
-                    <div className="col-12 d-flex align-items-center mb-3">
-                      <div className="form-check me-3">
-                        <input
-                          type="radio"
-                          name={`media-type-${index}`}
-                          id={`image-${index}`}
-                          className="form-check-input"
-                          checked={field.selectedType === "image"}
-                          onChange={() => handleTypeChange(index, "image")}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`image-${index}`}
-                        >
-                          Image
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          name={`media-type-${index}`}
-                          id={`video-${index}`}
-                          className="form-check-input"
-                          checked={field.selectedType === "video"}
-                          onChange={() => handleTypeChange(index, "video")}
-                          disabled={index === 0} // Disable video for the first entry
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`video-${index}`}
-                        >
-                          Youtube
-                        </label>
-                      </div>
-                    </div>
-
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="form-label">
-                        {field.selectedType === "image" && "Image"}
-                        {field.selectedType === "image" && (
-                          <span className="text-danger">*</span>
-                        )}
-                      </label>
-                      <input
-                        type="file"
-                        accept=".png,.jpeg,.jpg,.svg,.webp"
-                        className={`form-control ${
-                          formik.errors.mediaFields?.[index]?.path &&
-                          field.selectedType === "image"
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        disabled={field.selectedType !== "image"}
-                        onChange={(e) => handleFileChange(e, index)}
-                      />
-                      {field.selectedType === "image" && field.path && (
-                        <div className="mt-3">
-                          <img
-                            src={`${ImageURL}${field.path}`}
-                            alt="Preview"
-                            className="img-thumbnail"
-                            style={{ maxWidth: "200px", maxHeight: "150px" }}
+                {formik.values.mediaFields
+                  .sort((a, b) => a.order - b.order) // Sort by the 'order' field
+                  .map((field, index) => (
+                    <div key={index} className="row">
+                      <p>Thumbnail {index + 1}</p>
+                      <div className="col-12 d-flex align-items-center mb-3">
+                        <div className="form-check me-3">
+                          <input
+                            type="radio"
+                            name={`media-type-${index}`}
+                            id={`image-${index}`}
+                            className="form-check-input"
+                            checked={field.selectedType === "image"}
+                            onChange={() => handleTypeChange(index, "image")}
                           />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`image-${index}`}
+                          >
+                            Image
+                          </label>
                         </div>
-                      )}
-                      {cropperStates[index] &&
-                        imageSrc[index] &&
-                        field.selectedType === "image" && (
-                          <>
-                            <div className="crop-container">
-                              <Cropper
-                                image={imageSrc[index]}
-                                crop={crop[index] || { x: 0, y: 0 }}
-                                zoom={zoom[index] || 1}
-                                aspect={320 / 240}
-                                onCropChange={(newCrop) =>
-                                  updateCrop(index, newCrop)
-                                }
-                                onCropComplete={(
-                                  croppedArea,
-                                  croppedAreaPixels
-                                ) =>
-                                  onCropComplete(
-                                    index,
+                        <div className="form-check">
+                          <input
+                            type="radio"
+                            name={`media-type-${index}`}
+                            id={`video-${index}`}
+                            className="form-check-input"
+                            checked={field.selectedType === "video"}
+                            onChange={() => handleTypeChange(index, "video")}
+                            disabled={index === 0} // Disable video for the first entry
+                          />
+                          <label
+                            className="form-check-label"
+                            htmlFor={`video-${index}`}
+                          >
+                            Youtube
+                          </label>
+                        </div>
+                      </div>
+
+                      <div className="col-md-6 col-12 mb-3">
+                        <label className="form-label">
+                          {field.selectedType === "image" && "Image"}
+                          {field.selectedType === "image" && (
+                            <span className="text-danger">*</span>
+                          )}
+                        </label>
+                        <input
+                          type="file"
+                          accept=".png,.jpeg,.jpg,.svg,.webp"
+                          name={`image-${index}`}
+                          className={`form-control ${
+                            formik.errors.mediaFields?.[index]?.path &&
+                            field.selectedType === "image"
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          disabled={field.selectedType !== "image"}
+                          onChange={(e) => handleFileChange(e, index)}
+                        />
+                        {field.selectedType === "image" && field.path && (
+                          <div className="mt-3">
+                            <img
+                              src={
+                                imageSrc[index] || `${ImageURL}${field.path}`
+                              }
+                              alt="Preview"
+                              className="img-thumbnail"
+                              style={{ maxWidth: "200px", maxHeight: "150px" }}
+                            />
+                            {/* <img
+                              src={
+                                field.path
+                                  ? `${ImageURL}${field.path}`
+                                  : `${updatedFields[index]?.path}`
+                              }
+                              alt="Preview"
+                              className="img-thumbnail"
+                              style={{ maxWidth: "200px", maxHeight: "150px" }}
+                            /> */}
+                          </div>
+                        )}
+                        {cropperStates[index] &&
+                          imageSrc[index] &&
+                          field.selectedType === "image" && (
+                            <>
+                              <div className="crop-container">
+                                <Cropper
+                                  image={imageSrc[index]}
+                                  crop={crop[index] || { x: 0, y: 0 }}
+                                  zoom={zoom[index] || 1}
+                                  aspect={320 / 240}
+                                  onCropChange={(newCrop) =>
+                                    updateCrop(index, newCrop)
+                                  }
+                                  onCropComplete={(
                                     croppedArea,
                                     croppedAreaPixels
-                                  )
-                                }
-                              />
-                            </div>
-                            <div className="d-flex justify-content-start mt-3 gap-2">
-                              <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => handleCropSave(index)}
-                              >
-                                Save Cropped Image
-                              </button>
-                              <button
-                                type="button"
-                                className="btn btn-secondary"
-                                onClick={() => handleCropCancel(index)}
-                              >
-                                Cancel
-                              </button>
-                            </div>
-                          </>
+                                  ) =>
+                                    onCropComplete(
+                                      index,
+                                      croppedArea,
+                                      croppedAreaPixels
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="d-flex justify-content-start mt-3 gap-2">
+                                <button
+                                  type="button"
+                                  className="btn btn-primary"
+                                  onClick={() => handleCropSave(index)}
+                                >
+                                  Save Cropped Image
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn btn-secondary"
+                                  onClick={() => handleCropCancel(index)}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </>
+                          )}
+                        <div className="invalid-feedback">
+                          {formik.errors.mediaFields?.[index]?.path &&
+                            field.selectedType === "image" &&
+                            formik.errors.mediaFields[index].path}
+                        </div>
+                      </div>
+
+                      <div className="col-md-6 col-12 mb-3">
+                        <label className="form-label">
+                          Youtube Link
+                          {field.selectedType === "video" && (
+                            <span className="text-danger">*</span>
+                          )}
+                        </label>
+                        <input
+                          type="text"
+                          className={`form-control ${
+                            formik.errors.mediaFields?.[index]?.path &&
+                            field.selectedType === "video"
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          value={
+                            field.selectedType === "video" ? field.path : ""
+                          }
+                          disabled={field.selectedType !== "video"}
+                          onChange={(e) => handleVideoChange(e, index)}
+                        />
+                        <div className="invalid-feedback">
+                          {formik.errors.mediaFields?.[index]?.path &&
+                            field.selectedType === "video" &&
+                            formik.errors.mediaFields[index].path}
+                        </div>
+                      </div>
+
+                      <div className="text-end">
+                        {formik.values.mediaFields.length > 1 && (
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm"
+                            onClick={() =>
+                              handleDelete(index, field.id ?? null)
+                            }
+                          >
+                            Delete
+                          </button>
                         )}
-                      <div className="invalid-feedback">
-                        {formik.errors.mediaFields?.[index]?.path &&
-                          field.selectedType === "image" &&
-                          formik.errors.mediaFields[index].path}
                       </div>
                     </div>
-
-                    <div className="col-md-6 col-12 mb-3">
-                      <label className="form-label">
-                        Youtube Link
-                        {field.selectedType === "video" && (
-                          <span className="text-danger">*</span>
-                        )}
-                      </label>
-                      <input
-                        type="text"
-                        className={`form-control ${
-                          formik.errors.mediaFields?.[index]?.path &&
-                          field.selectedType === "video"
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        value={field.selectedType === "video" ? field.path : ""}
-                        disabled={field.selectedType !== "video"}
-                        onChange={(e) => handleVideoChange(e, index)}
-                      />
-                      <div className="invalid-feedback">
-                        {formik.errors.mediaFields?.[index]?.path &&
-                          field.selectedType === "video" &&
-                          formik.errors.mediaFields[index].path}
-                      </div>
-                    </div>
-
-                    <div className="text-end">
-                      {formik.values.mediaFields.length > 1 && (
-                        <button
-                          type="button"
-                          className="btn btn-danger btn-sm"
-                          onClick={() => handleDelete(index, field.id ?? null)}
-                        >
-                          Delete
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </>
 
               <div className="text-end mt-3">
@@ -1142,7 +1193,7 @@ function ProductEdit() {
             {(formik.values.deal_type === "1" ||
               formik.values.deal_type === 1) && (
               <div className="col-md-12 mb-3">
-                <label className="form-label">Variants</label>
+                <label className="form-label">Variant</label>
                 <div className="row">
                   {formik.values.variants.map((variant, index) => (
                     <div className="col-md-6 col-12 mb-2" key={variant.id}>
@@ -1195,7 +1246,7 @@ function ProductEdit() {
                     value="fixed"
                     className="form-check-input"
                     style={{ boxShadow: "none" }}
-                    // checked={!isCouponChecked}
+                    checked={!isCouponChecked}
                     onChange={handleRadioChange}
                   />
                   <label htmlFor="vendorCoupon" className="form-label ms-2">
