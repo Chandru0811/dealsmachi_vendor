@@ -64,6 +64,11 @@ function ProductView() {
             <div className="d-flex justify-content-between align-items-center">
               <h1 className="h4 ls-tight">View Deals</h1>
               <div>
+                <Link to={`/product/edit/${id}`}>
+                  <button type="button" className="btn btn-light btn-sm me-2">
+                    <span>Edit</span>
+                  </button>
+                </Link>
                 <Link to="/product">
                   <button type="button" className="btn btn-light btn-sm">
                     <span>Back</span>
@@ -180,62 +185,72 @@ function ProductView() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Original Price</p>
+                {data?.deal_type !== 2 && data?.deal_type !== "2" && (
+                  <>
+                    <div className="col-md-6 col-12">
+                      <div className="row mb-3">
+                        <div className="col-6 d-flex justify-content-start align-items-center">
+                          <p className="text-sm">Original Price</p>
+                        </div>
+                        <div className="col-6">
+                          <p className="text-muted text-sm">
+                            : {data?.original_price}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        : {data?.original_price}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Discounted Price</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        : {data?.discounted_price}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Discounted Percentage</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        : {data?.discount_percentage}
-                      </p>
+                  </>
+                )}
+                {data?.deal_type !== 2 && data?.deal_type !== "2" && (
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-3">
+                      <div className="col-6 d-flex justify-content-start align-items-center">
+                        <p className="text-sm">Discounted Price</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="text-muted text-sm">
+                          : {data?.discounted_price}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Variant</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        :{" "}
-                        {data?.varient?.split(",").map((varient, index) => (
-                          <span
-                            key={index}
-                            className="badge badge-success badge-outlined mx-1"
-                          >
-                            {varient.trim()}
-                          </span>
-                        ))}
-                      </p>
+                )}
+                {data?.deal_type !== 2 && data?.deal_type !== "2" && (
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-3">
+                      <div className="col-6 d-flex justify-content-start align-items-center">
+                        <p className="text-sm">Discounted Percentage</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="text-muted text-sm">
+                          : {data?.discount_percentage}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
+                {data?.deal_type !== 2 && data?.deal_type !== "2" && (
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-3">
+                      <div className="col-6 d-flex justify-content-start align-items-center">
+                        <p className="text-sm">Variant</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="text-muted text-sm">
+                          :{" "}
+                          {data?.varient?.split(",").map((varient, index) => (
+                            <span
+                              key={index}
+                              className="badge badge-success badge-outlined mx-1"
+                            >
+                              {varient.trim()}
+                            </span>
+                          ))}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="col-md-6 col-12">
                   <div className="row mb-3">
@@ -267,21 +282,23 @@ function ProductView() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-3">
-                    <div className="col-6 d-flex justify-content-start align-items-center">
-                      <p className="text-sm">Delivery Days</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">
-                        :
-                        {data?.delivery_days
-                          ? ` ${data.delivery_days} Days`
-                          : "N/A"}
-                      </p>
+                {data?.deal_type !== 2 && data?.deal_type !== "2" && (
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-3">
+                      <div className="col-6 d-flex justify-content-start align-items-center">
+                        <p className="text-sm">Delivery Days</p>
+                      </div>
+                      <div className="col-6">
+                        <p className="text-muted text-sm">
+                          :
+                          {data?.delivery_days
+                            ? ` ${data.delivery_days} Days`
+                            : "N/A"}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 {/* <div className="col-md-6 col-12">
                 <div className="row mb-3">
                   <div className="col-6 d-flex justify-content-start align-items-center">
@@ -371,14 +388,13 @@ function ProductView() {
                               className="d-flex gap-4"
                               id={`video-container-${index}`}
                             >
-                              {/* Embed YouTube video */}
                               {item.path && (
                                 <iframe
                                   src={`https://www.youtube.com/embed/${extractVideoId(
                                     item.path
                                   )}`}
-                                  width="320" // Adjust width as needed
-                                  height="213" // Adjust height as needed
+                                  width="280"
+                                  height="213"
                                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                   allowFullScreen
                                   title={`Video ${index + 1}`}

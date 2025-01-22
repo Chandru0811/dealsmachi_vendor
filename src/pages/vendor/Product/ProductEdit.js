@@ -18,7 +18,7 @@ function ProductEdit() {
   ]);
   const [cropperStates, setCropperStates] = useState([]);
   const [imageSrc, setImageSrc] = useState([]);
-  console.log("Image is ", imageSrc)
+  console.log("Image is ", imageSrc);
   const [crop, setCrop] = useState([]);
   const [zoom, setZoom] = useState([]);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState([]);
@@ -52,7 +52,7 @@ function ProductEdit() {
     delivery_days: Yup.string()
       .test(
         "delivery-days-required",
-        "Delivery Days is required when Deal Type is Product",
+        "Delivery Days is required",
         function (value) {
           const { deal_type } = this.parent;
           if (deal_type === "1") {
@@ -62,23 +62,33 @@ function ProductEdit() {
         }
       )
       .notRequired(),
-    original_price: Yup.number()
-      .required("Original Price is required")
-      .min(1, "Original Price must be greater than zero"),
-    discounted_price: Yup.number()
-      .required("Discounted Price is required")
-      .test(
-        "discountedPriceValidation",
-        "The Discounted Price must be same or below the Original Price.",
-        function (value) {
-          const { original_price } = this.parent;
-          if (!original_price || !value) return true;
-          return value <= original_price;
+    original_price: Yup.string()
+      .test("Original Price is required", function (value) {
+        const { deal_type } = this.parent;
+        if (deal_type === "1") {
+          return !!value;
         }
-      ),
-    discounted_percentage: Yup.number()
-      .required("Discount is required")
-      .max(100, "Discount must be less than 100"),
+        return true;
+      })
+      .notRequired(),
+    discounted_price: Yup.string()
+      .test("Discounted Price is required", function (value) {
+        const { deal_type } = this.parent;
+        if (deal_type === "1") {
+          return !!value;
+        }
+        return true;
+      })
+      .notRequired(),
+    discounted_percentage: Yup.string()
+      .test("Discounted Percentage is required", function (value) {
+        const { deal_type } = this.parent;
+        if (deal_type === "1") {
+          return !!value;
+        }
+        return true;
+      })
+      .notRequired(),
     start_date: Yup.string().required("Start Date is required"),
     end_date: Yup.date()
       .required("End date is required")
@@ -170,9 +180,9 @@ function ProductEdit() {
       formData.append("category_id", values.category_id);
       formData.append("deal_type", values.deal_type);
       formData.append("brand", values.brand);
-      formData.append("original_price", values.original_price);
-      formData.append("discounted_price", values.discounted_price);
-      formData.append("discount_percentage", values.discounted_percentage);
+      formData.append("original_price", values.original_price || 0);
+      formData.append("discounted_price", values.discounted_price || 0);
+      formData.append("discount_percentage", values.discounted_percentage || 0);
       formData.append("start_date", values.start_date);
       formData.append("end_date", values.end_date);
       formData.append("coupon_code", values.coupon_code);
@@ -424,7 +434,7 @@ function ProductEdit() {
         specifications: data.specifications || "",
         mediaFields: data.product_media
           ? data.product_media
-              .sort((a, b) => a.order - b.order) 
+              .sort((a, b) => a.order - b.order)
               .map((mediaItem) => ({
                 id: mediaItem.id,
                 selectedType: mediaItem.type,
@@ -441,6 +451,7 @@ function ProductEdit() {
 
   useEffect(() => {
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const updateCrop = (index, newCrop) => {
@@ -457,27 +468,24 @@ function ProductEdit() {
       const reader = new FileReader();
 
       reader.onload = () => {
-        // Update the preview (imageSrc) for the cropper
         const updatedImageSrc = [...imageSrc];
         updatedImageSrc[index] = reader.result;
         setImageSrc(updatedImageSrc);
 
-        // Enable the cropper
         const updatedCropperStates = [...cropperStates];
         updatedCropperStates[index] = true;
         setCropperStates(updatedCropperStates);
 
-        // Update Formik values
         const updatedFields = [...formik.values.mediaFields];
         updatedFields[index] = {
           ...updatedFields[index],
-          path: file.name, // Store the file name
-          binaryData: file, // Store the raw file
+          path: file.name,
+          binaryData: file,
         };
         formik.setFieldValue("mediaFields", updatedFields);
       };
 
-      reader.readAsDataURL(file); // Read file for preview
+      reader.readAsDataURL(file);
     }
   };
 
@@ -568,29 +576,25 @@ function ProductEdit() {
         index
       );
 
-      // Create a new File object
       const file = new File([croppedImageBlob], `croppedImage-${index}.jpeg`, {
         type: "image/jpeg",
       });
-      console.log("Image actual get", file)
+      console.log("Image actual get", file);
 
-      // Update Formik values for the specific index
       const updatedFields = [...formik.values.mediaFields];
       updatedFields[index] = {
         ...updatedFields[index],
-        path: file.name, // Store file name
-        binaryData: file, // Store binary blob
+        path: file.name,
+        binaryData: file,
       };
       formik.setFieldValue("mediaFields", updatedFields);
 
-      // Disable the cropper
       const updatedCropperStates = [...cropperStates];
       updatedCropperStates[index] = false;
       setCropperStates(updatedCropperStates);
 
-      // Clear the temporary imageSrc for the index
       const updatedImageSrc = [...imageSrc];
-      updatedImageSrc[index] = URL.createObjectURL(file); // Temporarily store the preview URL
+      updatedImageSrc[index] = URL.createObjectURL(file);
       setImageSrc(updatedImageSrc);
 
       console.log("Cropped image saved successfully!");
@@ -609,7 +613,6 @@ function ProductEdit() {
     setImageSrc(updatedImageSrc);
 
     formik.setFieldValue(`image-${index}`, null);
-    // Reset the file input
     const fileInput = document.querySelector(`input[name="image-${index}"]`);
     if (fileInput) fileInput.value = "";
   };
@@ -755,6 +758,9 @@ function ProductEdit() {
                   formik.setFieldValue("deal_type", selectedDealType);
                   if (selectedDealType !== "1") {
                     formik.setFieldValue("delivery_days", "");
+                    formik.setFieldValue("original_price", "");
+                    formik.setFieldValue("discounted_price", "");
+                    formik.setFieldValue("discounted_percentage", "");
                     formik.setFieldValue("variants", [
                       { id: Date.now(), value: "" },
                     ]);
@@ -838,90 +844,101 @@ function ProductEdit() {
                 <div className="invalid-feedback">{formik.errors.name}</div>
               )}
             </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Original Price<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                onInput={(event) => {
-                  event.target.value = event.target.value.replace(
-                    /[^0-9]/g,
-                    ""
-                  );
-                }}
-                className={`form-control form-control-sm ${
-                  formik.touched.original_price && formik.errors.original_price
-                    ? "is-invalid"
-                    : ""
-                }`}
-                {...formik.getFieldProps("original_price")}
-              />
-              {formik.touched.original_price &&
-                formik.errors.original_price && (
-                  <div className="invalid-feedback">
-                    {formik.errors.original_price}
-                  </div>
-                )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Discounted Price<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                onInput={(event) => {
-                  event.target.value = event.target.value.replace(
-                    /[^0-9]/g,
-                    ""
-                  );
-                }}
-                className={`form-control form-control-sm ${
-                  formik.touched.discounted_price &&
-                  formik.errors.discounted_price
-                    ? "is-invalid"
-                    : ""
-                }`}
-                {...formik.getFieldProps("discounted_price")}
-                value={formik.values.discounted_price}
-              />
-              {formik.touched.discounted_price &&
-                formik.errors.discounted_price && (
-                  <div className="invalid-feedback">
-                    {formik.errors.discounted_price}
-                  </div>
-                )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Discounted Percentage (%)<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                readOnly
-                onInput={(event) => {
-                  let value = event.target.value
-                    .replace(/[^0-9.]/g, "")
-                    .replace(/(\..*)\./g, "$1")
-                    .replace(/^(\d*\.\d{1}).*/, "$1");
+            {(formik.values.deal_type === "1" ||
+              formik.values.deal_type === 1) && (
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Original Price<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  onInput={(event) => {
+                    event.target.value = event.target.value.replace(
+                      /[^0-9]/g,
+                      ""
+                    );
+                  }}
+                  className={`form-control form-control-sm ${
+                    formik.touched.original_price &&
+                    formik.errors.original_price
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("original_price")}
+                />
+                {formik.touched.original_price &&
+                  formik.errors.original_price && (
+                    <div className="invalid-feedback">
+                      {formik.errors.original_price}
+                    </div>
+                  )}
+              </div>
+            )}
+            {(formik.values.deal_type === "1" ||
+              formik.values.deal_type === 1) && (
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Discounted Price<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  onInput={(event) => {
+                    event.target.value = event.target.value.replace(
+                      /[^0-9]/g,
+                      ""
+                    );
+                  }}
+                  className={`form-control form-control-sm ${
+                    formik.touched.discounted_price &&
+                    formik.errors.discounted_price
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("discounted_price")}
+                  value={formik.values.discounted_price}
+                />
+                {formik.touched.discounted_price &&
+                  formik.errors.discounted_price && (
+                    <div className="invalid-feedback">
+                      {formik.errors.discounted_price}
+                    </div>
+                  )}
+              </div>
+            )}
+            {(formik.values.deal_type === "1" ||
+              formik.values.deal_type === 1) && (
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Discounted Percentage (%)
+                  <span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  readOnly
+                  onInput={(event) => {
+                    let value = event.target.value
+                      .replace(/[^0-9.]/g, "")
+                      .replace(/(\..*)\./g, "$1")
+                      .replace(/^(\d*\.\d{1}).*/, "$1");
 
-                  formik.setFieldValue("discounted_percentage", value);
-                }}
-                {...formik.getFieldProps("discounted_percentage")}
-                className={`form-control form-control-sm ${
-                  formik.touched.discounted_percentage &&
-                  formik.errors.discounted_percentage
-                    ? "is-invalid"
-                    : ""
-                }`}
-              />
-              {formik.touched.discounted_percentage &&
-                formik.errors.discounted_percentage && (
-                  <div className="invalid-feedback">
-                    {formik.errors.discounted_percentage}
-                  </div>
-                )}
-            </div>
+                    formik.setFieldValue("discounted_percentage", value);
+                  }}
+                  {...formik.getFieldProps("discounted_percentage")}
+                  className={`form-control form-control-sm ${
+                    formik.touched.discounted_percentage &&
+                    formik.errors.discounted_percentage
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.discounted_percentage &&
+                  formik.errors.discounted_percentage && (
+                    <div className="invalid-feedback">
+                      {formik.errors.discounted_percentage}
+                    </div>
+                  )}
+              </div>
+            )}
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Start Date <span className="text-danger">*</span>
@@ -961,7 +978,7 @@ function ProductEdit() {
             <>
               <>
                 {formik.values.mediaFields
-                  .sort((a, b) => a.order - b.order) // Sort by the 'order' field
+                  .sort((a, b) => a.order - b.order)
                   .map((field, index) => (
                     <div key={index} className="row">
                       <p>Thumbnail {index + 1}</p>
@@ -990,7 +1007,7 @@ function ProductEdit() {
                             className="form-check-input"
                             checked={field.selectedType === "video"}
                             onChange={() => handleTypeChange(index, "video")}
-                            disabled={index === 0} // Disable video for the first entry
+                            disabled={index === 0}
                           />
                           <label
                             className="form-check-label"
@@ -1031,16 +1048,6 @@ function ProductEdit() {
                               className="img-thumbnail"
                               style={{ maxWidth: "200px", maxHeight: "150px" }}
                             />
-                            {/* <img
-                              src={
-                                field.path
-                                  ? `${ImageURL}${field.path}`
-                                  : `${updatedFields[index]?.path}`
-                              }
-                              alt="Preview"
-                              className="img-thumbnail"
-                              style={{ maxWidth: "200px", maxHeight: "150px" }}
-                            /> */}
                           </div>
                         )}
                         {cropperStates[index] &&
@@ -1248,6 +1255,10 @@ function ProductEdit() {
                     style={{ boxShadow: "none" }}
                     checked={!isCouponChecked}
                     onChange={handleRadioChange}
+                    disabled={
+                      formik.values.deal_type === 2 ||
+                      formik.values.deal_type === "2"
+                    }
                   />
                   <label htmlFor="vendorCoupon" className="form-label ms-2">
                     Vendor Coupon code
@@ -1264,6 +1275,10 @@ function ProductEdit() {
                     style={{ boxShadow: "none" }}
                     checked={isCouponChecked}
                     onChange={handleRadioChange}
+                    disabled={
+                      formik.values.deal_type === 2 ||
+                      formik.values.deal_type === "2"
+                    }
                   />
                   <label htmlFor="genricCoupon" className="form-label ms-2">
                     Generic Coupon Code

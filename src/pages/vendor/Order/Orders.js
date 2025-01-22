@@ -12,6 +12,7 @@ const Orders = () => {
   const tableRef = useRef(null);
   const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(false);
+  console.log(`Order Id: ${datas.order_id}`);
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {

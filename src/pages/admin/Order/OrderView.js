@@ -22,15 +22,17 @@ function OrderView() {
     }
     setLoading(false);
   };
+
   const calculateDeliveryDate = (createdAt, deliveryDays) => {
-    if (!createdAt || !deliveryDays) return "N/A";
+    if (!createdAt || !deliveryDays || deliveryDays ==="N/A") return "N/A";
     const createdDate = new Date(createdAt);
     createdDate.setDate(createdDate.getDate() + parseInt(deliveryDays, 10));
-    return createdDate.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+    return createdDate.toISOString().split("T")[0]; 
   };
 
   useEffect(() => {
     getData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order_id, product_id]);
 
   return (

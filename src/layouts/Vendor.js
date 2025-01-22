@@ -53,7 +53,7 @@ function Vendor({ handleLogout }) {
                   <Route path="/categorys/edit" element={<CategoryEdit />} />
                   <Route path="/categorys/view" element={<CategoryView />} />
                   <Route path="/order" element={<Orders />} />
-                  <Route path="/order/view/:id" element={<OrderView />} />
+                  <Route path="/order/view/:order_id/:product_id" element={<OrderView />} />
                   <Route
                     path="/emailverifysuccess"
                     element={<EmailVerifySuccess />}

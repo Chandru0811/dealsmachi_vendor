@@ -3,12 +3,8 @@ import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
-import Image from "../../../assets/tv.png";
 import DeleteModel from "../../../components/admin/DeleteModel";
-import { PiIntersectSquareFill } from "react-icons/pi";
 import api from "../../../config/URL";
-import toast from "react-hot-toast";
-import ImageURL from "../../../config/ImageURL";
 import { MdAddBox } from "react-icons/md";
 
 const Product = () => {
@@ -19,7 +15,7 @@ const Product = () => {
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
-      return; // DataTable already initialized
+      return;
     }
     $(tableRef.current).DataTable({
       columnDefs: [{ orderable: false, targets: -1 }],
@@ -41,24 +37,22 @@ const Product = () => {
   };
 
   const refreshData = async () => {
-    destroyDataTable(); // Clean up the old DataTable
+    destroyDataTable();
     setLoading(true);
     try {
-      // Fetch paginated data; adjust URL parameters if server supports pagination
       const response = await api.get(`vendor/product/${id}`);
-      setData(response.data.data); // Update data state
+      setData(response.data.data);
     } catch (error) {
       console.error("Error refreshing data:", error);
     }
     setLoading(false);
-    initializeDataTable(); // Reinitialize DataTable after data update
+    initializeDataTable();
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Initial data fetch with pagination
         const response = await api.get(`vendor/product/${id}`);
         setData(response.data.data);
       } catch (error) {
@@ -75,6 +69,7 @@ const Product = () => {
       destroyDataTable();
       fetchData();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
