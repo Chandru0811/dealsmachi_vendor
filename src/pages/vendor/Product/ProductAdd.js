@@ -575,18 +575,15 @@ function ProductAdd() {
 
   const handleDelete = (indexToDelete) => {
     if (mediaFields.length > 1 && indexToDelete !== 0) {
-      // Remove the specific row from mediaFields
       const updatedFields = mediaFields.filter(
         (_, index) => index !== indexToDelete
       );
       setMediaFields(updatedFields);
 
-      // Create new form values without the deleted row
       const newValues = { ...formik.values };
       delete newValues[`image-${indexToDelete}`];
       delete newValues[`video-${indexToDelete}`];
 
-      // Reindex the remaining fields after the deleted index
       for (let i = indexToDelete; i < mediaFields.length - 1; i++) {
         if (newValues[`image-${i + 1}`]) {
           newValues[`image-${i}`] = newValues[`image-${i + 1}`];
@@ -598,10 +595,8 @@ function ProductAdd() {
         }
       }
 
-      // Update formik values
       formik.setValues(newValues);
 
-      // Update other state arrays
       setImageSrc((prev) => prev.filter((_, index) => index !== indexToDelete));
       setCrop((prev) => prev.filter((_, index) => index !== indexToDelete));
       setCroppedAreaPixels((prev) =>

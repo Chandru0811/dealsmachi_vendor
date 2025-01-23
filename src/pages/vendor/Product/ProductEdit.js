@@ -25,7 +25,6 @@ function ProductEdit() {
   const [originalFileName, setOriginalFileName] = useState([]);
   const [originalFileType, setOriginalFileType] = useState("");
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
-
   const [showModal, setShowModal] = useState(false);
   const [allCategorgroup, setAllCategorgroup] = useState([]);
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
@@ -105,7 +104,6 @@ function ProductEdit() {
       .required("Description is required")
       .min(10, "Description must be at least 10 characters long")
       .max(250, "Description cannot be more than 250 characters long"),
-
     specifications: Yup.string()
       .notRequired("Specification is required")
       .min(10, "Specification must be at least 10 characters long")
@@ -116,34 +114,79 @@ function ProductEdit() {
         "Coupon code must end with up to 4 digits"
       )
       .required("Coupon code is required"),
+    //(1) mediaFields: Yup.array()
+    //   .of(
+    //     Yup.object().shape({
+    //       selectedType: Yup.string()
+    //         .required("Media type is required")
+    //         .oneOf(["image", "video"], "Invalid media type"),
+    //       path: Yup.string().test("pathValidation", function (value, context) {
+    //         const { selectedType } = context.parent;
+    //         // Validate only for the selectedType
+    //         if (selectedType === "image") {
+    //           return value && /\.(jpg|jpeg|png|gif|webp)$/i.test(value)
+    //             ? true
+    //             : this.createError({
+    //                 message: "Invalid image format or missing file",
+    //               });
+    //         }
+    //         if (selectedType === "video") {
+    //           return value && /^(http|https):\/\/[^\s]+$/i.test(value)
+    //             ? true
+    //             : this.createError({
+    //                 message: "Invalid YouTube link or missing URL",
+    //               });
+    //         }
+    //         return true; // No validation if selectedType is missing
+    //       }),
+    //     })
+    //   )
+    //   .required("Media fields are required"),
     mediaFields: Yup.array()
-      .of(
-        Yup.object().shape({
-          selectedType: Yup.string()
-            .required("Media type is required")
-            .oneOf(["image", "video"], "Invalid media type"),
-          path: Yup.string().test("pathValidation", function (value, context) {
-            const { selectedType } = context.parent;
-            // Validate only for the selectedType
+    .of(
+      Yup.object().shape({
+        selectedType: Yup.string()
+          .required("Media type is required")
+          .oneOf(["image", "video"], "Invalid media type"),
+        path: Yup.string()
+          .nullable()
+          .test("pathValidation", function (value, context) {
+            const { selectedType, index } = context.parent;
+  
+            if (!value) {
+              if (selectedType === "image") {
+                return this.createError({
+                  message: `Image Link is required.`,
+                });
+              }
+              if (selectedType === "video") {
+                return this.createError({
+                  message: `YouTube Link is required.`,
+                });
+              }
+            }
+  
             if (selectedType === "image") {
-              return value && /\.(jpg|jpeg|png|gif|webp)$/i.test(value)
-                ? true
-                : this.createError({
-                    message: "Invalid image format or missing file",
-                  });
+              if (!/\.(jpg|jpeg|png|gif|webp)$/i.test(value)) {
+                return this.createError({
+                  message: `Image ${index + 1}: Invalid image format.`,
+                });
+              }
             }
+  
             if (selectedType === "video") {
-              return value && /^(http|https):\/\/[^\s]+$/i.test(value)
-                ? true
-                : this.createError({
-                    message: "Invalid YouTube link or missing URL",
-                  });
+              if (!/^(http|https):\/\/[^\s]+$/i.test(value)) {
+                return this.createError({
+                  message: `YouTube ${index + 1}: Invalid YouTube link.`,
+                });
+              }
             }
-            return true; // No validation if selectedType is missing
+  
+            return true; 
           }),
-        })
-      )
-      .required("Media fields are required"),
+      })
+    )
+    .required("At least one media field is required"),
   });
 
   const formik = useFormik({
@@ -297,7 +340,7 @@ function ProductEdit() {
           coupon_code: "Coupon Code",
           image: "Main Image",
           description: "Description cannot be more than 250 characters long",
-          mediaFields: "Media Fields",
+          mediaFields: "Image",
           specifications:
             "Specification cannot be more than 250 characters long",
         };
@@ -603,6 +646,20 @@ function ProductEdit() {
     }
   };
 
+  //(2) const handleCropCancel = (index) => {
+  //   const updatedCropperStates = [...cropperStates];
+  //   updatedCropperStates[index] = false;
+  //   setCropperStates(updatedCropperStates);
+
+  //   const updatedImageSrc = [...imageSrc];
+  //   updatedImageSrc[index] = null;
+  //   setImageSrc(updatedImageSrc);
+
+  //   formik.setFieldValue(`image-${index}`, null);
+  //   const fileInput = document.querySelector(`input[name="image-${index}"]`);
+  //   if (fileInput) fileInput.value = "";
+  // };
+
   const handleCropCancel = (index) => {
     const updatedCropperStates = [...cropperStates];
     updatedCropperStates[index] = false;
@@ -612,7 +669,14 @@ function ProductEdit() {
     updatedImageSrc[index] = null;
     setImageSrc(updatedImageSrc);
 
-    formik.setFieldValue(`image-${index}`, null);
+    const updatedFields = [...formik.values.mediaFields];
+    updatedFields[index] = {
+      ...updatedFields[index],
+      path: null,
+      binaryData: null,
+    };
+
+    formik.setFieldValue("mediaFields", updatedFields);
     const fileInput = document.querySelector(`input[name="image-${index}"]`);
     if (fileInput) fileInput.value = "";
   };
@@ -1038,7 +1102,7 @@ function ProductEdit() {
                           disabled={field.selectedType !== "image"}
                           onChange={(e) => handleFileChange(e, index)}
                         />
-                        {field.selectedType === "image" && field.path && (
+                        {/* (3) {field.selectedType === "image" && field.path && (
                           <div className="mt-3">
                             <img
                               src={
@@ -1048,6 +1112,24 @@ function ProductEdit() {
                               className="img-thumbnail"
                               style={{ maxWidth: "200px", maxHeight: "150px" }}
                             />
+                          </div>
+                        )} */}
+                        {field.selectedType === "image" && (
+                          <div className="mt-3">
+                            {(!cropperStates[index] && imageSrc[index]) ||
+                            (!cropperStates[index] && field.path) ? (
+                              <img
+                                src={
+                                  imageSrc[index] || `${ImageURL}${field.path}`
+                                }
+                                alt="Preview"
+                                className="img-thumbnail"
+                                style={{
+                                  maxWidth: "200px",
+                                  maxHeight: "150px",
+                                }}
+                              />
+                            ) : null}
                           </div>
                         )}
                         {cropperStates[index] &&
@@ -1095,7 +1177,6 @@ function ProductEdit() {
                           )}
                         <div className="invalid-feedback">
                           {formik.errors.mediaFields?.[index]?.path &&
-                            field.selectedType === "image" &&
                             formik.errors.mediaFields[index].path}
                         </div>
                       </div>
