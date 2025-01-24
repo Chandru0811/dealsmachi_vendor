@@ -24,15 +24,15 @@ function OrderView() {
   };
 
   const calculateDeliveryDate = (createdAt, deliveryDays) => {
-    if (!createdAt || !deliveryDays || deliveryDays ==="N/A") return "N/A";
+    if (!createdAt || !deliveryDays || deliveryDays === "N/A") return "N/A";
     const createdDate = new Date(createdAt);
     createdDate.setDate(createdDate.getDate() + parseInt(deliveryDays, 10));
-    return createdDate.toISOString().split("T")[0]; 
+    return createdDate.toISOString().split("T")[0];
   };
 
   useEffect(() => {
     getData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order_id, product_id]);
 
   return (
@@ -170,14 +170,14 @@ function OrderView() {
                       </p>
                       <p>
                         <del>
-                          $
+                        ₹
                           {new Intl.NumberFormat("en-IN", {
                             maximumFractionDigits: 0,
                           }).format(parseFloat(data?.unit_price))}
                         </del>
                         &nbsp;&nbsp;
                         <span style={{ color: "#dc3545" }}>
-                          $
+                        ₹
                           {new Intl.NumberFormat("en-IN", {
                             maximumFractionDigits: 0,
                           }).format(parseFloat(data?.discount))}
@@ -298,7 +298,7 @@ function OrderView() {
                       )}
                     </span>
                     <span>
-                      $
+                    ₹
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
@@ -319,7 +319,7 @@ function OrderView() {
                       )}
                     </span>
                     <span>
-                      $
+                    ₹
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
@@ -344,7 +344,7 @@ function OrderView() {
                       )}
                     </span>
                     <span>
-                      $
+                    ₹
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
@@ -386,22 +386,34 @@ function OrderView() {
                 <div className="card-header m-0 p-2">
                   <p className="mb-0">Contact Information</p>
                 </div>
-                <div className="card-body  m-0 p-4">
-                  <p>
-                    Name :{" "}
-                    {data?.order?.address?.first_name
-                      ? `${data?.order?.address?.first_name} ${
-                          data?.order?.address?.last_name || ""
-                        }`
-                      : "N/A"}
-                  </p>
-                  <p>
-                    Email : {data?.order?.address?.email ?? "No Email provided"}
-                  </p>
-                  <p>
-                    Phone :{" "}
-                    {data?.order?.address?.phone ?? "No phone number provided"}
-                  </p>
+                <div className="card-body m-0 p-4">
+                  {data?.order?.delivery_address &&
+                    (() => {
+                      try {
+                        const deliveryAddress = JSON.parse(
+                          data.order.delivery_address
+                        );
+                        return (
+                          <>
+                            <p>
+                              Name: {deliveryAddress.first_name}{" "}
+                              {deliveryAddress.last_name || ""}
+                            </p>
+                            <p>
+                              Email:{" "}
+                              {deliveryAddress.email || "No Email provided"}
+                            </p>
+                            <p>
+                              Phone:{" "}
+                              {deliveryAddress.phone ||
+                                "No phone number provided"}
+                            </p>
+                          </>
+                        );
+                      } catch (error) {
+                        return <p>Invalid delivery address format</p>;
+                      }
+                    })()}
                 </div>
               </div>
 
@@ -411,20 +423,23 @@ function OrderView() {
                   <p className="mb-0">Address</p>
                 </div>
                 <div className="card-body m-0 p-4">
-                  <p>
-                    {data?.order?.address?.unit && `${data.order.address.unit}`}
-                    {data?.order?.address?.unit &&
-                      data?.order?.address?.address &&
-                      `, `}
-                    {data?.order?.address?.address &&
-                      `${data.order.address.address}`}
-                    {(data?.order?.address?.unit ||
-                      data?.order?.address?.address) &&
-                      data?.order?.address?.postalcode &&
-                      ` - `}
-                    {data?.order?.address?.postalcode &&
-                      `${data.order.address.postalcode}`}
-                  </p>
+                  {data?.order?.delivery_address &&
+                    (() => {
+                      try {
+                        const deliveryAddress = JSON.parse(
+                          data.order.delivery_address
+                        );
+                        return (
+                          <p>
+                            {deliveryAddress.address} {deliveryAddress.city},{" "}
+                            {deliveryAddress.state},{" "}
+                            {deliveryAddress.postalcode}
+                          </p>
+                        );
+                      } catch (error) {
+                        return <p>Invalid delivery address format</p>;
+                      }
+                    })()}
                 </div>
               </div>
             </div>

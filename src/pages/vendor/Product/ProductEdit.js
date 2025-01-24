@@ -258,6 +258,26 @@ function ProductEdit() {
         }
       });
 
+      // formik.values.mediaFields.forEach((field, orderId) => {
+
+      //   if (field.selectedType === "image") {
+      //     if (
+      //       field.binaryData instanceof File ||
+      //       field.binaryData instanceof Blob
+      //     ) {
+      //       formData.append(
+      //         `media[${orderId}]`,
+      //         field.binaryData,
+      //         field.path
+      //       );
+      //     }
+      //   } else if (field.selectedType === "video") {
+      //     if (field.path) {
+      //       formData.append(`media_url[${orderId}]`, field.path);
+      //     }
+      //   }
+      // });
+
       formData.append("_method", "PUT");
       setLoadIndicator(true);
       try {
@@ -346,10 +366,9 @@ function ProductEdit() {
         };
 
         const missedFields = Object.keys(formErrors)
-          .map((key) => fieldLabels[key] || key) // Fallback to key if no label found
+          .map((key) => fieldLabels[key] || key)
           .join(", ");
 
-        // Ensure toast is displayed
         toast.error(
           `Please fill in the following required fields: ${missedFields}`,
           {
@@ -365,7 +384,6 @@ function ProductEdit() {
         return;
       }
 
-      // Proceed to submit the form
       formik.handleSubmit();
     });
   };
@@ -448,7 +466,6 @@ function ProductEdit() {
       const response = await api.get(`vendor/product/${id}/get`);
 
       const data = response.data.data;
-      console.log("data", data.product_media);
       const isDiscountCoupon =
         data.coupon_code.startsWith("DEALSMACHI") &&
         !data.coupon_code.includes("V");
@@ -482,6 +499,7 @@ function ProductEdit() {
                 id: mediaItem.id,
                 selectedType: mediaItem.type,
                 path: mediaItem.path,
+                // orderId: mediaItem.order,
               }))
           : [],
       });

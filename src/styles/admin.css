@@ -466,3 +466,13 @@
   justify-content: center;
   align-items: center;
 }
+
+/* New Order  */
+
+.active_dot {
+  width: 8px;
+  height: 8px;
+  /* margin: 0 5px; */
+  border-radius: 50%;
+  background-color: #ff0060;
+}

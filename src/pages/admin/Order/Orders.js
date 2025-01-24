@@ -128,7 +128,19 @@ const Orders = () => {
                   return (
                     <tr key={data.id}>
                       <td className="text-start align-middle">{index + 1}</td>
-                      <td className="text-start">{data?.order?.order_number}</td>
+                      <td>
+                        <div className="d-flex">
+                          {data?.item_number}
+                          {data?.viewed_by_vendor === 1 ? (
+                            <div
+                              className="active_dot"
+                              style={{ marginLeft: "5px" }}
+                            ></div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
+                      </td>
                       <td className="align-middle text-start">{data?.order?.customer?.name}</td>
                       <td className="align-middle text-start">{total}</td>
                       <td className="align-middle text-start">{data.item_description}</td>

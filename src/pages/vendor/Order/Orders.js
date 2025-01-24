@@ -125,14 +125,23 @@ const Orders = () => {
               </thead>
               <tbody>
                 {datas?.map((data, index) => {
-                  const total = (
-                    parseFloat(data.quantity) * parseFloat(data.discount)
-                  ).toFixed(2); // Calculate total
+                  const total =
+                    parseFloat(data.quantity) * parseFloat(data.discount);
                   return (
                     <tr key={data.id}>
                       <td className="text-start align-middle">{index + 1}</td>
-                      <td className="text-start">
-                        {data?.order?.order_number}
+                      <td>
+                        <div className="d-flex">
+                          {data?.item_number}
+                          {data?.viewed_by_vendor === 1 ? (
+                            <div
+                              className="active_dot"
+                              style={{ marginLeft: "5px" }}
+                            ></div>
+                          ) : (
+                            ""
+                          )}
+                        </div>
                       </td>
                       <td className="align-middle text-start">
                         {data?.order?.customer?.name}

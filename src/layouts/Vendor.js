@@ -33,7 +33,7 @@ function Vendor({ handleLogout }) {
           <VendorSidebar handleLogout={handleLogout} />
           <div className="flex-grow-1 h-screen overflow-y-auto">
             <VendorHeader />
-            <main className="pt-3 bg-surface-secondary">
+            <main className="pt-3" style={{ backgroundColor: "#f2f2f2" }}>
               <ScrollToTop />
               <div style={{ minHeight: "90vh" }}>
                 <Routes>
