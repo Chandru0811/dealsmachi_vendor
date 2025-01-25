@@ -56,6 +56,10 @@ function ProductView() {
     return match ? match[1] || match[2] : null;
   }
 
+  const numberWithCommas = (number) => {
+    return number?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   return (
     <section className="px-4">
       <>
@@ -194,7 +198,7 @@ function ProductView() {
                         </div>
                         <div className="col-6">
                           <p className="text-muted text-sm">
-                            : {data?.original_price}
+                            : {numberWithCommas(data?.original_price)}
                           </p>
                         </div>
                       </div>
@@ -209,7 +213,7 @@ function ProductView() {
                       </div>
                       <div className="col-6">
                         <p className="text-muted text-sm">
-                          : {data?.discounted_price}
+                           : {numberWithCommas(data?.discounted_price)}
                         </p>
                       </div>
                     </div>

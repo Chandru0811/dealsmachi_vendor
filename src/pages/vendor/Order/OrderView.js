@@ -48,7 +48,7 @@ function OrderView() {
           <div className="d-flex justify-content-between align-items-center mb-4">
             <div className="d-flex align-items-center mb-4">
               <p className="d-flex justify-content-center text-dark">
-                Order ID: {data?.order?.order_number ?? "N/A"}&nbsp;
+                Order ID: {data?.item_number ?? "N/A"}&nbsp;
               </p>
               &nbsp;
               <span
@@ -279,7 +279,7 @@ function OrderView() {
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
-                        useGrouping: false,
+                        useGrouping: true,
                       }).format(
                         parseFloat(data?.unit_price || 0) *
                           parseFloat(data?.quantity || 0)
@@ -300,7 +300,7 @@ function OrderView() {
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
-                        useGrouping: false,
+                        useGrouping: true,
                       }).format(
                         parseFloat(data?.unit_price || 0) *
                           parseFloat(data?.quantity || 0) -
@@ -325,7 +325,7 @@ function OrderView() {
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
-                        useGrouping: false,
+                        useGrouping: true,
                       }).format(
                         parseFloat(data?.discount || 0) *
                           parseFloat(data?.quantity || 0)

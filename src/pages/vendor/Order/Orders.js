@@ -125,8 +125,11 @@ const Orders = () => {
               </thead>
               <tbody>
                 {datas?.map((data, index) => {
-                  const total =
-                    parseFloat(data.quantity) * parseFloat(data.discount);
+                  const total = new Intl.NumberFormat("en-IN", {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                    useGrouping: true,
+                  }).format(parseFloat(data.quantity) * parseFloat(data.discount));
                   return (
                     <tr key={data.id}>
                       <td className="text-start align-middle">{index + 1}</td>
