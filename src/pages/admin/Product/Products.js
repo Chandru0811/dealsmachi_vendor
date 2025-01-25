@@ -132,10 +132,15 @@ const Products = () => {
                         className="img-fluid w-25 me-3"
                         style={{ maxHeight: "70px", maxWidth: "70px" }}
                       /> */}
-                      {data.name}
+                      {data?.name}
                     </td>
                     <td className="align-middle text-start">
-                      {data.original_price}
+                      {data?.original_price &&
+                        new Intl.NumberFormat("en-IN", {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                          useGrouping: true,
+                        }).format(parseFloat(data?.original_price))}
                     </td>
                     <td className="align-middle text-start">
                       {data?.shop?.legal_name}
