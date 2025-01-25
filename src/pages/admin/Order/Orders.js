@@ -135,7 +135,7 @@ const Orders = () => {
                       <td>
                         <div className="d-flex">
                           {data?.item_number}
-                          {data?.viewed_by_vendor === 1 ? (
+                          {data?.viewed_by_admin === 1 ? (
                             <div
                               className="active_dot"
                               style={{ marginLeft: "5px" }}

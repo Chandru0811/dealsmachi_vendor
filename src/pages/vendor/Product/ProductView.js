@@ -198,7 +198,13 @@ function ProductView() {
                         </div>
                         <div className="col-6">
                           <p className="text-muted text-sm">
-                            : {numberWithCommas(data?.original_price)}
+                            :{" "}
+                            {data?.original_price &&
+                              new Intl.NumberFormat("en-IN", {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 2,
+                                useGrouping: true,
+                              }).format(parseFloat(data?.original_price))}
                           </p>
                         </div>
                       </div>
@@ -212,9 +218,15 @@ function ProductView() {
                         <p className="text-sm">Discounted Price</p>
                       </div>
                       <div className="col-6">
-                        <p className="text-muted text-sm">
-                           : {numberWithCommas(data?.discounted_price)}
-                        </p>
+                      <p className="text-muted text-sm">
+                            :{" "}
+                            {data?.discounted_price &&
+                              new Intl.NumberFormat("en-IN", {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 2,
+                                useGrouping: true,
+                              }).format(parseFloat(data?.discounted_price))}
+                          </p>
                       </div>
                     </div>
                   </div>
