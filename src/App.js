@@ -3,11 +3,13 @@ import toast, { Toaster } from "react-hot-toast";
 import Admin from "./layouts/Admin";
 import Client from "./layouts/Client";
 import Vendor from "./layouts/Vendor";
+import Referrer from "./layouts/Referrer";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isClientLogin, setIsClientLogin] = useState(false);
   const [isVendorLogin, setIsVendorLogin] = useState(false);
+  const [isRefererLogin, setIsRefererLogin] = useState(false);
 
   const handleLogin = () => {
     localStorage.setItem("isAuthenticated", true);
@@ -24,6 +26,11 @@ function App() {
     setIsVendorLogin(true);
   };
 
+  const handleRefererLogin = () => {
+    localStorage.setItem("handleRefererLogin", true);
+    setIsRefererLogin(true);
+  };
+
   const handleLogout = async () => {
     try {
       toast.success("Logout Successfully");
@@ -33,6 +40,7 @@ function App() {
       localStorage.removeItem("isAuthenticated");
       localStorage.removeItem("isClientLogin");
       localStorage.removeItem("isVendorLogin");
+      localStorage.removeItem("isRefererLogin");
       localStorage.removeItem("token");
       localStorage.removeItem("name");
       localStorage.removeItem("id");
@@ -49,12 +57,15 @@ function App() {
       localStorage.getItem("isAuthenticated");
     const isClientLoginFromStorage = localStorage.getItem("isClientLogin");
     const isVendorLoginFromStorage = localStorage.getItem("isVendorLogin");
+    const isRefererLoginFromStorage = localStorage.getItem("isRefererLogin");
     if (isAuthenticatedFromStorage === "true") {
       setIsAuthenticated(true);
     } else if (isClientLoginFromStorage === "true") {
       setIsClientLogin(true);
     } else if (isVendorLoginFromStorage === "true") {
       setIsVendorLogin(true);
+    } else if (isRefererLoginFromStorage === "true") {
+      setIsRefererLogin(true);
     }
   }, []);
 
@@ -71,13 +82,16 @@ function App() {
       {isAuthenticated ? (
         <Admin handleLogout={handleLogout} />
       ) : isVendorLogin ? (
-        <Vendor handleLogout={handleLogout} /> // Render Vendor layout if vendor is logged in
+        <Vendor handleLogout={handleLogout} />
+      ) : isRefererLogin ? (
+        <Referrer handleLogout={handleLogout} />
       ) : (
         <Client
           handleLogout={handleLogout}
           handleLogin={handleLogin}
           handleClientLogin={handleClientLogin}
-          handleVendorLogin={handleVendorLogin} // Pass handleVendorLogin to Client for vendor login
+          handleVendorLogin={handleVendorLogin}
+          handleRefererLogin={handleRefererLogin}
           isClientLogin={isClientLogin}
         />
       )}

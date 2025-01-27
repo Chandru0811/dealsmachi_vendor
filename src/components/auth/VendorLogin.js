@@ -9,7 +9,7 @@ import api from "../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
 import headerlogo from "../../assets/header-logo.webp";
 
-function VendorLogin({ handleVendorLogin, handleLogin }) {
+function VendorLogin({ handleVendorLogin, handleLogin, handleRefererLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const navigate = useNavigate();
@@ -30,49 +30,53 @@ function VendorLogin({ handleVendorLogin, handleLogin }) {
     onSubmit: async (values) => {
       try {
         setLoadIndicator(true);
-        let payload;
-        if (values.email === "admin@gmail.com") {
-          payload = { ...values, role: "1" };
+        if (values.email === "referrer@gmail.com") {
+          handleRefererLogin();
         } else {
-          payload = { ...values, role: "2" };
-        }
-        const response = await api.post(`login`, payload);
-        if (response.status === 200) {
-          toast.success(response.data.message);
+          let payload;
+          if (values.email === "admin@gmail.com") {
+            payload = { ...values, role: "1" };
+          } else {
+            payload = { ...values, role: "2" };
+          }
+          const response = await api.post(`login`, payload);
+          if (response.status === 200) {
+            toast.success(response.data.message);
 
-          localStorage.setItem("token", response.data.data.token);
-          localStorage.setItem("name", response.data.data.userDetails.name);
-          localStorage.setItem("id", response.data.data.userDetails.id);
-          localStorage.setItem("email", response.data.data.userDetails.email);
-          localStorage.setItem("role", response.data.data.userDetails.role);
-          localStorage.setItem("active", "0");
-          localStorage.setItem(
-            "shop_id",
-            response.data.data.userDetails.shop_id
-          );
+            localStorage.setItem("token", response.data.data.token);
+            localStorage.setItem("name", response.data.data.userDetails.name);
+            localStorage.setItem("id", response.data.data.userDetails.id);
+            localStorage.setItem("email", response.data.data.userDetails.email);
+            localStorage.setItem("role", response.data.data.userDetails.role);
+            localStorage.setItem("active", "0");
+            localStorage.setItem(
+              "shop_id",
+              response.data.data.userDetails.shop_id
+            );
 
-          if (response.data.data.userDetails.role === "1") {
-            handleLogin(values);
-          } else if (response.data.data.userDetails.role === "2") {
-            if (response.data.data.userDetails.shop_id === null) {
-              navigate(`/wellcomepage/${response.data.data.userDetails.id}`);
+            if (response.data.data.userDetails.role === "1") {
+              handleLogin(values);
+            } else if (response.data.data.userDetails.role === "2") {
+              if (response.data.data.userDetails.shop_id === null) {
+                navigate(`/wellcomepage/${response.data.data.userDetails.id}`);
+              } else {
+                navigate("/");
+                handleVendorLogin(values);
+              }
             } else {
-              navigate("/");
-              handleVendorLogin(values);
+              toast(
+                "Oops! You don't have access to this page, but feel free to check out our amazing website! 😊",
+                {
+                  icon: "😊",
+                }
+              );
+              setTimeout(() => {
+                window.location.href = "https://ecsaio.com";
+              }, 5000);
             }
           } else {
-            toast(
-              "Oops! You don't have access to this page, but feel free to check out our amazing website! 😊",
-              {
-                icon: "😊",
-              }
-            );
-            setTimeout(() => {
-              window.location.href = "https://ecsaio.com";
-            }, 5000);
+            toast.error(response.data.message);
           }
-        } else {
-          toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response.status === 400) {

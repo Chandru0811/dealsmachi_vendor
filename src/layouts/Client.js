@@ -24,6 +24,7 @@ function Client({
   handleVendorLogin,
   handleClientLogin,
   isClientLogin,
+  handleRefererLogin
 }) {
   return (
     <div>
@@ -42,6 +43,7 @@ function Client({
                 <VendorLogin
                   handleVendorLogin={handleVendorLogin}
                   handleLogin={handleLogin}
+                  handleRefererLogin={handleRefererLogin}
                 />
               }
             />
@@ -49,9 +51,10 @@ function Client({
               path="*"
               element={
                 <VendorLogin
-                  handleVendorLogin={handleVendorLogin}
-                  handleLogin={handleLogin}
-                />
+                handleVendorLogin={handleVendorLogin}
+                handleLogin={handleLogin}
+                handleRefererLogin={handleRefererLogin}
+              />
               }
             />
             <Route path="/wellcomepage/:id" element={<Wellcomepage />} />
