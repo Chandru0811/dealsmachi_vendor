@@ -175,7 +175,7 @@ function OrderView() {
                         </del>
                         &nbsp;&nbsp;
                         <span style={{ color: "#dc3545" }}>
-                        ₹
+                          ₹
                           {new Intl.NumberFormat("en-IN", {
                             maximumFractionDigits: 0,
                           }).format(parseFloat(data?.discount))}
@@ -275,7 +275,7 @@ function OrderView() {
                       )}
                     </span>
                     <span>
-                    ₹
+                      ₹
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
@@ -296,7 +296,7 @@ function OrderView() {
                       )}
                     </span>
                     <span>
-                    ₹
+                      ₹
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
@@ -321,7 +321,7 @@ function OrderView() {
                       )}
                     </span>
                     <span>
-                    ₹
+                      ₹
                       {new Intl.NumberFormat("en-IN", {
                         minimumFractionDigits: 0,
                         maximumFractionDigits: 2,
@@ -431,9 +431,10 @@ function OrderView() {
                         );
                         return (
                           <p>
-                            {deliveryAddress.address} {deliveryAddress.city},{" "}
+                            {deliveryAddress.address}, {deliveryAddress.city},{" "}
                             {deliveryAddress.state},{" "}
-                            {deliveryAddress.postalcode}
+                            {deliveryAddress.postalcode} -{" "}
+                            {deliveryAddress.unit}
                           </p>
                         );
                       } catch (error) {
