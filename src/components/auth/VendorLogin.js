@@ -218,7 +218,7 @@ function VendorLogin({ handleVendorLogin, handleLogin, handleRefererLogin }) {
                     width: "100%",
                   }}
                 >
-                  Register as a Vendor
+                  Register
                 </Button>
               </Link>
             </div>

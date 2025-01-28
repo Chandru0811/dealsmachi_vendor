@@ -92,41 +92,32 @@ function ProductAdd() {
     //   .required("Discount is required")
     //   .max(100, "Discount must be less than 100"),
     original_price: Yup.string()
-    .test(
-      "Original Price is required",
-      function (value) {
+      .test("Original Price is required", function (value) {
         const { deal_type } = this.parent;
         if (deal_type === "1") {
           return !!value;
         }
         return true;
-      }
-    )
-    .notRequired(),
+      })
+      .notRequired(),
     discounted_price: Yup.string()
-    .test(
-      "Discounted Price is required",
-      function (value) {
+      .test("Discounted Price is required", function (value) {
         const { deal_type } = this.parent;
         if (deal_type === "1") {
           return !!value;
         }
         return true;
-      }
-    )
-    .notRequired(),
+      })
+      .notRequired(),
     discounted_percentage: Yup.string()
-    .test(
-      "Discounted Percentage is required",
-      function (value) {
+      .test("Discounted Percentage is required", function (value) {
         const { deal_type } = this.parent;
         if (deal_type === "1") {
           return !!value;
         }
         return true;
-      }
-    )
-    .notRequired(),
+      })
+      .notRequired(),
     start_date: Yup.string().required("Start Date is required"),
     end_date: Yup.date()
       .required("End date is required")
@@ -148,6 +139,14 @@ function ProductAdd() {
       .notRequired("Specification is required")
       .min(10, "Specification must be at least 10 characters long")
       .max(250, "Specification cannot be more than 250 characters long"),
+
+    brand: Yup.string()
+      .notRequired()
+      .max(250, "Brand cannot be more than 250 characters long"),
+
+    variants: Yup.string()
+      .notRequired()
+      .max(250, "Variants cannot be more than 250 characters long"),
 
     coupon_code: Yup.string()
       .matches(
@@ -301,7 +300,7 @@ function ProductAdd() {
           category_id: "Category",
           deal_type: "Deal Type",
           delivery_days: "Delivery Days",
-          brand: "Brand",
+          brand: "Brand cannot be more than 250 characters long",
           original_price: "Original Price",
           discounted_price: "Discounted Price",
           discounted_percentage: "Discounted Percentage",
@@ -320,10 +319,9 @@ function ProductAdd() {
         };
 
         const missedFields = Object.keys(formErrors)
-          .map((key) => fieldLabels[key] || key) // Fallback to key if no label found
+          .map((key) => fieldLabels[key] || key)
           .join(", ");
 
-        // Ensure toast is displayed
         toast.error(
           `Please fill in the following required fields: ${missedFields}`,
           {
@@ -1171,7 +1169,6 @@ function ProductAdd() {
                           }}
                           placeholder={`Variant ${index + 1}`}
                         />
-
                         <button
                           type="button"
                           className="btn btn-light btn-sm"
@@ -1180,6 +1177,12 @@ function ProductAdd() {
                           <FaTrash />
                         </button>
                       </div>
+                      {/* {formik.touched[`variants-${index}`] &&
+                      formik.errors[`variants-${index}`] && (
+                        <div className="invalid-feedback">
+                          {formik.errors[`variants-${index}`]}
+                        </div>
+                      )} */}
                     </div>
                   ))}
                 </div>
@@ -1204,7 +1207,10 @@ function ProductAdd() {
                     style={{ boxShadow: "none" }}
                     checked={!isCouponChecked}
                     onChange={handleRadioChange}
-                    disabled={formik.values.deal_type === 2 || formik.values.deal_type === "2"}
+                    disabled={
+                      formik.values.deal_type === 2 ||
+                      formik.values.deal_type === "2"
+                    }
                   />
                   <label htmlFor="vendorCoupon" className="form-label ms-2">
                     Vendor Coupon code
@@ -1221,7 +1227,10 @@ function ProductAdd() {
                     style={{ boxShadow: "none" }}
                     checked={isCouponChecked}
                     onChange={handleRadioChange}
-                    disabled={formik.values.deal_type === 2 || formik.values.deal_type === "2"}
+                    disabled={
+                      formik.values.deal_type === 2 ||
+                      formik.values.deal_type === "2"
+                    }
                   />
                   <label htmlFor="genricCoupon" className="form-label ms-2">
                     Generic Coupon Code

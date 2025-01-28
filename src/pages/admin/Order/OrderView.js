@@ -433,8 +433,12 @@ function OrderView() {
                           <p>
                             {deliveryAddress.address}, {deliveryAddress.city},{" "}
                             {deliveryAddress.state},{" "}
-                            {deliveryAddress.postalcode} -{" "}
-                            {deliveryAddress.unit}
+                            {deliveryAddress.postalcode} {" "}
+                            {/* {deliveryAddress.unit} */}
+                            {deliveryAddress.unit &&
+                              deliveryAddress.unit !== "null" &&
+                              deliveryAddress.unit.trim() !== "" &&
+                              ` - ${deliveryAddress.unit}`}
                           </p>
                         );
                       } catch (error) {

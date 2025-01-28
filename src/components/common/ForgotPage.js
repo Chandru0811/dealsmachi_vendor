@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import headerlogo from "../../assets/header-logo.webp";
 
 const ForgotPage = () => {
   const navigate = useNavigate();
+  const [loadIndicator, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -21,7 +22,7 @@ const ForgotPage = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // console.log("values", values);
+      setLoadIndicator(true);
       try {
         const response = await api.post("forgot-password", values);
         if (response.status === 200) {
@@ -37,6 +38,8 @@ const ForgotPage = () => {
         } else {
           toast.error("An error occurred. Please try again.");
         }
+      } finally {
+        setLoadIndicator(false);
       }
     },
   });
@@ -112,7 +115,14 @@ const ForgotPage = () => {
                   type="submit"
                   className="btn btn-primary common-button btn-block mt-3 rounded-0 w-100"
                   style={{ backgroundColor: "#ff0060", borderColor: "#ff0060" }}
+                  disabled={loadIndicator}
                 >
+                  {loadIndicator && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
+                  )}
                   RESET PASSWORD
                 </button>
                 {/* </Link> */}

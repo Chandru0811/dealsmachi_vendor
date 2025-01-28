@@ -6,11 +6,25 @@ import api from "../../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
 
 const validationSchema = Yup.object({
-  street: Yup.string().required("Street 1 is required!"),
-  city: Yup.string().required("City is required!"),
-  state: Yup.string().required("State is required!"),
-  country: Yup.string().required("Country is required!"),
-  zip_code: Yup.string().required("Zip Code is required!"),
+  street: Yup.string()
+    .max(250, "Street 1 cannot be more than 250 characters long")
+    .required("Street 1 is required!"),
+  street2: Yup.string()
+    .notRequired()
+    .max(250, "Street 2 cannot be more than 250 characters long"),
+  city: Yup.string()
+    .max(250, "City cannot be more than 250 characters long")
+    .required("City is required!"),
+  state: Yup.string()
+    .max(250, "State cannot be more than 250 characters long")
+    .required("State is required!"),
+  country: Yup.string()
+    .max(250, "Country cannot be more than 250 characters long")
+    .required("Country is required!"),
+  zip_code: Yup.string()
+    .min(6, "Zip Code cannot be less than 6 characters")
+    .max(250, "Zip Code cannot be more than 250 characters long")
+    .required("Zip Code is required!"),
 });
 
 const Location = ({ setValueChange }) => {
@@ -27,13 +41,15 @@ const Location = ({ setValueChange }) => {
       state: "",
       country: "",
       zip_code: "",
-      address: ""
+      address: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (data) => {
       setLoadIndicator(true);
       console.log("Form Data", data);
-      const address = `${data.street}${data.street2 ? `, ${data.street2}` : ''}, ${data.city}, ${data.state}, ${data.country}, ${data.zip_code}`;
+      const address = `${data.street}${
+        data.street2 ? `, ${data.street2}` : ""
+      }, ${data.city}, ${data.state}, ${data.country}, ${data.zip_code}`;
       const formdata = new FormData();
       formdata.append("_method", "PUT");
       formdata.append("street", data.street);
@@ -77,7 +93,7 @@ const Location = ({ setValueChange }) => {
         }
       } finally {
         setLoadIndicator(false);
-        setValueChange(false); 
+        setValueChange(false);
       }
     },
   });
@@ -103,7 +119,6 @@ const Location = ({ setValueChange }) => {
     formik.setFieldValue(name, value === "" ? "" : value); // Set empty strings properly
     setValueChange(true);
   };
-  
 
   return (
     <section className="mt-4">
@@ -118,7 +133,9 @@ const Location = ({ setValueChange }) => {
           </div>
         ) : (
           <div className="container">
-            <h3 className='pt-2 pb-4' style={{ color: "#ff0060" }}>Shop Address</h3>
+            <h3 className="pt-2 pb-4" style={{ color: "#ff0060" }}>
+              Shop Address
+            </h3>
             <div className="row">
               <div className="col-md-4 col-12 mb-5 ">
                 <label className="form-label">
@@ -152,12 +169,21 @@ const Location = ({ setValueChange }) => {
               <div className="col-md-8 col-12 mb-5">
                 <input
                   type="text"
-                  className={`form-control`}
+                  className={`form-control ${
+                    formik.touched.street2 && formik.errors.street2
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   name="street2"
                   onChange={handleFormikChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.street2}
                 />
+                {formik.touched.street2 && formik.errors.street2 && (
+                  <div className="error text-danger">
+                    <small>{formik.errors.street2}</small>
+                  </div>
+                )}
               </div>
               <div className="col-md-4 col-12 mb-5 ">
                 <label className="form-label">

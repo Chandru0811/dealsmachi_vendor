@@ -116,6 +116,7 @@ const Products = () => {
                   </th>
                   <th className="text-start">Title</th>
                   <th className="text-start">Orginal Price</th>
+                  <th className="text-start">Discounted Price</th>
                   <th className="text-start">Company Name</th>
                   <th className="text-start">Status</th>
                   <th className="text-center">Action</th>
@@ -141,6 +142,14 @@ const Products = () => {
                           maximumFractionDigits: 2,
                           useGrouping: true,
                         }).format(parseFloat(data?.original_price))}
+                    </td>
+                    <td className="align-middle text-start">
+                      {data?.discounted_price &&
+                        new Intl.NumberFormat("en-IN", {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                          useGrouping: true,
+                        }).format(parseFloat(data?.discounted_price))}
                     </td>
                     <td className="align-middle text-start">
                       {data?.shop?.legal_name}

@@ -3,7 +3,6 @@ import toast, { Toaster } from "react-hot-toast";
 import Admin from "./layouts/Admin";
 import Client from "./layouts/Client";
 import Vendor from "./layouts/Vendor";
-import Referrer from "./layouts/Referrer";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -83,8 +82,6 @@ function App() {
         <Admin handleLogout={handleLogout} />
       ) : isVendorLogin ? (
         <Vendor handleLogout={handleLogout} />
-      ) : isRefererLogin ? (
-        <Referrer handleLogout={handleLogout} />
       ) : (
         <Client
           handleLogout={handleLogout}

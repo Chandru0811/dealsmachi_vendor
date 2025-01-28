@@ -23,6 +23,9 @@ import ProductPrint from "../pages/vendor/Product/ProductPrint";
 import EmailVerifySuccess from "../components/client/EmailVerifySuccess";
 import Orders from "../pages/vendor/Order/Orders";
 import OrderView from "../pages/vendor/Order/OrderView";
+import ReferrerDashboard from "../pages/vendor/ReferrerDashboard";
+import Vendors from "../pages/vendor/Vendors/Vendors";
+import VendorsAdd from "../pages/vendor/Vendors/VendorsAdd";
 
 function Vendor({ handleLogout }) {
   return (
@@ -54,6 +57,14 @@ function Vendor({ handleLogout }) {
                   <Route path="/categorys/view" element={<CategoryView />} />
                   <Route path="/order" element={<Orders />} />
                   <Route path="/order/view/:order_id/:product_id" element={<OrderView />} />
+
+                  {/* Referrer Dashboard */}
+                  <Route path="/referrer_dashboard" element={<ReferrerDashboard />} />
+
+                  {/* My Vendors */}
+                  <Route path="/my_vendors" element={<Vendors />} />
+                  <Route path="/my_vendors/add" element={<VendorsAdd />} />
+
                   <Route
                     path="/emailverifysuccess"
                     element={<EmailVerifySuccess />}

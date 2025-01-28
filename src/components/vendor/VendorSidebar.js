@@ -7,6 +7,7 @@ import { FaBoxOpen } from "react-icons/fa";
 
 function VendorSidebar({ handleLogout }) {
   const navigate = useNavigate();
+
   const handelLogOutClick = () => {
     handleLogout();
     navigate("/");
@@ -114,6 +115,18 @@ function VendorSidebar({ handleLogout }) {
               <NavLink className="nav-link" to="/order">
                 <FaBoxOpen />
                 Orders
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/referrer_dashboard">
+                <FaBoxOpen />
+                Referral Dashboard
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/my_vendors">
+                <FaBoxOpen />
+                My Vendors
               </NavLink>
             </li>
             {/* <li className="nav-item">

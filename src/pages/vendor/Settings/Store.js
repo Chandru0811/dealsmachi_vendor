@@ -13,8 +13,10 @@ const validationSchema = Yup.object({
     .email("Invalid email format")
     .required("Email is required"),
   mobile: Yup.string()
-    .matches(/^[0-9]+$/, "mobile number must be numeric")
-    .required("mobile number is required!"),
+    .matches(/^[0-9]+$/, "Mobile number must be numeric")
+    .min(8, "Minimum digits is 8")
+    .max(10, "Maximum digits is 10")
+    .required("Mobile number is required!"),
   shop_type: Yup.string().required("Shop Type is required!"),
   company_registeration_no: Yup.string().required(
     "Company Registration is required!"
@@ -33,7 +35,6 @@ const Store = ({ setValueChange }) => {
   // const convertToSlug = (name) => {
   //   return name.toLowerCase().replace(/\s+/g, "_");
   // };
-
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -109,10 +110,12 @@ const Store = ({ setValueChange }) => {
         }
       } finally {
         setLoadIndicator(false);
-        setValueChange(false); 
+        setValueChange(false);
       }
     },
   });
+
+  console.log("Formik values", formik.values);
 
   useEffect(() => {
     const getData = async () => {
@@ -128,6 +131,7 @@ const Store = ({ setValueChange }) => {
       setLoading(false);
     };
     getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   // const handleFormikChange = (e) => {
@@ -144,8 +148,8 @@ const Store = ({ setValueChange }) => {
   //   formik.handleSubmit();
   // };
   const handleFormikChange = (e) => {
-    formik.handleChange(e); 
-    setValueChange(true); 
+    formik.handleChange(e);
+    setValueChange(true);
   };
 
   return (
@@ -345,9 +349,13 @@ const Store = ({ setValueChange }) => {
                   className="form-control"
                   onChange={(event) => {
                     const file = event.target.files[0];
-                    formik.setFieldValue("logo", file);
+                    formik.setFieldValue("logo", file || ""); // Retain existing value if no file is selected
                   }}
-                  onBlur={formik.handleBlur}
+                  onBlur={(event) => {
+                    if (!formik.values.logo) {
+                      formik.setFieldTouched("logo", true); // Ensure touched state is set
+                    }
+                  }}
                 />
                 {formik.touched.logo && formik.errors.logo && (
                   <div className="error text-danger">
@@ -473,7 +481,7 @@ const Store = ({ setValueChange }) => {
               <div className="row align-items-center">
                 <div className="col-12">
                   <textarea
-                    type="file"
+                    type="text"
                     className={`form-control ${
                       formik.touched.description && formik.errors.description
                         ? "is-invalid"
@@ -484,7 +492,7 @@ const Store = ({ setValueChange }) => {
                     onBlur={formik.handleBlur}
                     value={formik.values.description}
                     style={{ cursor: "auto" }}
-                  />
+                  ></textarea>
                   {formik.touched.description && formik.errors.description && (
                     <div className="error text-danger">
                       <small>{formik.errors.description}</small>

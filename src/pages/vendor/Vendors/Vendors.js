@@ -63,7 +63,7 @@ const Vendors = () => {
             <div className="col-12 p-2 d-flex justify-content-between align-items-center">
               <h3 class="mb-0 ls-tight">Vendors</h3>
               <div class="container-fluid d-flex justify-content-end">
-                <Link to="/vendors/add">
+                <Link to="/my_vendors/add">
                   <button
                     type="submit"
                     className="btn btn-sm btn-button shadow-none border-0 py-3"

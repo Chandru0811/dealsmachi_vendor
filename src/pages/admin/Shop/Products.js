@@ -65,8 +65,8 @@ function Products() {
                     <td className="text-start">
                       <img
                         src={
-                          data.image_url1 !== null
-                            ? `${ImageURL}${data.image_url1}`
+                          data.shop.logo !== null
+                            ? `${ImageURL}${data.shop.logo}`
                             : noImage
                         }
                         alt={data.name}

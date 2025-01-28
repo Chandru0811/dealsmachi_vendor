@@ -11,7 +11,9 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("*Invalid email address")
     .required("*Email is required"),
-  password: Yup.string().required("*Password is required"),
+  password: Yup.string()
+  .min(6, "*The password field must be at least 6 character")
+  .required("*Password is required"),
   password_confirmation: Yup.string()
     .oneOf([Yup.ref("password"), null], "*Passwords must match")
     .required("*Confirm Password is required"),

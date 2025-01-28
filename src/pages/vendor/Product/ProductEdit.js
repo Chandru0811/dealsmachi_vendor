@@ -108,6 +108,9 @@ function ProductEdit() {
       .notRequired("Specification is required")
       .min(10, "Specification must be at least 10 characters long")
       .max(250, "Specification cannot be more than 250 characters long"),
+    brand: Yup.string()
+      .notRequired()
+      .max(250, "Brand cannot be more than 250 characters long"),
     coupon_code: Yup.string()
       .matches(
         /^[A-Za-z]+[0-9]{0,4}$/,
@@ -143,50 +146,50 @@ function ProductEdit() {
     //   )
     //   .required("Media fields are required"),
     mediaFields: Yup.array()
-    .of(
-      Yup.object().shape({
-        selectedType: Yup.string()
-          .required("Media type is required")
-          .oneOf(["image", "video"], "Invalid media type"),
-        path: Yup.string()
-          .nullable()
-          .test("pathValidation", function (value, context) {
-            const { selectedType, index } = context.parent;
-  
-            if (!value) {
+      .of(
+        Yup.object().shape({
+          selectedType: Yup.string()
+            .required("Media type is required")
+            .oneOf(["image", "video"], "Invalid media type"),
+          path: Yup.string()
+            .nullable()
+            .test("pathValidation", function (value, context) {
+              const { selectedType, index } = context.parent;
+
+              if (!value) {
+                if (selectedType === "image") {
+                  return this.createError({
+                    message: `Image Link is required.`,
+                  });
+                }
+                if (selectedType === "video") {
+                  return this.createError({
+                    message: `YouTube Link is required.`,
+                  });
+                }
+              }
+
               if (selectedType === "image") {
-                return this.createError({
-                  message: `Image Link is required.`,
-                });
+                if (!/\.(jpg|jpeg|png|gif|webp)$/i.test(value)) {
+                  return this.createError({
+                    message: `Image ${index + 1}: Invalid image format.`,
+                  });
+                }
               }
+
               if (selectedType === "video") {
-                return this.createError({
-                  message: `YouTube Link is required.`,
-                });
+                if (!/^(http|https):\/\/[^\s]+$/i.test(value)) {
+                  return this.createError({
+                    message: `YouTube ${index + 1}: Invalid YouTube link.`,
+                  });
+                }
               }
-            }
-  
-            if (selectedType === "image") {
-              if (!/\.(jpg|jpeg|png|gif|webp)$/i.test(value)) {
-                return this.createError({
-                  message: `Image ${index + 1}: Invalid image format.`,
-                });
-              }
-            }
-  
-            if (selectedType === "video") {
-              if (!/^(http|https):\/\/[^\s]+$/i.test(value)) {
-                return this.createError({
-                  message: `YouTube ${index + 1}: Invalid YouTube link.`,
-                });
-              }
-            }
-  
-            return true; 
-          }),
-      })
-    )
-    .required("At least one media field is required"),
+
+              return true;
+            }),
+        })
+      )
+      .required("At least one media field is required"),
   });
 
   const formik = useFormik({
@@ -351,7 +354,7 @@ function ProductEdit() {
           category_id: "Category",
           deal_type: "Deal Type",
           delivery_days: "Delivery Days",
-          brand: "Brand",
+          brand: "Brand cannot be more than 250 characters long",
           original_price: "Original Price",
           discounted_price: "Discounted Price",
           discounted_percentage: "Discounted Percentage",

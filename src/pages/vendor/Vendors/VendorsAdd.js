@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import Cropper from "react-easy-crop";
 import { Form } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 
 function VendorsAdd() {
   const [showPassword, setShowPassword] = useState(false);
@@ -91,77 +92,90 @@ function VendorsAdd() {
               </div>
 
               <div className="col-md-6 col-12">
-                <Form.Group controlId="formPassword" className="mb-3">
-                  <Form.Label>Password</Form.Label>
-                  <div style={{ position: "relative" }}>
-                    <Form.Control
+                <div className="mb-3">
+                  <label className="form-label fw-medium">Password</label>
+                  <div
+                    className={`input-group mb-3`}
+                    style={{ outline: "none", boxShadow: "none" }}
+                  >
+                    <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter password"
-                      {...formik.getFieldProps("password")}
-                      isInvalid={
+                      className={`form-control ${
                         formik.touched.password && formik.errors.password
-                      }
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      style={{
+                        borderRadius: "3px",
+                        borderRight: "none",
+                        borderTopRightRadius: "0px",
+                        borderBottomRightRadius: "0px",
+                      }}
+                      name="password"
+                      {...formik.getFieldProps("password")}
                     />
-                    {formik.values.password && (
-                      <span
-                        onClick={() => setShowPassword(!showPassword)}
-                        style={{
-                          position: "absolute",
-                          right: "10px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {showPassword ? <FaEyeSlash /> : <FaEye />}
-                      </span>
-                    )}
-                    {formik.touched.password && formik.errors.password ? (
-                      <Form.Control.Feedback type="invalid">
+                    <span
+                      className={`input-group-text iconInputBackground`}
+                      id="basic-addon1"
+                      onClick={() => setShowPassword(!showPassword)}
+                      style={{ cursor: "pointer", borderRadius: "3px" }}
+                    >
+                      {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                    </span>
+                    {formik.touched.password && formik.errors.password && (
+                      <div className="invalid-feedback" typeof="in">
                         {formik.errors.password}
-                      </Form.Control.Feedback>
-                    ) : null}
+                      </div>
+                    )}
                   </div>
-                </Form.Group>
+                </div>
               </div>
-
               <div className="col-md-6 col-12">
-                <Form.Group controlId="formConfirmPassword" className="mb-3">
-                  <Form.Label>Confirm Password</Form.Label>
-                  <div style={{ position: "relative" }}>
-                    <Form.Control
+                <div className="mb-3">
+                  <label className="form-label fw-medium">
+                    Confirm Password
+                  </label>
+                  <div
+                    className={`input-group mb-3`}
+                    style={{ outline: "none", boxShadow: "none" }}
+                  >
+                    <input
                       type={showConfirmPassword ? "text" : "password"}
-                      placeholder="Confirm password"
-                      {...formik.getFieldProps("confirmPassword")}
-                      isInvalid={
+                      placeholder="Enter password"
+                      className={`form-control ${
                         formik.touched.confirmPassword &&
                         formik.errors.confirmPassword
-                      }
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      style={{
+                        borderRadius: "3px",
+                        borderRight: "none",
+                        borderTopRightRadius: "0px",
+                        borderBottomRightRadius: "0px",
+                      }}
+                      name="confirmPassword"
+                      {...formik.getFieldProps("confirmPassword")}
                     />
-                    {formik.values.confirmPassword && (
-                      <span
-                        onClick={() =>
-                          setShowConfirmPassword(!showConfirmPassword)
-                        }
-                        style={{
-                          position: "absolute",
-                          right: "10px",
-                          top: "50%",
-                          transform: "translateY(-50%)",
-                          cursor: "pointer",
-                        }}
-                      >
-                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                      </span>
-                    )}
+                    <span
+                      className={`input-group-text iconInputBackground`}
+                      id="basic-addon1"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      style={{ cursor: "pointer", borderRadius: "3px" }}
+                    >
+                      {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                    </span>
                     {formik.touched.confirmPassword &&
-                    formik.errors.confirmPassword ? (
-                      <Form.Control.Feedback type="invalid">
-                        {formik.errors.confirmPassword}
-                      </Form.Control.Feedback>
-                    ) : null}
+                      formik.errors.confirmPassword && (
+                        <div className="invalid-feedback">
+                          {formik.errors.confirmPassword}
+                        </div>
+                      )}
                   </div>
-                </Form.Group>
+                </div>
               </div>
             </div>
           </div>

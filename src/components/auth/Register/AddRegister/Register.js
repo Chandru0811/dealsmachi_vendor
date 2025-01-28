@@ -1,6 +1,6 @@
+/* eslint-disable array-callback-return */
 import React, { useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; // Import eye icons
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link } from "react-router-dom";
@@ -22,13 +22,11 @@ function Register() {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-
     password: Yup.string().required("Password is required"),
-
     cpassword: Yup.string()
       .required("Confirm Password is required")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
-    // role: Yup.string().required("Please select a role"),
+    // changeRole: Yup.string().required("Please select a role"),
   });
 
   const formik = useFormik({
@@ -37,7 +35,8 @@ function Register() {
       email: "",
       password: "",
       cpassword: "",
-      //   role: "",
+      referralCode: "",
+      changeRole: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -45,8 +44,9 @@ function Register() {
         name: values.name,
         email: values.email,
         password: values.password,
-        role: 2,
         password_confirmation: values.cpassword,
+        role: "2",
+        // role_type: "Referrer",
       };
       try {
         setLoadIndicator(true);
@@ -60,11 +60,11 @@ function Register() {
           localStorage.setItem("id", response.data.data.userDetails.id);
           localStorage.setItem("email", response.data.data.userDetails.email);
           localStorage.setItem("role", response.data.data.userDetails.role);
+          // localStorage.setItem("role_type", response.data.data.userDetails.role_type);
           localStorage.setItem("active", "0");
           navigate(
             `/wellcomepage/${response.data.data.userDetails.id}?name=${response.data.data.userDetails.name}&email=${response.data.data.userDetails.email}`
           );
-          // navigate(`/`);
         } else {
           toast.error(response.data.message);
         }
@@ -96,6 +96,7 @@ function Register() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+
   const toggleconfirmPasswordVisibility = () => {
     setShowCPassword(!showcPassword);
   };
@@ -164,72 +165,6 @@ function Register() {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-
-            {/* <div className="d-flex justify-content-between align-items-center py-2">
-            <Form.Label>Password</Form.Label>
-          </div>
-          <Form.Group controlId="formPassword" className="mb-3">
-            <div style={{ position: "relative" }}>
-              <Form.Control
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter password"
-                {...formik.getFieldProps("password")}
-                isInvalid={formik.touched.password && formik.errors.password}
-              />
-              {formik.values.password && (
-                <span
-                  onClick={togglePasswordVisibility}
-                  style={{
-                    position: "absolute",
-                    right: "40px",
-                    top: "45%",
-                    transform: "translateY(-50%)",
-                    cursor: "pointer",
-                  }}
-                >
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </span>
-              )}
-              {formik.touched.password && formik.errors.password ? (
-                <Form.Control.Feedback type="invalid">
-                  {formik.errors.password}
-                </Form.Control.Feedback>
-              ) : null}
-            </div>
-          </Form.Group>
-          <div className="d-flex justify-content-between align-items-center py-2">
-            <Form.Label>Confirm Password</Form.Label>
-          </div>
-          <Form.Group controlId="confirmpassword" className="mb-3">
-            <div style={{ position: "relative" }}>
-              <Form.Control
-                type={showcPassword ? "text" : "password"}
-                placeholder="Enter confirm password"
-                {...formik.getFieldProps("cpassword")}
-                isInvalid={formik.touched.cpassword && formik.errors.cpassword}
-              />
-              {formik.values.cpassword && (
-                <span
-                  onClick={toggleconfirmPasswordVisibility}
-                  style={{
-                    position: "absolute",
-                    right: "40px",
-                    top: "45%",
-                    transform: "translateY(-50%)",
-                    cursor: "pointer",
-                  }}
-                >
-                  {showcPassword ? <FaEyeSlash /> : <FaEye />}
-                </span>
-              )}
-              {formik.touched.cpassword && formik.errors.cpassword ? (
-                <Form.Control.Feedback type="invalid">
-                  {formik.errors.cpassword}
-                </Form.Control.Feedback>
-              ) : null}
-            </div>
-          </Form.Group> */}
-
             <div className="mb-3">
               <label className="form-label fw-medium">Password</label>
               <div
@@ -275,7 +210,7 @@ function Register() {
                 style={{ outline: "none", boxShadow: "none" }}
               >
                 <input
-                  type={showPassword ? "text" : "password"}
+                  type={showcPassword ? "text" : "password"}
                   placeholder="Enter password"
                   className={`form-control ${
                     formik.touched.cpassword && formik.errors.cpassword
@@ -294,7 +229,7 @@ function Register() {
                 <span
                   className={`input-group-text iconInputBackground`}
                   id="basic-addon1"
-                  onClick={togglePasswordVisibility}
+                  onClick={toggleconfirmPasswordVisibility}
                   style={{ cursor: "pointer", borderRadius: "3px" }}
                 >
                   {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
@@ -306,37 +241,63 @@ function Register() {
                 )}
               </div>
             </div>
-
-            {/* <Form.Group controlId="role" className="mb-3 ">
-            <div className=" d-flex justify-content-around">
-              <Form.Check
-                type="radio"
-                label="I am a vendor"
-                name="role"
-                value="vendor"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.role && formik.errors.role}
-                checked={formik.values.role === "vendor"}
+            <Form.Group controlId="referralCode" className="mb-3 pt-4">
+              <Form.Label>Referral Code</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Referral Code"
+                {...formik.getFieldProps("referralCode")}
+                isInvalid={
+                  formik.touched.referralCode && formik.errors.referralCode
+                }
               />
-              <Form.Check
-                type="radio"
-                label="I am a customer"
-                name="role"
-                value="customer"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                isInvalid={formik.touched.role && formik.errors.role}
-                checked={formik.values.role === "customer"}
-              />
+              {formik.touched.referralCode && formik.errors.referralCode ? (
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.referralCode}
+                </Form.Control.Feedback>
+              ) : null}
+            </Form.Group>
+            <div className="d-flex align-items-center">
+              <div className="form-check mb-3">
+                <input
+                  type="radio"
+                  name="role_type"
+                  id="vendor"
+                  value="Vendor"
+                  className={`form-check-input ${
+                    formik.touched.role_type && formik.errors.role_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("role_type")}
+                />
+                <label htmlFor="vendor" className="form-label ms-2">
+                  Vendor
+                </label>
+              </div>
+              <div className="form-check mb-3 ms-3">
+                <input
+                  type="radio"
+                  name="role_type"
+                  id="referrer"
+                  value="Referrer"
+                  className={`form-check-input ${
+                    formik.touched.role_type && formik.errors.role_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("role_type")}
+                />
+                <label htmlFor="referrer" className="form-label ms-2">
+                  Referrer
+                </label>
+              </div>
+              {formik.touched.role_type && formik.errors.role_type && (
+                <div className="text-danger ms-3">
+                  {formik.errors.role_type}
+                </div>
+              )}
             </div>
-            {formik.touched.role && formik.errors.role ? (
-              <Form.Control.Feedback type="invalid" className="d-block">
-                {formik.errors.role}
-              </Form.Control.Feedback>
-            ) : null}
-          </Form.Group> */}
-
             <Button
               type="submit"
               className="w-100 mt-4 common-button"
