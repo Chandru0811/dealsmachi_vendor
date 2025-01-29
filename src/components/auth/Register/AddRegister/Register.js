@@ -15,6 +15,7 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showcPassword, setShowCPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
+  const [type, setType] = useState([]);
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
@@ -46,7 +47,7 @@ function Register() {
         password: values.password,
         password_confirmation: values.cpassword,
         role: "2",
-        // role_type: "Referrer",
+        type: type.join(" and "),
       };
       try {
         setLoadIndicator(true);
@@ -99,6 +100,14 @@ function Register() {
 
   const toggleconfirmPasswordVisibility = () => {
     setShowCPassword(!showcPassword);
+  };
+
+  const handleCheckboxChange = (value) => {
+    setType((prev) =>
+      prev.includes(value)
+        ? prev.filter((item) => item !== value) // Remove if already selected
+        : [...prev, value] // Add if not selected
+    );
   };
 
   return (
@@ -257,48 +266,7 @@ function Register() {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-            {/*  <div className="d-flex align-items-center">
-              <div className="form-check mb-3">
-                <input
-                  type="radio"
-                  name="role_type"
-                  id="vendor"
-                  value="Vendor"
-                  className={`form-check-input ${
-                    formik.touched.role_type && formik.errors.role_type
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("role_type")}
-                />
-                <label htmlFor="vendor" className="form-label ms-2">
-                  Vendor
-                </label>
-              </div>
-              <div className="form-check mb-3 ms-3">
-                <input
-                  type="radio"
-                  name="role_type"
-                  id="referrer"
-                  value="Referrer"
-                  className={`form-check-input ${
-                    formik.touched.role_type && formik.errors.role_type
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("role_type")}
-                />
-                <label htmlFor="referrer" className="form-label ms-2">
-                  Referrer
-                </label>
-              </div>
-              {formik.touched.role_type && formik.errors.role_type && (
-                <div className="text-danger ms-3">
-                  {formik.errors.role_type}
-                </div>
-              )}
-            </div> */}
-            <div className="d-flex align-items-center">
+            {/* <div className="d-flex align-items-center">
               <div class="form-check">
                 <input
                   class="form-check-input"
@@ -321,6 +289,21 @@ function Register() {
                 Referrer
                 </label>
               </div>
+            </div> */}
+            <div className="d-flex align-items-center">
+            <Form.Check
+  type="checkbox"
+  label="Vendor"
+  className="me-3"
+  checked={type.includes("Vendor")}
+  onChange={() => handleCheckboxChange("Vendor")}
+/>
+<Form.Check
+  type="checkbox"
+  label="Referrer"
+  checked={type.includes("Referrer")}
+  onChange={() => handleCheckboxChange("Referrer")}
+/>
             </div>
             <Button
               type="submit"
