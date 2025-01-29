@@ -4,6 +4,8 @@ import deals from "../../assets/deals.png";
 import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidCategory, BiLogOut } from "react-icons/bi";
 import { FaBoxOpen } from "react-icons/fa";
+import { FaUser } from "react-icons/fa6";
+import { AiFillPieChart } from "react-icons/ai";
 
 function VendorSidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -79,36 +81,6 @@ function VendorSidebar({ handleLogout }) {
                     Dashboard
                   </NavLink>
                 </li>
-                {/* <li className="nav-item">
-              <NavLink className="nav-link" to="/slider">
-                <BiSolidCategory />
-                Slider
-              </NavLink>
-            </li> */}
-                {/* <li className="nav-item">
-              <NavLink className="nav-link" to="/banner">
-                <BiSolidCategory />Banner
-               
-              </NavLink>
-            </li> */}
-                {/* <li className="nav-item">
-              <NavLink className="nav-link" to="/categorygroup">
-                <MdCategory />
-                Category Groups
-              </NavLink>
-            </li> */}
-                {/* <li className="nav-item">
-              <NavLink className="nav-link" to="/categories">
-                <BiSolidCategory />
-                Categories
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/dealcategories">
-                <BiSolidCategory />
-                Deal Categories
-              </NavLink>
-            </li> */}
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/product">
                     <BiSolidCategory />
@@ -127,24 +99,18 @@ function VendorSidebar({ handleLogout }) {
               <>
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/referrer_dashboard">
-                    <FaBoxOpen />
+                    <AiFillPieChart />
                     Referral Dashboard
                   </NavLink>
                 </li>
                 <li className="nav-item">
                   <NavLink className="nav-link" to="/my_vendors">
-                    <FaBoxOpen />
+                    <FaUser />
                     My Vendors
                   </NavLink>
                 </li>
               </>
             )}
-            {/* <li className="nav-item">
-              <NavLink className="nav-link" to="/shop">
-                <TbShoppingCartFilled />
-                Company
-              </NavLink>
-            </li> */}
           </ul>
           <div className="ps-4 mt-auto w-100 mb-4">
             <div className="navbar-nav">

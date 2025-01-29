@@ -1,24 +1,34 @@
-import React, { useEffect, useState } from "react";
+/* eslint-disable array-callback-return */
+import React, { useState } from "react";
+import { Form, Button } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link, useNavigate } from "react-router-dom";
-import api from "../../../config/URL";
+import { useNavigate, Link } from "react-router-dom";
+import { IoMdArrowBack } from "react-icons/io";
 import toast from "react-hot-toast";
-import Cropper from "react-easy-crop";
-import { Form } from "react-bootstrap";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+import api from "../../../../config/URL";
+import { FiAlertTriangle } from "react-icons/fi";
+import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
+import headerlogo from "../../../../assets/header-logo.webp";
 
-function VendorsAdd() {
+function Register({ handleVendorLogin }) {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showcPassword, setShowCPassword] = useState(false);
+  const [loadIndicator, setLoadIndicator] = useState(false);
+  const navigate = useNavigate();
 
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
     password: Yup.string().required("Password is required"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password"), null], "Passwords must match")
-      .required("Confirm password is required"),
+    cpassword: Yup.string()
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    type: Yup.array()
+      .of(Yup.string().oneOf(["vendor", "referrer"], "Invalid selection"))
+      .min(1, "At least one type must be selected"),
   });
 
   const formik = useFormik({
@@ -26,31 +36,143 @@ function VendorsAdd() {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
+      cpassword: "",
+      referral_code: "",
+      type: [],
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      const typeString =
+        values.type.includes("vendor") && values.type.includes("referrer")
+          ? "referrer-vendor"
+          : values.type.join("");
+      const payload = {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+        password_confirmation: values.cpassword,
+        referral_code: values.referral_code,
+        role: "2",
+        type: typeString,
+      };
+      // console.log(payload);
+      try {
+        setLoadIndicator(true);
+        const response = await api.post(`register`, payload);
+        if (response.status === 200) {
+          const responseData = response.data.data;
+          console.log("object", responseData);
+          toast.success(response.data.message);
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("type", typeString);
+          localStorage.setItem("name", response.data.data.userDetails.name);
+          localStorage.setItem("id", response.data.data.userDetails.id);
+          localStorage.setItem("email", response.data.data.userDetails.email);
+          localStorage.setItem("role", response.data.data.userDetails.role);
+          localStorage.setItem(
+            "referrer_code",
+            response.data.data.referrer_code
+          );
+          localStorage.setItem(
+            "referral_code",
+            response.data.data.userDetails.referral_code
+          );
+          localStorage.setItem("active", "0");
+          if (typeString !== "referrer") {
+            navigate(
+              `/wellcomepage/${response.data.data.userDetails.id}?name=${response.data.data.userDetails.name}&email=${response.data.data.userDetails.email}`
+            );
+          } else {
+            handleVendorLogin();
+            navigate("/referrer_dashboard");
+          }
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response.status === 422) {
+          console.log("Full error response:", error.response);
+
+          const errors = error.response.data.error;
+
+          if (errors) {
+            Object.keys(errors).map((key) => {
+              errors[key].map((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          console.error("API Error", error);
+          toast.error("An unexpected error occurred.");
+        }
+      } finally {
+        setLoadIndicator(false);
+      }
+    },
   });
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleconfirmPasswordVisibility = () => {
+    setShowCPassword(!showcPassword);
+  };
+
+  const handleCheckboxChange = (value) => {
+    formik.setFieldValue(
+      "type",
+      formik.values.type.includes(value)
+        ? formik.values.type.filter((item) => item !== value) // Remove if already selected
+        : [...formik.values.type, value] // Add if not selected
+    );
+  };
+
   return (
-    <section className="px-4">
-      <Form onSubmit={formik.handleSubmit}>
-        <div className="row">
-          <div className="row p-3">
-            <div className="d-flex justify-content-end align-items-end">
-              <Link to="/slider">
-                <button type="button" className="btn btn-light btn-sm">
-                  <span>Back</span>
-                </button>
-              </Link>
+    <div
+      className="container-fluid m-0 vh-100"
+      style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}
+    >
+      <div
+        className="d-flex justify-content-center align-items-center m-0 pt-5"
+        style={{ backgroundColor: "rgb(242, 242, 242)" }}
+      >
+        <img src={headerlogo} className="img-fluid" alt="img" />
+      </div>
+      <div className="d-flex justify-content-center align-items-center mt-3">
+        <div
+          className="card shadow-lg p-3 my-5 rounded"
+          style={{ width: "100%", maxWidth: "400px" }}
+        >
+          <div>
+            <Link to="/">
+              <button className="btn btn-link text-start shadow-none h-0">
+                <IoMdArrowBack style={{ color: "#ff0060" }} />
+              </button>
+            </Link>
+            <div>
+              <h3
+                className={`pb-5`}
+                style={{
+                  borderBottom: "2px solid #ff0060",
+                  width: "100%",
+                  textAlign: "center",
+                  color: "#ff0060",
+                }}
+              >
+                Register
+              </h3>
             </div>
           </div>
-          <div className="col-md-6 col-12">
-            <Form.Group controlId="formName" className="mb-3">
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Group controlId="name" className="mb-3 pt-4">
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter Name"
+                placeholder="Name"
                 {...formik.getFieldProps("name")}
                 isInvalid={formik.touched.name && formik.errors.name}
               />
@@ -60,14 +182,11 @@ function VendorsAdd() {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-          </div>
-
-          <div className="col-md-6 col-12">
-            <Form.Group controlId="formEmail" className="mb-3">
+            <Form.Group controlId="formEmail" className="mb-3 pt-4">
               <Form.Label>Email Address</Form.Label>
               <Form.Control
                 type="email"
-                placeholder="Enter Email"
+                placeholder="Enter email"
                 {...formik.getFieldProps("email")}
                 isInvalid={formik.touched.email && formik.errors.email}
               />
@@ -77,81 +196,132 @@ function VendorsAdd() {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-          </div>
-
-          <div className="col-md-6 col-12">
-            <Form.Group controlId="formPassword" className="mb-3">
-              <Form.Label>Password</Form.Label>
-              <div style={{ position: "relative" }}>
-                <Form.Control
+            <div className="mb-3">
+              <label className="form-label fw-medium">Password</label>
+              <div
+                className={`input-group mb-3`}
+                style={{ outline: "none", boxShadow: "none" }}
+              >
+                <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
+                  className={`form-control ${
+                    formik.touched.password && formik.errors.password
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  style={{
+                    borderRadius: "3px",
+                    borderRight: "none",
+                    borderTopRightRadius: "0px",
+                    borderBottomRightRadius: "0px",
+                  }}
+                  name="password"
                   {...formik.getFieldProps("password")}
-                  isInvalid={formik.touched.password && formik.errors.password}
                 />
-                {formik.values.password && (
-                  <span
-                    onClick={() => setShowPassword(!showPassword)}
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                  </span>
-                )}
-                {formik.touched.password && formik.errors.password ? (
-                  <Form.Control.Feedback type="invalid">
+                <span
+                  className={`input-group-text iconInputBackground`}
+                  id="basic-addon1"
+                  onClick={togglePasswordVisibility}
+                  style={{ cursor: "pointer", borderRadius: "3px" }}
+                >
+                  {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                </span>
+                {formik.touched.password && formik.errors.password && (
+                  <div className="invalid-feedback" typeof="in">
                     {formik.errors.password}
-                  </Form.Control.Feedback>
-                ) : null}
-              </div>
-            </Form.Group>
-          </div>
-
-          <div className="col-md-6 col-12">
-            <Form.Group controlId="formConfirmPassword" className="mb-3">
-              <Form.Label>Confirm Password</Form.Label>
-              <div style={{ position: "relative" }}>
-                <Form.Control
-                  type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm password"
-                  {...formik.getFieldProps("confirmPassword")}
-                  isInvalid={
-                    formik.touched.confirmPassword &&
-                    formik.errors.confirmPassword
-                  }
-                />
-                {formik.values.confirmPassword && (
-                  <span
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{
-                      position: "absolute",
-                      right: "10px",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                  </span>
+                  </div>
                 )}
-                {formik.touched.confirmPassword &&
-                formik.errors.confirmPassword ? (
-                  <Form.Control.Feedback type="invalid">
-                    {formik.errors.confirmPassword}
-                  </Form.Control.Feedback>
-                ) : null}
               </div>
+            </div>
+            <div className="mb-3">
+              <label className="form-label fw-medium">Confirm Password</label>
+              <div
+                className={`input-group mb-3`}
+                style={{ outline: "none", boxShadow: "none" }}
+              >
+                <input
+                  type={showcPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  className={`form-control ${
+                    formik.touched.cpassword && formik.errors.cpassword
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  style={{
+                    borderRadius: "3px",
+                    borderRight: "none",
+                    borderTopRightRadius: "0px",
+                    borderBottomRightRadius: "0px",
+                  }}
+                  name="cpassword"
+                  {...formik.getFieldProps("cpassword")}
+                />
+                <span
+                  className={`input-group-text iconInputBackground`}
+                  id="basic-addon1"
+                  onClick={toggleconfirmPasswordVisibility}
+                  style={{ cursor: "pointer", borderRadius: "3px" }}
+                >
+                  {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
+                </span>
+                {formik.touched.cpassword && formik.errors.cpassword && (
+                  <div className="invalid-feedback">
+                    {formik.errors.cpassword}
+                  </div>
+                )}
+              </div>
+            </div>
+            <Form.Group controlId="referral_code" className="mb-3 pt-4">
+              <Form.Label>Referral Code</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Referral Code"
+                {...formik.getFieldProps("referral_code")}
+                isInvalid={
+                  formik.touched.referral_code && formik.errors.referral_code
+                }
+              />
+              {formik.touched.referral_code && formik.errors.referral_code ? (
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.referral_code}
+                </Form.Control.Feedback>
+              ) : null}
             </Form.Group>
-          </div>
+            <div className="d-flex align-items-center">
+              <Form.Check
+                type="checkbox"
+                label="Vendor"
+                className="me-3"
+                checked={formik.values.type.includes("vendor")}
+                onChange={() => handleCheckboxChange("vendor")}
+              />
+              <Form.Check
+                type="checkbox"
+                label="Referrer"
+                checked={formik.values.type.includes("referrer")}
+                onChange={() => handleCheckboxChange("referrer")}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-100 mt-4 common-button"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Register
+            </Button>
+          </Form>
         </div>
-      </Form>
-    </section>
+      </div>
+    </div>
   );
 }
 
-export default VendorsAdd;
+export default Register;

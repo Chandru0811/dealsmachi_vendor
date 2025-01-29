@@ -14,8 +14,8 @@ const validationSchema = Yup.object({
     .required("Email is required"),
   mobile: Yup.string()
     .matches(/^[0-9]+$/, "Mobile number must be numeric")
-    .min(8, "Minimum digits is 8")
-    .max(10, "Maximum digits is 10")
+    .min(10, "Invalid mobile number")
+    .max(10, "Invalid mobile number")
     .required("Mobile number is required!"),
   shop_type: Yup.string().required("Shop Type is required!"),
   company_registeration_no: Yup.string().required(
@@ -349,11 +349,11 @@ const Store = ({ setValueChange }) => {
                   className="form-control"
                   onChange={(event) => {
                     const file = event.target.files[0];
-                    formik.setFieldValue("logo", file || ""); // Retain existing value if no file is selected
+                    formik.setFieldValue("logo", file || "");
                   }}
                   onBlur={(event) => {
                     if (!formik.values.logo) {
-                      formik.setFieldTouched("logo", true); // Ensure touched state is set
+                      formik.setFieldTouched("logo", true);
                     }
                   }}
                 />

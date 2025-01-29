@@ -10,6 +10,7 @@ import { FaUser } from "react-icons/fa";
 import { FaSliders } from "react-icons/fa6";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { FaBoxOpen } from "react-icons/fa";
+import { AiFillPieChart } from "react-icons/ai";
 
 function Sidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -40,10 +41,11 @@ function Sidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
-            }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
+            leadMenuOpen || activeSubmenu ? "active" : ""
+          }`}
           to="/"
-        // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
+          // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
           <div
             style={{
@@ -71,7 +73,7 @@ function Sidebar({ handleLogout }) {
         <div
           className="collapse navbar-collapse"
           id="sidebarCollapse"
-        // style={{ marginTop: "5rem" }}
+          // style={{ marginTop: "5rem" }}
         >
           <ul className="navbar-nav">
             <li className="nav-item">
@@ -132,6 +134,12 @@ function Sidebar({ handleLogout }) {
               <NavLink className="nav-link" to="/order">
                 <FaBoxOpen />
                 Orders
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/referrer">
+                <AiFillPieChart />
+                Referrer
               </NavLink>
             </li>
           </ul>

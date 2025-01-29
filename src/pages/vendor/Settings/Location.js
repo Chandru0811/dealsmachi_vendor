@@ -23,7 +23,7 @@ const validationSchema = Yup.object({
     .required("Country is required!"),
   zip_code: Yup.string()
     .min(6, "Zip Code cannot be less than 6 characters")
-    .max(250, "Zip Code cannot be more than 250 characters long")
+    .max(6, "Zip Code cannot be more than 6 characters long")
     .required("Zip Code is required!"),
 });
 

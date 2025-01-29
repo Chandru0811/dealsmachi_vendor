@@ -73,10 +73,10 @@ function Register({ handleVendorLogin }) {
             "referrer_code",
             response.data.data.referrer_code
           );
-           localStorage.setItem(
-             "referral_code",
-             response.data.data.userDetails.referral_code
-           );
+          localStorage.setItem(
+            "referral_code",
+            response.data.data.userDetails.referral_code
+          );
           localStorage.setItem("active", "0");
           if (typeString !== "referrer") {
             navigate(
@@ -126,8 +126,8 @@ function Register({ handleVendorLogin }) {
     formik.setFieldValue(
       "type",
       formik.values.type.includes(value)
-        ? formik.values.type.filter((item) => item !== value) // Remove if already selected
-        : [...formik.values.type, value] // Add if not selected
+        ? formik.values.type.filter((item) => item !== value)
+        : [...formik.values.type, value]
     );
   };
 
@@ -147,7 +147,7 @@ function Register({ handleVendorLogin }) {
           className="card shadow-lg p-3 my-5 rounded"
           style={{ width: "100%", maxWidth: "400px" }}
         >
-          <Link to="/">
+          {/* <Link to="/">
             <button className="btn btn-link text-start shadow-none h-0">
               <IoMdArrowBack style={{ color: "#ff0060" }} />
             </button>
@@ -165,6 +165,33 @@ function Register({ handleVendorLogin }) {
             >
               Register
             </h3>
+          </div> */}
+          <div
+            className="row pb-3"
+            style={{
+              borderBottom: "2px solid #ff0060",
+            }}
+          >
+            <div className="col-md-1">
+              <Link to="/">
+                <button className="btn btn-link text-start shadow-none h-0">
+                  <IoMdArrowBack style={{ color: "#ff0060" }} />
+                </button>
+              </Link>
+            </div>
+            <div className="col-md-11 d-flex justify-content-center align-items-center" style={{paddingRight: "50px"}}>
+                <h3
+                  className={`pt-3`}
+                  style={{
+                    paddingBottom: "5px",
+                    width: "100%",
+                    textAlign: "center",
+                    color: "#ff0060",
+                  }}
+                >
+                  Register
+                </h3>
+            </div>
           </div>
           <Form onSubmit={formik.handleSubmit}>
             <Form.Group controlId="name" className="mb-3 pt-4">
@@ -287,30 +314,6 @@ function Register({ handleVendorLogin }) {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-            {/* <div className="d-flex align-items-center">
-              <div class="form-check">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckDefault"
-                />
-                <label class="form-label fw-medium" for="flexCheckDefault">
-                Vendor
-                </label>
-              </div>
-              <div class="form-check ms-3">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  value=""
-                  id="flexCheckChecked"
-                />
-                <label class="form-label fw-medium" for="flexCheckChecked">
-                Referrer
-                </label>
-              </div>
-            </div> */}
             <div className="d-flex align-items-center">
               <Form.Check
                 type="checkbox"
