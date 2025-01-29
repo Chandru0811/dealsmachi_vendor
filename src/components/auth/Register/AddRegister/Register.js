@@ -307,7 +307,7 @@ function Register() {
                   id="flexCheckDefault"
                 />
                 <label class="form-label fw-medium" for="flexCheckDefault">
-                  Default checkbox
+                Vendor
                 </label>
               </div>
               <div class="form-check ms-3">
@@ -318,7 +318,7 @@ function Register() {
                   id="flexCheckChecked"
                 />
                 <label class="form-label fw-medium" for="flexCheckChecked">
-                  Checked checkbox
+                Referrer
                 </label>
               </div>
             </div>
