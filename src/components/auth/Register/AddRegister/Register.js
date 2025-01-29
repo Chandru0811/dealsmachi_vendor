@@ -257,7 +257,7 @@ function Register() {
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
-            <div className="d-flex align-items-center">
+            {/*  <div className="d-flex align-items-center">
               <div className="form-check mb-3">
                 <input
                   type="radio"
@@ -297,6 +297,30 @@ function Register() {
                   {formik.errors.role_type}
                 </div>
               )}
+            </div> */}
+            <div className="d-flex align-items-center">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckDefault"
+                />
+                <label class="form-label fw-medium" for="flexCheckDefault">
+                  Default checkbox
+                </label>
+              </div>
+              <div class="form-check ms-3">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value=""
+                  id="flexCheckChecked"
+                />
+                <label class="form-label fw-medium" for="flexCheckChecked">
+                  Checked checkbox
+                </label>
+              </div>
             </div>
             <Button
               type="submit"

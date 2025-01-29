@@ -50,15 +50,6 @@ function ProductAdd() {
     return `${year}-${month}-${day}`;
   };
 
-  const imageValidation = Yup.mixed()
-    .required("*Image is required")
-    .test("fileFormat", "Unsupported format", (value) => {
-      return !value || (value && SUPPORTED_FORMATS.includes(value.type));
-    })
-    .test("fileSize", "File size is too large. Max 2MB.", (value) => {
-      return !value || (value && value.size <= MAX_FILE_SIZE);
-    });
-
   const validationSchema = Yup.object({
     shop_id: Yup.string().required("Category Group is required"),
     category_id: Yup.string().required("Category is required"),
@@ -79,18 +70,6 @@ function ProductAdd() {
         }
       )
       .notRequired(),
-    // original_price: Yup.number()
-    //   .required("Original Price is required")
-    //   .min(1, "Original Price must be greater than zero"),
-    // discounted_price: Yup.number()
-    //   .required("Discounted Price is required")
-    //   .max(
-    //     Yup.ref("original_price"),
-    //     "The Discounted Price must be same or below the Original Price."
-    //   ),
-    // discounted_percentage: Yup.number()
-    //   .required("Discount is required")
-    //   .max(100, "Discount must be less than 100"),
     original_price: Yup.string()
       .test("Original Price is required", function (value) {
         const { deal_type } = this.parent;
@@ -134,20 +113,16 @@ function ProductAdd() {
       .required("Description is required")
       .min(10, "Description must be at least 10 characters long")
       .max(250, "Description cannot be more than 250 characters long"),
-
     specifications: Yup.string()
       .notRequired("Specification is required")
       .min(10, "Specification must be at least 10 characters long")
       .max(250, "Specification cannot be more than 250 characters long"),
-
     brand: Yup.string()
       .notRequired()
       .max(250, "Brand cannot be more than 250 characters long"),
-
-    variants: Yup.string()
-      .notRequired()
-      .max(250, "Variants cannot be more than 250 characters long"),
-
+    // variants: Yup.string()
+    //   .notRequired()
+    //   .max(250, "Variants cannot be more than 250 characters long"),
     coupon_code: Yup.string()
       .matches(
         /^[A-Za-z]+[0-9]{0,4}$/,
@@ -337,7 +312,6 @@ function ProductAdd() {
         return;
       }
 
-      // Proceed to submit the form
       formik.handleSubmit();
     });
   };
@@ -1177,12 +1151,6 @@ function ProductAdd() {
                           <FaTrash />
                         </button>
                       </div>
-                      {/* {formik.touched[`variants-${index}`] &&
-                      formik.errors[`variants-${index}`] && (
-                        <div className="invalid-feedback">
-                          {formik.errors[`variants-${index}`]}
-                        </div>
-                      )} */}
                     </div>
                   ))}
                 </div>
