@@ -7,6 +7,7 @@ import { FaBoxOpen } from "react-icons/fa";
 
 function VendorSidebar({ handleLogout }) {
   const navigate = useNavigate();
+  const loginType = localStorage.getItem("type");
 
   const handelLogOutClick = () => {
     handleLogout();
@@ -35,10 +36,11 @@ function VendorSidebar({ handleLogout }) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
-            }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
+            leadMenuOpen || activeSubmenu ? "active" : ""
+          }`}
           to="/"
-        // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
+          // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
           <div
             style={{
@@ -66,34 +68,36 @@ function VendorSidebar({ handleLogout }) {
         <div
           className="collapse navbar-collapse"
           id="sidebarCollapse"
-        // style={{ marginTop: "5rem" }}
+          // style={{ marginTop: "5rem" }}
         >
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard">
-                <BsBarChartFill />
-                Dashboard
-              </NavLink>
-            </li>
-            {/* <li className="nav-item">
+            {(loginType === "vendor" || loginType === "referrer-vendor") && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/dashboard">
+                    <BsBarChartFill />
+                    Dashboard
+                  </NavLink>
+                </li>
+                {/* <li className="nav-item">
               <NavLink className="nav-link" to="/slider">
                 <BiSolidCategory />
                 Slider
               </NavLink>
             </li> */}
-            {/* <li className="nav-item">
+                {/* <li className="nav-item">
               <NavLink className="nav-link" to="/banner">
                 <BiSolidCategory />Banner
                
               </NavLink>
             </li> */}
-            {/* <li className="nav-item">
+                {/* <li className="nav-item">
               <NavLink className="nav-link" to="/categorygroup">
                 <MdCategory />
                 Category Groups
               </NavLink>
             </li> */}
-            {/* <li className="nav-item">
+                {/* <li className="nav-item">
               <NavLink className="nav-link" to="/categories">
                 <BiSolidCategory />
                 Categories
@@ -105,30 +109,36 @@ function VendorSidebar({ handleLogout }) {
                 Deal Categories
               </NavLink>
             </li> */}
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/product">
-                <BiSolidCategory />
-                Deals
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/order">
-                <FaBoxOpen />
-                Orders
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/referrer_dashboard">
-                <FaBoxOpen />
-                Referral Dashboard
-              </NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/my_vendors">
-                <FaBoxOpen />
-                My Vendors
-              </NavLink>
-            </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/product">
+                    <BiSolidCategory />
+                    Deals
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/order">
+                    <FaBoxOpen />
+                    Orders
+                  </NavLink>
+                </li>
+              </>
+            )}
+            {(loginType === "referrer" || loginType === "referrer-vendor") && (
+              <>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/referrer_dashboard">
+                    <FaBoxOpen />
+                    Referral Dashboard
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/my_vendors">
+                    <FaBoxOpen />
+                    My Vendors
+                  </NavLink>
+                </li>
+              </>
+            )}
             {/* <li className="nav-item">
               <NavLink className="nav-link" to="/shop">
                 <TbShoppingCartFilled />
@@ -152,8 +162,8 @@ function VendorSidebar({ handleLogout }) {
             </div>
           </div>
         </div>
-      </div >
-    </nav >
+      </div>
+    </nav>
   );
 }
 

@@ -11,11 +11,10 @@ import { FiAlertTriangle } from "react-icons/fi";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import headerlogo from "../../../../assets/header-logo.webp";
 
-function Register() {
+function Register({ handleVendorLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showcPassword, setShowCPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [type, setType] = useState([]);
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
@@ -27,7 +26,9 @@ function Register() {
     cpassword: Yup.string()
       .required("Confirm Password is required")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
-    // changeRole: Yup.string().required("Please select a role"),
+    type: Yup.array()
+      .of(Yup.string().oneOf(["vendor", "referrer"], "Invalid selection"))
+      .min(1, "At least one type must be selected"),
   });
 
   const formik = useFormik({
@@ -36,19 +37,25 @@ function Register() {
       email: "",
       password: "",
       cpassword: "",
-      referralCode: "",
-      changeRole: "",
+      referral_code: "",
+      type: [],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      const typeString =
+        values.type.includes("vendor") && values.type.includes("referrer")
+          ? "referrer-vendor"
+          : values.type.join("");
       const payload = {
         name: values.name,
         email: values.email,
         password: values.password,
         password_confirmation: values.cpassword,
+        referral_code: values.referral_code,
         role: "2",
-        type: type.join(" and "),
+        type: typeString,
       };
+      // console.log(payload);
       try {
         setLoadIndicator(true);
         const response = await api.post(`register`, payload);
@@ -57,15 +64,28 @@ function Register() {
           console.log("object", responseData);
           toast.success(response.data.message);
           localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("type", typeString);
           localStorage.setItem("name", response.data.data.userDetails.name);
           localStorage.setItem("id", response.data.data.userDetails.id);
           localStorage.setItem("email", response.data.data.userDetails.email);
           localStorage.setItem("role", response.data.data.userDetails.role);
-          // localStorage.setItem("role_type", response.data.data.userDetails.role_type);
-          localStorage.setItem("active", "0");
-          navigate(
-            `/wellcomepage/${response.data.data.userDetails.id}?name=${response.data.data.userDetails.name}&email=${response.data.data.userDetails.email}`
+          localStorage.setItem(
+            "referrer_code",
+            response.data.data.referrer_code
           );
+           localStorage.setItem(
+             "referral_code",
+             response.data.data.userDetails.referral_code
+           );
+          localStorage.setItem("active", "0");
+          if (typeString !== "referrer") {
+            navigate(
+              `/wellcomepage/${response.data.data.userDetails.id}?name=${response.data.data.userDetails.name}&email=${response.data.data.userDetails.email}`
+            );
+          } else {
+            handleVendorLogin();
+            navigate("/referrer_dashboard");
+          }
         } else {
           toast.error(response.data.message);
         }
@@ -103,10 +123,11 @@ function Register() {
   };
 
   const handleCheckboxChange = (value) => {
-    setType((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value) // Remove if already selected
-        : [...prev, value] // Add if not selected
+    formik.setFieldValue(
+      "type",
+      formik.values.type.includes(value)
+        ? formik.values.type.filter((item) => item !== value) // Remove if already selected
+        : [...formik.values.type, value] // Add if not selected
     );
   };
 
@@ -250,19 +271,19 @@ function Register() {
                 )}
               </div>
             </div>
-            <Form.Group controlId="referralCode" className="mb-3 pt-4">
+            <Form.Group controlId="referral_code" className="mb-3 pt-4">
               <Form.Label>Referral Code</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter Referral Code"
-                {...formik.getFieldProps("referralCode")}
+                {...formik.getFieldProps("referral_code")}
                 isInvalid={
-                  formik.touched.referralCode && formik.errors.referralCode
+                  formik.touched.referral_code && formik.errors.referral_code
                 }
               />
-              {formik.touched.referralCode && formik.errors.referralCode ? (
+              {formik.touched.referral_code && formik.errors.referral_code ? (
                 <Form.Control.Feedback type="invalid">
-                  {formik.errors.referralCode}
+                  {formik.errors.referral_code}
                 </Form.Control.Feedback>
               ) : null}
             </Form.Group>
@@ -291,20 +312,21 @@ function Register() {
               </div>
             </div> */}
             <div className="d-flex align-items-center">
-            <Form.Check
-  type="checkbox"
-  label="Vendor"
-  className="me-3"
-  checked={type.includes("Vendor")}
-  onChange={() => handleCheckboxChange("Vendor")}
-/>
-<Form.Check
-  type="checkbox"
-  label="Referrer"
-  checked={type.includes("Referrer")}
-  onChange={() => handleCheckboxChange("Referrer")}
-/>
+              <Form.Check
+                type="checkbox"
+                label="Vendor"
+                className="me-3"
+                checked={formik.values.type.includes("vendor")}
+                onChange={() => handleCheckboxChange("vendor")}
+              />
+              <Form.Check
+                type="checkbox"
+                label="Referrer"
+                checked={formik.values.type.includes("referrer")}
+                onChange={() => handleCheckboxChange("referrer")}
+              />
             </div>
+
             <Button
               type="submit"
               className="w-100 mt-4 common-button"

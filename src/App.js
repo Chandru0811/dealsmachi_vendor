@@ -8,7 +8,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isClientLogin, setIsClientLogin] = useState(false);
   const [isVendorLogin, setIsVendorLogin] = useState(false);
-  const [isRefererLogin, setIsRefererLogin] = useState(false);
 
   const handleLogin = () => {
     localStorage.setItem("isAuthenticated", true);
@@ -23,11 +22,6 @@ function App() {
   const handleVendorLogin = () => {
     localStorage.setItem("isVendorLogin", true);
     setIsVendorLogin(true);
-  };
-
-  const handleRefererLogin = () => {
-    localStorage.setItem("handleRefererLogin", true);
-    setIsRefererLogin(true);
   };
 
   const handleLogout = async () => {
@@ -46,25 +40,23 @@ function App() {
       localStorage.removeItem("email");
       localStorage.removeItem("role");
       localStorage.removeItem("active");
+      localStorage.removeItem("type");
+      localStorage.removeItem("referral_code");
     } catch (error) {
       toast.error("Logout Unsuccessfull");
     }
   };
 
   useEffect(() => {
-    const isAuthenticatedFromStorage =
-      localStorage.getItem("isAuthenticated");
+    const isAuthenticatedFromStorage = localStorage.getItem("isAuthenticated");
     const isClientLoginFromStorage = localStorage.getItem("isClientLogin");
     const isVendorLoginFromStorage = localStorage.getItem("isVendorLogin");
-    const isRefererLoginFromStorage = localStorage.getItem("isRefererLogin");
     if (isAuthenticatedFromStorage === "true") {
       setIsAuthenticated(true);
     } else if (isClientLoginFromStorage === "true") {
       setIsClientLogin(true);
     } else if (isVendorLoginFromStorage === "true") {
       setIsVendorLogin(true);
-    } else if (isRefererLoginFromStorage === "true") {
-      setIsRefererLogin(true);
     }
   }, []);
 
@@ -88,7 +80,6 @@ function App() {
           handleLogin={handleLogin}
           handleClientLogin={handleClientLogin}
           handleVendorLogin={handleVendorLogin}
-          handleRefererLogin={handleRefererLogin}
           isClientLogin={isClientLogin}
         />
       )}

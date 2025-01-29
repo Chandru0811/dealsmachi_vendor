@@ -9,7 +9,7 @@ import api from "../../config/URL";
 import { FiAlertTriangle } from "react-icons/fi";
 import headerlogo from "../../assets/header-logo.webp";
 
-function VendorLogin({ handleVendorLogin, handleLogin, handleRefererLogin }) {
+function VendorLogin({ handleVendorLogin, handleLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const navigate = useNavigate();
@@ -30,53 +30,64 @@ function VendorLogin({ handleVendorLogin, handleLogin, handleRefererLogin }) {
     onSubmit: async (values) => {
       try {
         setLoadIndicator(true);
-        if (values.email === "referrer@gmail.com") {
-          handleRefererLogin();
+
+        let payload;
+        if (values.email === "admin@gmail.com") {
+          payload = { ...values, role: "1" };
         } else {
-          let payload;
-          if (values.email === "admin@gmail.com") {
-            payload = { ...values, role: "1" };
-          } else {
-            payload = { ...values, role: "2" };
-          }
-          const response = await api.post(`login`, payload);
-          if (response.status === 200) {
-            toast.success(response.data.message);
+          payload = { ...values, role: "2" };
+        }
+        const response = await api.post(`login`, payload);
+        if (response.status === 200) {
+          toast.success(response.data.message);
 
-            localStorage.setItem("token", response.data.data.token);
-            localStorage.setItem("name", response.data.data.userDetails.name);
-            localStorage.setItem("id", response.data.data.userDetails.id);
-            localStorage.setItem("email", response.data.data.userDetails.email);
-            localStorage.setItem("role", response.data.data.userDetails.role);
-            localStorage.setItem("active", "0");
-            localStorage.setItem(
-              "shop_id",
-              response.data.data.userDetails.shop_id
-            );
+          localStorage.setItem("token", response.data.data.token);
+          localStorage.setItem("name", response.data.data.userDetails.name);
+          localStorage.setItem("id", response.data.data.userDetails.id);
+          localStorage.setItem("email", response.data.data.userDetails.email);
+          localStorage.setItem("role", response.data.data.userDetails.role);
+          localStorage.setItem("type", response.data.data.userDetails.type);
+          localStorage.setItem(
+            "referral_code",
+            response.data.data.userDetails.referral_code
+          );
+          localStorage.setItem(
+            "referrer_code",
+            response.data.data.referrer_code
+          );
+          localStorage.setItem("active", "0");
+          localStorage.setItem(
+            "shop_id",
+            response.data.data.userDetails.shop_id
+          );
 
-            if (response.data.data.userDetails.role === "1") {
-              handleLogin(values);
-            } else if (response.data.data.userDetails.role === "2") {
-              if (response.data.data.userDetails.shop_id === null) {
-                navigate(`/wellcomepage/${response.data.data.userDetails.id}`);
-              } else {
-                navigate("/");
-                handleVendorLogin(values);
-              }
-            } else {
-              toast(
-                "Oops! You don't have access to this page, but feel free to check out our amazing website! 😊",
-                {
-                  icon: "😊",
-                }
+          if (response.data.data.userDetails.role === "1") {
+            handleLogin(values);
+          } else if (response.data.data.userDetails.role === "2") {
+            if (
+              response.data.data.userDetails.shop_id === null &&
+              response.data.data.userDetails.type !== "referrer"
+            ) {
+              navigate(
+                `/wellcomepage/${response.data.data.userDetails.id}?name=${response.data.data.userDetails.name}&email=${response.data.data.userDetails.email}`
               );
-              setTimeout(() => {
-                window.location.href = "https://ecsaio.com";
-              }, 5000);
+            } else {
+              navigate("/");
+              handleVendorLogin(values);
             }
           } else {
-            toast.error(response.data.message);
+            toast(
+              "Oops! You don't have access to this page, but feel free to check out our amazing website! 😊",
+              {
+                icon: "😊",
+              }
+            );
+            setTimeout(() => {
+              window.location.href = "https://ecsaio.com";
+            }, 5000);
           }
+        } else {
+          toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response.status === 400) {

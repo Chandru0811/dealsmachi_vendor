@@ -13,6 +13,8 @@ function VendorHeader() {
     });
   }, []);
 
+  const loginType = localStorage.getItem("type");
+
   return (
     <header className="border-bottom py-3 sticky-top-header">
       <div className="container-fluid">
@@ -51,16 +53,19 @@ function VendorHeader() {
                 </span> */}
                 &nbsp;&nbsp;&nbsp;
                 <span style={{ fontSize: "24px" }}>
-                  <Link to={"/settings"}>
-                    <img
-                      src={user}
-                      className="img-fluid header-user"
-                      alt="img"
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="bottom"
-                      title="Shop"
-                    />
-                  </Link>
+                  {(loginType === "vendor" ||
+                    loginType === "referrer-vendor") && (
+                    <Link to={"/settings"}>
+                      <img
+                        src={user}
+                        className="img-fluid header-user"
+                        alt="img"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                        title="Shop"
+                      />
+                    </Link>
+                  )}
                 </span>
               </div>
             </div>
