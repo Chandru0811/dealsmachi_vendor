@@ -137,7 +137,7 @@ function Admin({ handleLogout }) {
                   {/* {/ Referrer /} */}
                   <Route path="/referrer" element={<Referrer />} />
                   <Route path="/referrer/add" element={<ReferrerAdd />} />
-                  <Route path="/referrer/edit" element={<ReferrerEdit />} />
+                  <Route path="/referrer/edit/:id" element={<ReferrerEdit />} />
                 </Routes>
               </div>
               <AdminFooter />

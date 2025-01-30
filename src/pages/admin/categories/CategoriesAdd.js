@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import Cropper from "react-easy-crop";
+import { FiAlertTriangle } from "react-icons/fi";
 
 function CategoriesAdd() {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -80,17 +81,30 @@ function CategoriesAdd() {
           toast.error(response.data.message);
         }
       } catch (error) {
-        toast.error(
-          error.response?.data?.message || error.message || "An error occurred"
-        );
+        if (error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          toast.error(
+            error.response.data.message || "An unexpected error occurred."
+          );
+        }
       } finally {
         setLoadIndicator(false);
       }
     },
   });
+  
   useEffect(() => {
     const fetchData = async () => {
-      // setLoading(true);
       try {
         const response = await api.get("admin/categoryGroup");
         setDatas(response.data.data);

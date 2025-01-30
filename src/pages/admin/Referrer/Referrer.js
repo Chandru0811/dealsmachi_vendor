@@ -4,29 +4,13 @@ import "datatables.net-responsive-dt";
 import $ from "jquery";
 import { Link } from "react-router-dom";
 import { PiPlusSquareFill } from "react-icons/pi";
+import api from "../../../config/URL";
+import DeleteModel from "../../../components/admin/DeleteModel";
 
 const Referrer = () => {
   const tableRef = useRef(null);
+  const [datas, setDatas] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  const datas = [
-    {
-      id: 1,
-      referrer_id: "1",
-      referrer_name: "Suriya",
-      vendor_name: "Chandru",
-      amount: "1000",
-      date: "Jan 2025",
-    },
-    {
-      id: 2,
-      referrer_id: "1",
-      referrer_name: "Suriya",
-      vendor_name: "Chandru",
-      amount: "1000",
-      date: "Jan 2025",
-    },
-  ];
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -58,6 +42,41 @@ const Referrer = () => {
       behavior: "smooth",
     });
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get("/admin/referrer");
+        setDatas(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setLoading(false);
+      initializeDataTable();
+    };
+    fetchData();
+    refreshData();
+
+    return () => {
+      destroyDataTable();
+      fetchData();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get("/admin/referrer");
+      setDatas(response.data.data);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+    initializeDataTable();
+  };
 
   return (
     <section className="px-4">
@@ -103,7 +122,7 @@ const Referrer = () => {
                   <th scope="col" style={{ whiteSpace: "nowrap" }}>
                     S.NO
                   </th>
-                  <th className="text-start">Referrer ID</th>
+                  <th className="text-start">Referrer Number</th>
                   <th className="text-start">Referrer Name</th>
                   <th className="text-start">vendor Name</th>
                   <th className="text-start">Date</th>
@@ -115,7 +134,7 @@ const Referrer = () => {
                 {datas?.map((data, index) => (
                   <tr key={data.id}>
                     <td className="text-start align-middle">{index + 1}</td>
-                    <td className="text-start">{data?.referrer_id}</td>
+                    <td className="text-start">{data?.referrer_number}</td>
                     <td className="align-middle text-start">
                       {data?.referrer_name}
                     </td>
@@ -123,15 +142,28 @@ const Referrer = () => {
                       {data?.vendor_name}
                     </td>
                     <td className="align-middle text-start">{data?.date}</td>
-                    <td className="align-middle text-start">{data?.amount}</td>
+                    {/* <td className="align-middle text-start">{data?.amount}</td> */}
+                    <td className="align-middle text-start">
+                      {" "}
+                      {data?.amount &&
+                        new Intl.NumberFormat("en-IN", {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                          useGrouping: true,
+                        }).format(parseFloat(data?.amount))}
+                    </td>
                     <td className="align-middle text-center">
-                      <Link to={`/referrer/edit`}>
+                      <Link to={`/referrer/edit/${data.id}`}>
                         <button className="button-btn btn-sm m-2">Edit</button>
                       </Link>
                       {/* <Link to={`/referrer/view`}>
                         <button className="button-btn btn-sm m-2">View</button>
                       </Link> */}
-                      {/* <DeleteModel /> */}
+                      <DeleteModel
+                        onSuccess={refreshData}
+                        path={`admin/referrer/${data.id}`}
+                        style={{ display: "inline-block" }}
+                      />
                     </td>
                   </tr>
                 ))}

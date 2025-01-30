@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../../config/URL";
+import fetchAllReferrerVendorWithIds from "../../List/ReferrerVendorList";
+import fetchAllReferredVendorWithIds from "../../List/ReferedVendor";
+import toast from "react-hot-toast";
+import { FiAlertTriangle } from "react-icons/fi";
 
-function CategoriesAdd() {
+function ReferrerAdd() {
+  const navigate = useNavigate();
+  const [vendorvr, setVendorvr] = useState([]);
+  const [referedv, setReferedv] = useState([]);
+  const [loadIndicator, setLoadIndicator] = useState(false);
+
   const validationSchema = Yup.object({
-    referrer_id: Yup.string().required("*Select a referrer id"),
-    referrer_name: Yup.string().required("*Referrer name is required"),
-    vendor_name: Yup.string().required("*Select a vendor name"),
+    referrer_id: Yup.string().required("*Select a referrer name"),
+    vendor_id: Yup.string().required("*Select a vendor name"),
     amount: Yup.string().required("*Amount is required"),
     date: Yup.string().required("*Date is required"),
   });
@@ -15,14 +24,90 @@ function CategoriesAdd() {
   const formik = useFormik({
     initialValues: {
       referrer_id: "",
-      referrer_name: "",
-      vendor_name: "",
+      vendor_id: "",
       amount: "",
+      referrer_name: "",
       date: "",
+      referrer_number: "",
+      vendor_name: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      const selectedReferrer = vendorvr.find(
+        // eslint-disable-next-line eqeqeq
+        (v) => v.id == values.referrer_id
+      );
+      // eslint-disable-next-line eqeqeq
+      const selectedVendor = referedv.find((v) => v.id == values.vendor_id);
+      const payload = {
+        ...values,
+        referrer_name: selectedReferrer?.name,
+        referrer_number: `DMR500${selectedReferrer?.id}`,
+        vendor_name: selectedVendor?.name,
+      };
+
+      setLoadIndicator(true);
+      try {
+        const response = await api.post(`admin/referrer`, payload);
+        if (response.status === 200 || response.status === 201) {
+          toast.success(response.data.message);
+          navigate("/referrer");
+        } else if (response.status === 422) {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          toast.error(
+            error.response.data.message || "An unexpected error occurred."
+          );
+        }
+      }  finally {
+        setLoadIndicator(false);
+      }
+    },
   });
+
+  const handleReferrerChange = (event) => {
+    const referrer = event.target.value;
+    formik.setFieldValue("referrer_id", referrer);
+    setReferedv(null);
+    fetchReferredVendor(referrer);
+  };
+
+  const fetchData = async () => {
+    try {
+      const vendorvrData = await fetchAllReferrerVendorWithIds();
+      setVendorvr(vendorvrData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const fetchReferredVendor = async (referrer_id) => {
+    try {
+      const referedvendorData = await fetchAllReferredVendorWithIds(
+        referrer_id
+      );
+      setReferedv(referedvendorData);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <section className="px-4">
@@ -50,7 +135,7 @@ function CategoriesAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Referrer ID<span className="text-danger">*</span>
+                  Referrer Name<span className="text-danger">*</span>
                 </label>
                 <select
                   aria-label="Default select example"
@@ -60,11 +145,15 @@ function CategoriesAdd() {
                       : ""
                   }`}
                   {...formik.getFieldProps("referrer_id")}
+                  onChange={handleReferrerChange}
                 >
                   <option></option>
-                  <option value="1">Suriya</option>
-                  <option value="2">Chandru</option>
-                  <option value="3">Saravanan</option>
+                  {vendorvr &&
+                    vendorvr.map((referrer_id) => (
+                      <option key={referrer_id.id} value={referrer_id.id}>
+                        {referrer_id.name} - DMR500{referrer_id.id}
+                      </option>
+                    ))}
                 </select>
                 {formik.touched.referrer_id && formik.errors.referrer_id && (
                   <div className="invalid-feedback">
@@ -74,45 +163,28 @@ function CategoriesAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Referrer Name<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control ${
-                    formik.touched.referrer_name && formik.errors.referrer_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("referrer_name")}
-                />
-                {formik.touched.referrer_name &&
-                  formik.errors.referrer_name && (
-                    <div className="invalid-feedback">
-                      {formik.errors.referrer_name}
-                    </div>
-                  )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
                   Vendor Name<span className="text-danger">*</span>
                 </label>
                 <select
                   aria-label="Default select example"
                   className={`form-select ${
-                    formik.touched.vendor_name && formik.errors.vendor_name
+                    formik.touched.vendor_id && formik.errors.vendor_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("vendor_name")}
+                  {...formik.getFieldProps("vendor_id")}
                 >
                   <option></option>
-                  <option value="1">Leela</option>
-                  <option value="2">Poongodi</option>
-                  <option value="3">Gayathri</option>
+                  {referedv &&
+                    referedv.map((vendor_id) => (
+                      <option key={vendor_id.id} value={vendor_id.id}>
+                        {vendor_id.name}
+                      </option>
+                    ))}
                 </select>
-                {formik.touched.vendor_name && formik.errors.vendor_name && (
+                {formik.touched.vendor_id && formik.errors.vendor_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.vendor_name}
+                    {formik.errors.vendor_id}
                   </div>
                 )}
               </div>
@@ -159,7 +231,17 @@ function CategoriesAdd() {
             </div>
           </div>
           <div className="hstack p-2">
-            <button type="submit" className="btn btn-sm btn-button">
+            <button
+              type="submit"
+              className="btn btn-sm btn-button"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
               Submit
             </button>
           </div>
@@ -169,4 +251,4 @@ function CategoriesAdd() {
   );
 }
 
-export default CategoriesAdd;
+export default ReferrerAdd;
