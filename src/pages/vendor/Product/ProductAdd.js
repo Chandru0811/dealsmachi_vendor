@@ -11,20 +11,13 @@ import { FaTrash } from "react-icons/fa";
 function ProductAdd() {
   const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
-
-  const [mediaFields, setMediaFields] = useState([
-    { image: "", video: "", selectedType: "image" },
-  ]);
   const [cropperStates, setCropperStates] = useState([]);
   const [imageSrc, setImageSrc] = useState([]);
   const [crop, setCrop] = useState([]);
   const [zoom, setZoom] = useState([]);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState([]);
   const [originalFileName, setOriginalFileName] = useState([]);
-
-  const [originalFileType, setOriginalFileType] = useState("");
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
-
   const [showModal, setShowModal] = useState(false);
   const [allCategorgroup, setAllCategorgroup] = useState([]);
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
@@ -32,15 +25,9 @@ function ProductAdd() {
   const id = localStorage.getItem("shop_id");
   const [couponCode, setCouponCode] = useState("DEALSMACHI");
   const [isCouponChecked, setIsCouponChecked] = useState(false);
-
-  const SUPPORTED_FORMATS = [
-    "image/jpg",
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/svg+xml",
-    "image/webp",
-  ];
+  const [mediaFields, setMediaFields] = useState([
+    { image: "", video: "", selectedType: "image" },
+  ]);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -120,9 +107,14 @@ function ProductAdd() {
     brand: Yup.string()
       .notRequired()
       .max(250, "Brand cannot be more than 250 characters long"),
-    // variants: Yup.string()
-    //   .notRequired()
-    //   .max(250, "Variants cannot be more than 250 characters long"),
+    // (1)
+    // variants: Yup.array().of(
+    //   Yup.object().shape({
+    //     value: Yup.string()
+    //       .max(250, "Variant cannot be more than 250 characters long")
+    //       .notRequired(),
+    //   })
+    // ),
     coupon_code: Yup.string()
       .matches(
         /^[A-Za-z]+[0-9]{0,4}$/,
@@ -283,6 +275,7 @@ function ProductAdd() {
           end_date: "End Date",
           coupon_code: "Coupon Code",
           image: "Main Image",
+          variants: "Variants cannot be more than 250 characters long",
           description: "Description cannot be more than 250 characters long",
           specifications:
             "Specification cannot be more than 250 characters long",
@@ -1119,7 +1112,7 @@ function ProductAdd() {
                   </div>
                 )}
             </div>
-            {formik.values.deal_type === "1" && (
+            {/* (1) {formik.values.deal_type === "1" && (
               <div className="col-md-12 mb-3">
                 <label className="form-label">Variant</label>
                 <div className="row">
@@ -1151,6 +1144,61 @@ function ProductAdd() {
                           <FaTrash />
                         </button>
                       </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-button"
+                  onClick={addVariant}
+                >
+                  Add Variant
+                </button>
+              </div>
+            )} */}
+            {formik.values.deal_type === "1" && (
+              <div className="col-md-12 mb-3">
+                <label className="form-label">Variant</label>
+                <div className="row">
+                  {formik.values.variants.map((variant, index) => (
+                    <div className="col-md-6 col-12 mb-2" key={variant.id}>
+                      <div className="input-group mb-2">
+                        <input
+                          type="text"
+                          className={`form-control form-control-sm ${
+                            formik.touched.variants?.[index]?.value &&
+                            formik.errors.variants?.[index]?.value
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          name={`variants[${index}].value`}
+                          value={variant.value}
+                          onChange={(e) => {
+                            const valueWithoutComma = e.target.value.replace(
+                              /,/g,
+                              ""
+                            );
+                            formik.setFieldValue(
+                              `variants[${index}].value`,
+                              valueWithoutComma
+                            );
+                          }}
+                          placeholder={`Variant ${index + 1}`}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-light btn-sm"
+                          onClick={() => removeVariant(variant.id)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                      {formik.touched.variants?.[index]?.value &&
+                        formik.errors.variants?.[index]?.value && (
+                          <div className="invalid-feedback">
+                            {formik.errors.variants[index].value}
+                          </div>
+                        )}
                     </div>
                   ))}
                 </div>

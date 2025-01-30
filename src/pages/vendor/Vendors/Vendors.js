@@ -7,6 +7,8 @@ import { PiPlusSquareFill } from "react-icons/pi";
 
 const Vendors = () => {
   const tableRef = useRef(null);
+  const referrerName = localStorage.getItem("name");
+  const referrerCode = localStorage.getItem("referrer_code");
   const [loading, setLoading] = useState(false);
 
   const datas = [
@@ -60,19 +62,13 @@ const Vendors = () => {
       <div className="card shadow border-0 mb-2 top-header p-2">
         <div className="container-fluid">
           <div className="row">
-            <div className="col-12 p-2 d-flex justify-content-between align-items-center">
-              <h3 class="mb-0 ls-tight">Vendors</h3>
-              <div class="container-fluid d-flex justify-content-end">
-                <Link to="/my_vendors/add">
-                  <button
-                    type="submit"
-                    className="btn btn-sm btn-button shadow-none border-0 py-3"
-                  >
-                    <PiPlusSquareFill size={20} />
-                    Add Vendors
-                  </button>
-                </Link>
-              </div>
+            <div className="col-md-4 col-12 p-2 d-flex justify-content-start align-items-center">
+              <h5 class="mb-0 ls-tight no-wrap">
+                Referrer Id : {referrerCode}
+              </h5>
+            </div>
+            <div className="col-md-8 col-12 p-2 d-flex justify-content-end align-items-center">
+              <h5 class="mb-0 ls-tight">Hello {referrerName}</h5>
             </div>
           </div>
         </div>
