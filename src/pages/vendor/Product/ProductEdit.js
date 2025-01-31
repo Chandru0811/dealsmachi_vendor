@@ -13,18 +13,12 @@ function ProductEdit() {
   const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
   const { id } = useParams();
-  const [mediaFields, setMediaFields] = useState([
-    { image: "", video: "", selectedType: "image" },
-  ]);
   const [cropperStates, setCropperStates] = useState([]);
   const [imageSrc, setImageSrc] = useState([]);
   console.log("Image is ", imageSrc);
   const [crop, setCrop] = useState([]);
   const [zoom, setZoom] = useState([]);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState([]);
-  const [originalFileName, setOriginalFileName] = useState([]);
-  const [originalFileType, setOriginalFileType] = useState("");
-  const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const [showModal, setShowModal] = useState(false);
   const [allCategorgroup, setAllCategorgroup] = useState([]);
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
@@ -145,6 +139,14 @@ function ProductEdit() {
     //     })
     //   )
     //   .required("Media fields are required"),
+    // (4)
+    variants: Yup.array().of(
+      Yup.object().shape({
+        value: Yup.string()
+          .max(250, "Variant cannot be more than 250 characters long")
+          .notRequired(),
+      })
+    ),
     mediaFields: Yup.array()
       .of(
         Yup.object().shape({
@@ -362,6 +364,8 @@ function ProductEdit() {
           end_date: "End Date",
           coupon_code: "Coupon Code",
           image: "Main Image",
+          // (5)
+          variants: "Variants cannot be more than 250 characters long",
           description: "Description cannot be more than 250 characters long",
           mediaFields: "Image",
           specifications:
@@ -1299,7 +1303,7 @@ function ProductEdit() {
                   </div>
                 )}
             </div>
-            {(formik.values.deal_type === "1" ||
+            {/* {(formik.values.deal_type === "1" ||
               formik.values.deal_type === 1) && (
               <div className="col-md-12 mb-3">
                 <label className="form-label">Variant</label>
@@ -1333,6 +1337,63 @@ function ProductEdit() {
                           <FaTrash />
                         </button>
                       </div>
+                    </div>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-button"
+                  onClick={addVariant}
+                >
+                  Add Variant
+                </button>
+              </div>
+            )} */}
+            {/* (5) */}
+            {(formik.values.deal_type === "1" ||
+              formik.values.deal_type === 1) && (
+              <div className="col-md-12 mb-3">
+                <label className="form-label">Variant</label>
+                <div className="row">
+                  {formik.values.variants.map((variant, index) => (
+                    <div className="col-md-6 col-12 mb-2" key={variant.id}>
+                      <div className="input-group mb-2">
+                        <input
+                          type="text"
+                          className={`form-control form-control-sm ${
+                            formik.touched.variants?.[index]?.value &&
+                            formik.errors.variants?.[index]?.value
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          name={`variants[${index}].value`}
+                          value={variant.value}
+                          onChange={(e) => {
+                            const valueWithoutComma = e.target.value.replace(
+                              /,/g,
+                              ""
+                            );
+                            formik.setFieldValue(
+                              `variants[${index}].value`,
+                              valueWithoutComma
+                            );
+                          }}
+                          placeholder={`Variant ${index + 1}`}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-light btn-sm"
+                          onClick={() => removeVariant(variant.id)}
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                      {formik.touched.variants?.[index]?.value &&
+                        formik.errors.variants?.[index]?.value && (
+                          <div className="invalid-feedback">
+                            {formik.errors.variants[index].value}
+                          </div>
+                        )}
                     </div>
                   ))}
                 </div>
