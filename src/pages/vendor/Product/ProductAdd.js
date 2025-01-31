@@ -108,13 +108,13 @@ function ProductAdd() {
       .notRequired()
       .max(250, "Brand cannot be more than 250 characters long"),
     // (1)
-    // variants: Yup.array().of(
-    //   Yup.object().shape({
-    //     value: Yup.string()
-    //       .max(250, "Variant cannot be more than 250 characters long")
-    //       .notRequired(),
-    //   })
-    // ),
+    variants: Yup.array().of(
+      Yup.object().shape({
+        value: Yup.string()
+          .max(250, "Variant cannot be more than 250 characters long")
+          .notRequired(),
+      })
+    ),
     coupon_code: Yup.string()
       .matches(
         /^[A-Za-z]+[0-9]{0,4}$/,
@@ -161,7 +161,6 @@ function ProductAdd() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("values", values);
       const formattedVariants = values.variants
         .map((variant) => variant.value.trim())
         .filter((value) => value !== "")
@@ -1112,7 +1111,7 @@ function ProductAdd() {
                   </div>
                 )}
             </div>
-            {/* (1) {formik.values.deal_type === "1" && (
+            {/* {formik.values.deal_type === "1" && (
               <div className="col-md-12 mb-3">
                 <label className="form-label">Variant</label>
                 <div className="row">
@@ -1156,6 +1155,7 @@ function ProductAdd() {
                 </button>
               </div>
             )} */}
+            {/* (2) */}
             {formik.values.deal_type === "1" && (
               <div className="col-md-12 mb-3">
                 <label className="form-label">Variant</label>
