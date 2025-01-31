@@ -96,6 +96,7 @@ const Shop = () => {
 
                   <th className="text-start">Store Name</th>
                   <th className="text-start">Email</th>
+                  <th className="text-start">Type</th>
                   <th className="text-start">Status</th>
                   <th className="text-center">ACTION</th>
                 </tr>
@@ -120,8 +121,40 @@ const Shop = () => {
                         />
                         &nbsp;&nbsp;&nbsp;{data.name}
                       </td>
-                      {/* <td className="text-center">{data.name}</td> */}
                       <td className="text-start">{data.email}</td>
+                      <td className="align-middle">
+                        {data.owner.type === "vendor" ? (
+                          <>
+                            <span
+                              className="dot"
+                              style={{
+                                backgroundColor: "green",
+                                width: "10px",
+                                height: "10px",
+                                display: "inline-block",
+                                borderRadius: "50%",
+                                marginRight: "3px",
+                              }}
+                            ></span>
+                            Vendor
+                          </>
+                        ) : (
+                          <>
+                            <span
+                              className="dot"
+                              style={{
+                                backgroundColor: "#eb7134",
+                                width: "10px",
+                                height: "10px",
+                                display: "inline-block",
+                                borderRadius: "50%",
+                                marginRight: "3px",
+                              }}
+                            ></span>
+                            Referrer-Vendor
+                          </>
+                        )}
+                      </td>
                       <td className="align-middle">
                         {data.active === 1 ? (
                           <>

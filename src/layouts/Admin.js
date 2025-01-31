@@ -42,6 +42,7 @@ import OrderView from "../pages/admin/Order/OrderView";
 import Referrer from "../pages/admin/Referrer/Referrer";
 import ReferrerAdd from "../pages/admin/Referrer/ReferrerAdd";
 import ReferrerEdit from "../pages/admin/Referrer/ReferrerEdit";
+import ReferrerDeatils from "../pages/admin/ReferrerDetails/ReferrerDetails";
 
 function Admin({ handleLogout }) {
   return (
@@ -134,10 +135,13 @@ function Admin({ handleLogout }) {
                   <Route path="/stores" element={<Stores />} />
                   <Route path="/locations" element={<Locations />} />
 
-                  {/* {/ Referrer /} */}
+                  {/* Referral Amount */}
                   <Route path="/referrer" element={<Referrer />} />
                   <Route path="/referrer/add" element={<ReferrerAdd />} />
                   <Route path="/referrer/edit/:id" element={<ReferrerEdit />} />
+
+                  {/* Referrer */}
+                  <Route path="/referrer_vendor" element={<ReferrerDeatils />} />
                 </Routes>
               </div>
               <AdminFooter />

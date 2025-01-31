@@ -11,6 +11,7 @@ import { FaSliders } from "react-icons/fa6";
 import { BiSolidCategoryAlt } from "react-icons/bi";
 import { FaBoxOpen } from "react-icons/fa";
 import { AiFillPieChart } from "react-icons/ai";
+import { IoPeople } from "react-icons/io5";
 
 function Sidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -134,6 +135,12 @@ function Sidebar({ handleLogout }) {
               <NavLink className="nav-link" to="/order">
                 <FaBoxOpen />
                 Orders
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/referrer_vendor">
+                <IoPeople />
+                Referrer
               </NavLink>
             </li>
             <li className="nav-item">

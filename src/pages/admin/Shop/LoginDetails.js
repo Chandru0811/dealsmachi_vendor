@@ -37,9 +37,7 @@ function LoginDetails() {
             <div className="col-12">
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    Name
-                  </p>
+                  <p className="text-sm">Name</p>
                 </div>
                 <div className="col-9">
                   <p className="text-muted text-sm">: {data.name}</p>
@@ -49,12 +47,37 @@ function LoginDetails() {
             <div className="col-12">
               <div className="row mb-3">
                 <div className="col-3 d-flex justify-content-start align-items-center">
-                  <p className="text-sm">
-                    Email
-                  </p>
+                  <p className="text-sm">Email</p>
                 </div>
                 <div className="col-9">
                   <p className="text-muted text-sm">: {data.email}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="row mb-3">
+                <div className="col-3 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">Type</p>
+                </div>
+                <div className="col-9">
+                  <p className="text-muted text-sm">
+                    :{" "}
+                    {data.type === "referrer-vendor"
+                      ? "Referrer-Vendor"
+                      : data.type === "vendor"
+                      ? "Vendor"
+                      : ""}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-12">
+              <div className="row mb-3">
+                <div className="col-3 d-flex justify-content-start align-items-center">
+                  <p className="text-sm">Date of Joining</p>
+                </div>
+                <div className="col-9">
+                  <p className="text-muted text-sm">: {data.created_at.substring(0, 10)}</p>
                 </div>
               </div>
             </div>
