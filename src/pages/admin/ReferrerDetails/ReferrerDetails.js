@@ -85,9 +85,7 @@ const ReferrerDeatils = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-4 col-12 p-2 d-flex justify-content-start align-items-center">
-              <h5 class="mb-0 ls-tight no-wrap">
-                Referrer Id : {referrerCode}
-              </h5>
+              <h5 class="mb-0 ls-tight no-wrap">All Referrer</h5>
             </div>
             <div className="col-md-8 col-12 p-2 d-flex justify-content-end align-items-center">
               <h5 class="mb-0 ls-tight">Hello {referrerName}</h5>
@@ -116,7 +114,11 @@ const ReferrerDeatils = () => {
             >
               <thead className="thead-light">
                 <tr>
-                  <th scope="col" style={{ whiteSpace: "nowrap" }}>
+                  <th
+                    className="text-start"
+                    scope="col"
+                    style={{ whiteSpace: "nowrap" }}
+                  >
                     S.NO
                   </th>
                   <th className="text-start">Vendor Id</th>

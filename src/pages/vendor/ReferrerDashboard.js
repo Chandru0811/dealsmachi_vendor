@@ -1,17 +1,113 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import "./../../styles/Vendor.css";
+import api from "../../config/URL";
 
 function ReferrerDashboard() {
-  const [currentWeek, setCurrentWeek] = useState("");
+  const [currentMonth, setCurrentMonth] = useState("");
+  const [dashboardData, setDashboardData] = useState(null);
   const referrerCode = localStorage.getItem("referrer_code");
   const referrerName = localStorage.getItem("name");
+// console.log(dashboardData?.total_data?.total_count_month);
 
-  const [state] = useState({
+ const formatMonth = (month) => {
+   const [year, monthNum] = month.split("-");
+   const date = new Date(`${year}-${monthNum}-01`);
+   const options = { year: "numeric", month: "short" };
+   return date.toLocaleDateString("en-IN", options);
+ };
+
+  const fetchDashboardData = async (month) => {
+    try {
+      const response = await api.get(`vendor/referrerDashboard?month=${month}`);
+      if (response.data.success) {
+        setDashboardData(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const getCurrentMonth = () => {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}`;
+    };
+
+    const month = getCurrentMonth();
+    setCurrentMonth(month);
+    fetchDashboardData(month);
+  }, []);
+
+  const handleMonthChange = (e) => {
+    const selectedMonth = e.target.value;
+    setCurrentMonth(selectedMonth);
+    fetchDashboardData(selectedMonth);
+  };
+
+ const selectedMonthChart = {
+   options: {
+     colors: ["#ff0060"],
+     chart: {
+       id: "selected-month-report",
+       toolbar: {
+         show: true,
+         tools: {
+           download: true,
+           selection: false,
+           zoom: true,
+           zoomin: true,
+           zoomout: true,
+           pan: true,
+           reset: true,
+           customIcons: [],
+         },
+       },
+     },
+     dataLabels: {
+       style: {
+         fontFamily: "Kanit, sans-serif",
+       },
+     },
+     xaxis: {
+       categories: dashboardData?.current_month_report?.vendors || [],
+       labels: {
+         style: {
+           fontFamily: "Kanit, sans-serif",
+         },
+       },
+     },
+     yaxis: {
+       labels: {
+         style: {
+           fontFamily: "Kanit, sans-serif",
+         },
+       },
+     },
+     title: {
+       text: "Monthly Earnings",
+       style: {
+         fontFamily: "Kanit, sans-serif",
+         fontWeight: 500,
+       },
+     },
+   },
+   series: [
+     {
+       name: "Earnings",
+       data: dashboardData?.current_month_report?.amounts || [],
+     },
+   ],
+ };
+
+  const lastSixMonthChart = {
     options: {
       colors: ["#ff0060"],
       chart: {
-        id: "basic-bar",
+        id: "selected-month-report",
         toolbar: {
           show: true,
           tools: {
@@ -31,23 +127,9 @@ function ReferrerDashboard() {
           fontFamily: "Kanit, sans-serif",
         },
       },
-      legend: {
-        labels: {
-          style: {
-            fontFamily: "Kanit, sans-serif",
-          },
-        },
-      },
       xaxis: {
-        categories: [
-          "2 Vendors",
-          "3 Vendors",
-          "4 Vendors",
-          "5 Vendors",
-          "6 Vendors",
-          "7 Vendors",
-          "8 Vendors",
-        ],
+        categories:
+          dashboardData?.last_six_months_report?.months?.map(formatMonth) || [],
         labels: {
           style: {
             fontFamily: "Kanit, sans-serif",
@@ -55,7 +137,6 @@ function ReferrerDashboard() {
         },
       },
       yaxis: {
-        categories: ["2k", "3k", "4k", "5k", "6k", "7k", "8k"],
         labels: {
           style: {
             fontFamily: "Kanit, sans-serif",
@@ -63,36 +144,38 @@ function ReferrerDashboard() {
         },
       },
       title: {
+        text: "Last Six Month Earnings",
         style: {
           fontFamily: "Kanit, sans-serif",
+          fontWeight: 500,
         },
       },
     },
     series: [
       {
-        name: "series-1",
-        data: [30, 40, 45, 50, 49, 60, 70],
+        name: "Earnings",
+        data: dashboardData?.last_six_months_report?.revenues || [],
       },
     ],
-  });
+  };
 
-  useEffect(() => {
-    const getCurrentWeek = () => {
-      const currentDate = new Date();
-      const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
-      const pastDaysOfYear =
-        (currentDate - firstDayOfYear) / (24 * 60 * 60 * 1000);
-      const weekNumber = Math.ceil(
-        (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7
-      );
-      return `${currentDate.getFullYear()}-W${String(weekNumber).padStart(
-        2,
-        "0"
-      )}`;
-    };
+  // useEffect(() => {
+  //   const getCurrentWeek = () => {
+  //     const currentDate = new Date();
+  //     const firstDayOfYear = new Date(currentDate.getFullYear(), 0, 1);
+  //     const pastDaysOfYear =
+  //       (currentDate - firstDayOfYear) / (24 * 60 * 60 * 1000);
+  //     const weekNumber = Math.ceil(
+  //       (pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7
+  //     );
+  //     return `${currentDate.getFullYear()}-W${String(weekNumber).padStart(
+  //       2,
+  //       "0"
+  //     )}`;
+  //   };
 
-    setCurrentWeek(getCurrentWeek());
-  }, []);
+  //   setCurrentWeek(getCurrentWeek());
+  // }, []);
 
   return (
     <>
@@ -119,24 +202,23 @@ function ReferrerDashboard() {
           </div>
           <div className="row mt-4">
             <div className="row d-flex justify-content-between">
-              <div className="col">
-                <p>Earnings</p>
-              </div>
+              <div className="col">{/* <p>Earnings</p> */}</div>
               <div className="col d-flex justify-content-md-end">
                 <label className="mt-3">Month</label>
                 <input
                   type="month"
-                  className="form-control week-input  ms-5"
-                  style={{ boxShadow: "none", width: "150px" }}
-                  value={currentWeek}
-                  onChange={(e) => setCurrentWeek(e.target.value)}
+                  className="form-control week-input ms-5"
+                  style={{ boxShadow: "none", width: "200px" }}
+                  value={currentMonth}
+                  onChange={(e) => handleMonthChange(e)}
+                  max={new Date().toISOString().slice(0, 7)} // Dynamically sets the max value to the current month
                 />
               </div>
             </div>
             <div className="col-12 mt-3">
               <Chart
-                options={state.options}
-                series={state.series}
+                options={selectedMonthChart.options}
+                series={selectedMonthChart.series}
                 type="area"
                 width="100%"
                 height="350"
@@ -150,19 +232,29 @@ function ReferrerDashboard() {
           <div className="row my-5">
             <div className="col-md-3 col-12">
               <p>This Months Earning</p>
-              <b>₹ 15,000</b>
+              <b>
+                ₹{" "}
+                {Number(
+                  dashboardData?.total_data?.this_month_earnings ?? 0
+                ).toLocaleString("en-IN")}
+              </b>
             </div>
             <div className="col-md-3 col-12">
               <p>Total Earnings</p>
-              <b>₹ 25,000</b>
+              <b>
+                ₹{" "}
+                {Number(
+                  dashboardData?.total_data?.total_earnings ?? 0
+                ).toLocaleString("en-IN")}
+              </b>
             </div>
             <div className="col-md-4 col-12">
               <p>This Month Referrals</p>
-              <b>20</b>
+              <b>{dashboardData?.total_data?.this_month_referrals ?? 0}</b>
             </div>
             <div className="col-md-2 col-12">
               <p>Total Referrals</p>
-              <b>50</b>
+              <b>{dashboardData?.total_data?.total_referrals ?? 0}</b>
             </div>
           </div>
         </div>
@@ -171,7 +263,9 @@ function ReferrerDashboard() {
         <div className="row">
           <div className="col-md-6 col-12">
             <div className="card shadow border-0 mt-3 p-5">
-              <h4 className="mb-3">Referrals</h4>
+              <h5 className="mb-3" style={{ fontWeight: 500 }}>
+                Referral Vendor Count (Last 6 Months)
+              </h5>
               <table class="table table-bordered mx-2">
                 <thead>
                   <tr>
@@ -180,30 +274,17 @@ function ReferrerDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>January</td>
-                    <td>15</td>
-                  </tr>
-                  <tr>
-                    <td>Febraury</td>
-                    <td>25</td>
-                  </tr>
-                  <tr>
-                    <td>March</td>
-                    <td>20</td>
-                  </tr>
-                  <tr>
-                    <td>April</td>
-                    <td>20</td>
-                  </tr>
-                  <tr>
-                    <td>May</td>
-                    <td>20</td>
-                  </tr>
-                  <tr>
-                    <td>June</td>
-                    <td>20</td>
-                  </tr>
+                  {dashboardData?.total_data?.total_count_month &&
+                    dashboardData?.total_data?.total_count_month.map(
+                      (data, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>{formatMonth(data.month)}</td>
+                            <td>{data.count}</td>
+                          </tr>
+                        );
+                      }
+                    )}
                 </tbody>
               </table>
             </div>
@@ -212,13 +293,13 @@ function ReferrerDashboard() {
             <div className="card shadow border-0 mt-3 p-5">
               <div className="row d-flex justify-content-between mb-4">
                 <div className="col">
-                  <h4>Referrals</h4>
+                  <h4 style={{ visibility: "hidden" }}>Referrals</h4>
                 </div>
               </div>
               <div className="col-12">
                 <Chart
-                  options={state.options}
-                  series={state.series}
+                  options={lastSixMonthChart.options}
+                  series={lastSixMonthChart.series}
                   type="area"
                   width="100%"
                   height="350"
