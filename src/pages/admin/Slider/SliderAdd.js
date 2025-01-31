@@ -191,7 +191,7 @@ function SliderAdd() {
   return (
     <section className="px-4">
       <form onSubmit={formik.handleSubmit}>
-        <div className="card card-shadow">
+        <div className="card card-shadow py-1">
           <div className="row p-3">
             <div className="d-flex justify-content-between align-items-center">
               <h1 className="h4 ls-tight">Add Slider</h1>
@@ -204,7 +204,7 @@ function SliderAdd() {
           </div>
         </div>
         <div className="container card card-shadow form-container">
-          <div className="row mt-3 mb-5">
+          <div className="row py-4">
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Image

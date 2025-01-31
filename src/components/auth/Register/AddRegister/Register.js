@@ -142,7 +142,7 @@ function Register({ handleVendorLogin }) {
       >
         <img src={headerlogo} className="img-fluid" alt="img" />
       </div>
-      <div className=" d-flex  justify-content-center align-items-center mt-3">
+      <div className="d-flex justify-content-center align-items-center mt-3">
         <div
           className="card shadow-lg p-3 my-5 rounded"
           style={{ width: "100%", maxWidth: "400px" }}
@@ -172,11 +172,9 @@ function Register({ handleVendorLogin }) {
               borderBottom: "2px solid #ff0060",
             }}
           >
-            <div className="col-md-1">
+            <div className="col-md-1 d-flex justify-content-center align-items-center">
               <Link to="/">
-                <button className="btn btn-link text-start shadow-none h-0">
-                  <IoMdArrowBack style={{ color: "#ff0060" }} />
-                </button>
+                  <IoMdArrowBack style={{color: "#ff0060", fontSize: "20px"}}  className="mt-3 ms-5"/>
               </Link>
             </div>
             <div className="col-md-11 d-flex justify-content-center align-items-center" style={{paddingRight: "50px"}}>

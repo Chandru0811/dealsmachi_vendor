@@ -139,7 +139,7 @@ function Sidebar({ handleLogout }) {
             <li className="nav-item">
               <NavLink className="nav-link" to="/referrer">
                 <AiFillPieChart />
-                Referrer
+                Referral Amount
               </NavLink>
             </li>
           </ul>

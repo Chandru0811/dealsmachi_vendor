@@ -2,29 +2,15 @@ import React, { useEffect, useRef, useState } from "react";
 import "datatables.net-dt";
 import "datatables.net-responsive-dt";
 import $ from "jquery";
-import { Link } from "react-router-dom";
-import { PiPlusSquareFill } from "react-icons/pi";
+import api from "../../../config/URL";
 
 const Vendors = () => {
   const tableRef = useRef(null);
+  const [datas, setDatas] = useState([]);
   const referrerName = localStorage.getItem("name");
   const referrerCode = localStorage.getItem("referrer_code");
+  const referrerId = localStorage.getItem("id");
   const [loading, setLoading] = useState(false);
-
-  const datas = [
-    {
-      id: 1,
-      vendorId: 1,
-      vendorName: "Suriya",
-      dateOfJoining: "01-02-2025",
-    },
-    {
-      id: 2,
-      vendorId: 2,
-      vendorName: "Chandru",
-      dateOfJoining: "03-02-2025",
-    },
-  ];
 
   const initializeDataTable = () => {
     if ($.fn.DataTable.isDataTable(tableRef.current)) {
@@ -55,6 +41,42 @@ const Vendors = () => {
       top: 0,
       behavior: "smooth",
     });
+  }, []);
+
+  const refreshData = async () => {
+    destroyDataTable();
+    setLoading(true);
+    try {
+      const response = await api.get(`vendor/referrals/${referrerId}`);
+      setDatas(response.data.data);
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    }
+    setLoading(false);
+    initializeDataTable();
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await api.get(`vendor/referrals/${referrerId}`);
+        setDatas(response.data.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setLoading(false);
+      initializeDataTable();
+    };
+
+    fetchData();
+    refreshData();
+
+    return () => {
+      destroyDataTable();
+      fetchData();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -108,13 +130,11 @@ const Vendors = () => {
                     <tr key={data.id}>
                       <td className="text-start align-middle">{index + 1}</td>
                       <td className="align-middle text-start">
-                        {data?.vendorId}
+                        DMR500{data?.id}
                       </td>
+                      <td className="align-middle text-start">{data?.name}</td>
                       <td className="align-middle text-start">
-                        {data?.vendorName}
-                      </td>
-                      <td className="align-middle text-start">
-                        {data?.dateOfJoining}
+                        {data?.created_at?.substring(0, 10)}
                       </td>
                     </tr>
                   );

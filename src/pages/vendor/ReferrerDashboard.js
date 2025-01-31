@@ -5,8 +5,9 @@ import "./../../styles/Vendor.css";
 function ReferrerDashboard() {
   const [currentWeek, setCurrentWeek] = useState("");
   const referrerCode = localStorage.getItem("referrer_code");
+  const referrerName = localStorage.getItem("name");
 
-  const [state, setState] = useState({
+  const [state] = useState({
     options: {
       colors: ["#ff0060"],
       chart: {
@@ -111,7 +112,7 @@ function ReferrerDashboard() {
             <div className="col-md-6 col-12 text-md-end">
               <div className="row">
                 <div className="col-12">
-                  <p className="mb-0">Hello Ramesh</p>
+                  <p className="mb-0">Hello {referrerName}</p>
                 </div>
               </div>
             </div>

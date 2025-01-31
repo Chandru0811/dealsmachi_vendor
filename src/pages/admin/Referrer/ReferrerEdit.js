@@ -147,7 +147,7 @@ function ReferrerEdit() {
               <div className="container-fluid py-4">
                 <div className="row align-items-center">
                   <div className="col">
-                    <h1 className="h4 ls-tight headingColor">Edit Referrer</h1>
+                    <h1 className="h4 ls-tight headingColor">Edit Referral Amount</h1>
                   </div>
                   <div className="col-auto">
                     <div className="hstack gap-2 justify-content-end">

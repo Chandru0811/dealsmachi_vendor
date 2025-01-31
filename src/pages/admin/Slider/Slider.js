@@ -82,7 +82,7 @@ const Slider = () => {
   return (
     <section className="px-4">
       <div className="card shadow border-0 mb-2 top-header">
-        <div className="container-fluid">
+        <div className="container-fluid py-1">
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">

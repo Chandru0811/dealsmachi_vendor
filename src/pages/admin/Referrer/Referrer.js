@@ -81,15 +81,15 @@ const Referrer = () => {
   return (
     <section className="px-4">
       <div className="card shadow border-0 mb-2 top-header">
-        <div className="container-fluid">
+        <div className="container-fluid py-1">
           <div className="row align-items-center">
             <div className="col p-2">
               <div className="d-flex justify-content-between align-items-center">
-                <h3 className="mb-0 ls-tight">Referrer</h3>
+                <h3 className="mb-0 ls-tight text-nowrap">Referral Amount</h3>
                 <div className="container-fluid d-flex justify-content-end">
                   <Link to="/referrer/add">
                     <button className="btn btn-sm btn-button shadow-none border-none py-3">
-                      <PiPlusSquareFill size={20} /> Add Referrer
+                      <PiPlusSquareFill size={20} /> Add Referral Amount
                     </button>
                   </Link>
                 </div>

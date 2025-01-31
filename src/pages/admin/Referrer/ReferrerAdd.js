@@ -113,10 +113,10 @@ function ReferrerAdd() {
     <section className="px-4">
       <form onSubmit={formik.handleSubmit}>
         <div className="card shadow border-0 mb-2 top-header">
-          <div className="container-fluid py-4">
+          <div className="container-fluid py-1">
             <div className="row align-items-center">
               <div className="col">
-                <h1 className="h4 ls-tight headingColor">Add Referrer</h1>
+                <h1 className="h4 ls-tight headingColor">Add Referral Amount</h1>
               </div>
               <div className="col-auto">
                 <div className="hstack gap-2 justify-content-end">
