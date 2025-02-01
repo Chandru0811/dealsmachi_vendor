@@ -85,7 +85,7 @@ const ReferrerDeatils = () => {
         <div className="container-fluid">
           <div className="row">
             <div className="col-md-4 col-12 p-2 d-flex justify-content-start align-items-center">
-              <h5 class="mb-0 ls-tight no-wrap">All Referrer</h5>
+              <h5 class="mb-0 ls-tight no-wrap">Referrer</h5>
             </div>
             <div className="col-md-8 col-12 p-2 d-flex justify-content-end align-items-center">
               <h5 class="mb-0 ls-tight">Hello {referrerName}</h5>
@@ -121,8 +121,8 @@ const ReferrerDeatils = () => {
                   >
                     S.NO
                   </th>
-                  <th className="text-start">Vendor Id</th>
-                  <th className="text-start">Vendor Name</th>
+                  <th className="text-start">Referer Id</th>
+                  <th className="text-start">Referer Name</th>
                   <th className="text-start">Date of Joining</th>
                 </tr>
               </thead>

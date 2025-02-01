@@ -182,17 +182,34 @@ function ReferrerDashboard() {
       <div className="card shadow border-0 mx-4">
         <div className="container">
           <div className="row my-3 d-flex justify-content-between">
-            <div className="col-md-6 col-12">
+            <div className="col-md-4 col-12">
               <div className="row mb-3">
-                <div className="col-4 col-md-3">
+                <div className="col-md-4 col-12">
                   <p className="mb-0">Referrer Id</p>
                 </div>
-                <div className="col-8 col-md-9">
+                <div className="col-md-8 col-12">
                   <p className="mb-0">: {referrerCode}</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12 text-md-end">
+            <div className="col-md-4 col-12">
+              <div className="row mb-3">
+                <div className="col-2">
+                <label className="mt-1">Month</label>
+                </div>
+                <div className="col-10">
+                <input
+                  type="month"
+                  className="form-control week-input ms-5"
+                  style={{ boxShadow: "none", width: "170px", height: "40px" }}
+                  value={currentMonth}
+                  onChange={(e) => handleMonthChange(e)}
+                  max={new Date().toISOString().slice(0, 7)}
+                />
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 col-12 text-md-end">
               <div className="row">
                 <div className="col-12">
                   <p className="mb-0">Hello {referrerName}</p>
@@ -201,8 +218,8 @@ function ReferrerDashboard() {
             </div>
           </div>
           <div className="row mt-4">
-            <div className="row d-flex justify-content-between">
-              <div className="col">{/* <p>Earnings</p> */}</div>
+            {/* <div className="row d-flex justify-content-between">
+              <div className="col"></div>
               <div className="col d-flex justify-content-md-end">
                 <label className="mt-3">Month</label>
                 <input
@@ -211,10 +228,10 @@ function ReferrerDashboard() {
                   style={{ boxShadow: "none", width: "200px" }}
                   value={currentMonth}
                   onChange={(e) => handleMonthChange(e)}
-                  max={new Date().toISOString().slice(0, 7)} // Dynamically sets the max value to the current month
+                  max={new Date().toISOString().slice(0, 7)}
                 />
               </div>
-            </div>
+            </div> */}
             <div className="col-12 mt-3">
               <Chart
                 options={selectedMonthChart.options}

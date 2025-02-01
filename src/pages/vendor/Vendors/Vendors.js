@@ -130,7 +130,7 @@ const Vendors = () => {
                     <tr key={data.id}>
                       <td className="text-start align-middle">{index + 1}</td>
                       <td className="align-middle text-start">
-                        DMR500{data?.id}
+                        {data?.id}
                       </td>
                       <td className="align-middle text-start">{data?.name}</td>
                       <td className="align-middle text-start">

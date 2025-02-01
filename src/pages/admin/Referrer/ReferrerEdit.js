@@ -84,7 +84,7 @@ function ReferrerEdit() {
   const handleReferrerChange = (event) => {
     const referrer = event.target.value;
     formik.setFieldValue("referrer_id", referrer);
-    setReferedv(null);
+    setReferedv([]);
     fetchReferredVendor(referrer);
   };
 
@@ -231,6 +231,14 @@ function ReferrerEdit() {
                           ? "is-invalid"
                           : ""
                       }`}
+                      max={new Date().toISOString().slice(0, 7)}
+                      min={
+                        referedv && Array.isArray(referedv)
+                          ? referedv
+                              .find((v) => v.id == formik.values.vendor_id)
+                              ?.created_at?.substring(0, 7) || ""
+                          : ""
+                      }
                       {...formik.getFieldProps("date")}
                     />
                     {formik.touched.date && formik.errors.date && (

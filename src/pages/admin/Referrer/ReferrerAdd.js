@@ -72,7 +72,7 @@ function ReferrerAdd() {
             error.response.data.message || "An unexpected error occurred."
           );
         }
-      }  finally {
+      } finally {
         setLoadIndicator(false);
       }
     },
@@ -81,7 +81,7 @@ function ReferrerAdd() {
   const handleReferrerChange = (event) => {
     const referrer = event.target.value;
     formik.setFieldValue("referrer_id", referrer);
-    setReferedv(null);
+    setReferedv([]);
     fetchReferredVendor(referrer);
   };
 
@@ -116,7 +116,9 @@ function ReferrerAdd() {
           <div className="container-fluid py-1">
             <div className="row align-items-center">
               <div className="col">
-                <h1 className="h4 ls-tight headingColor">Add Referral Amount</h1>
+                <h1 className="h4 ls-tight headingColor">
+                  Add Referral Amount
+                </h1>
               </div>
               <div className="col-auto">
                 <div className="hstack gap-2 justify-content-end">
@@ -188,6 +190,24 @@ function ReferrerAdd() {
                   </div>
                 )}
               </div>
+              {/* <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Date<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="month"
+                  className={`form-control ${
+                    formik.touched.date && formik.errors.date
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  max={new Date().toISOString().slice(0, 7)}
+                  {...formik.getFieldProps("date")}
+                />
+                {formik.touched.date && formik.errors.date && (
+                  <div className="invalid-feedback">{formik.errors.date}</div>
+                )}
+              </div> */}
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Date<span className="text-danger">*</span>
@@ -199,6 +219,14 @@ function ReferrerAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
+                  max={new Date().toISOString().slice(0, 7)}
+                  min={
+                    referedv && Array.isArray(referedv)
+                      ? referedv
+                          .find((v) => v.id == formik.values.vendor_id)
+                          ?.created_at?.substring(0, 7) || ""
+                      : ""
+                  }
                   {...formik.getFieldProps("date")}
                 />
                 {formik.touched.date && formik.errors.date && (
