@@ -74,6 +74,14 @@ function ReferrerDashboard() {
      },
      xaxis: {
        categories: dashboardData?.current_month_report?.vendors || [],
+       title: {
+        text: "Vendors",
+        style: {
+          fontSize: "14px",
+          fontWeight: 500,
+          fontFamily: "Kanit, sans-serif",
+        },
+      },
        labels: {
          style: {
            fontFamily: "Kanit, sans-serif",
@@ -81,6 +89,14 @@ function ReferrerDashboard() {
        },
      },
      yaxis: {
+      title: {
+        text: "Amount",
+        style: {
+          fontSize: "14px",
+          fontWeight: 500,
+          fontFamily: "Kanit, sans-serif",
+        },
+      },
        labels: {
          style: {
            fontFamily: "Kanit, sans-serif",
@@ -130,6 +146,14 @@ function ReferrerDashboard() {
       xaxis: {
         categories:
           dashboardData?.last_six_months_report?.months?.map(formatMonth) || [],
+          title: {
+            text: "Months",
+            style: {
+              fontSize: "14px",
+              fontWeight: 500,
+              fontFamily: "Kanit, sans-serif",
+            },
+          },
         labels: {
           style: {
             fontFamily: "Kanit, sans-serif",
@@ -137,6 +161,14 @@ function ReferrerDashboard() {
         },
       },
       yaxis: {
+        title: {
+          text: "Amount",
+          style: {
+            fontSize: "14px",
+            fontWeight: 500,
+            fontFamily: "Kanit, sans-serif",
+          },
+        },
         labels: {
           style: {
             fontFamily: "Kanit, sans-serif",
@@ -182,25 +214,22 @@ function ReferrerDashboard() {
       <div className="card shadow border-0 mx-4">
         <div className="container">
           <div className="row my-3 d-flex justify-content-between">
-            <div className="col-md-4 col-12">
+            <div className="col-md-5 col-12">
               <div className="row mb-3">
-                <div className="col-md-4 col-12">
-                  <p className="mb-0">Referrer Id</p>
-                </div>
-                <div className="col-md-8 col-12">
-                  <p className="mb-0">: {referrerCode}</p>
+                <div className="col-12 pe-0 me-0">
+                  <p className="mt-1 text-nowrap">Referrer Id :{" "}{referrerCode}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-4 col-12">
               <div className="row mb-3">
-                <div className="col-2">
+                <div className="col-1">
                 <label className="mt-1">Month</label>
                 </div>
-                <div className="col-10">
+                <div className="col-11">
                 <input
                   type="month"
-                  className="form-control week-input ms-5"
+                  className="form-control week-input ms-6"
                   style={{ boxShadow: "none", width: "170px", height: "40px" }}
                   value={currentMonth}
                   onChange={(e) => handleMonthChange(e)}
@@ -209,10 +238,10 @@ function ReferrerDashboard() {
                 </div>
               </div>
             </div>
-            <div className="col-md-4 col-12 text-md-end">
+            <div className="col-md-3 col-12 text-md-end">
               <div className="row">
                 <div className="col-12">
-                  <p className="mb-0">Hello {referrerName}</p>
+                  <p className="mt-1">Hello {referrerName}</p>
                 </div>
               </div>
             </div>
