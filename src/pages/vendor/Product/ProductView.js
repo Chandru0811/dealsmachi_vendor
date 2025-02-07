@@ -385,9 +385,9 @@ function ProductView() {
                             <p className="text-sm">Thumbnail {index + 1}</p>
                             <img
                               src={`${ImageURL}${
-                                item.path.startsWith("/")
-                                  ? item.path
-                                  : "/" + item.path
+                                item.resize_path.startsWith("/")
+                                  ? item.resize_path
+                                  : "/" + item.resize_path
                               }`}
                               alt={`Media ${index + 1}`}
                               style={{
@@ -404,10 +404,10 @@ function ProductView() {
                               className="d-flex gap-4"
                               id={`video-container-${index}`}
                             >
-                              {item.path && (
+                              {item.resize_path && (
                                 <iframe
                                   src={`https://www.youtube.com/embed/${extractVideoId(
-                                    item.path
+                                    item.resize_path
                                   )}`}
                                   width="280"
                                   height="213"

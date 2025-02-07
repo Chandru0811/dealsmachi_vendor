@@ -253,12 +253,12 @@ function ProductEdit() {
             formData.append(
               `media[${mediaIndex}]`,
               field.binaryData,
-              field.path
+              field.resize_path
             );
           }
         } else if (field.selectedType === "video") {
-          if (field.path) {
-            formData.append(`media_url[${mediaIndex}]`, field.path);
+          if (field.resize_path) {
+            formData.append(`media_url[${mediaIndex}]`, field.resize_path);
           }
         }
       });
@@ -273,12 +273,12 @@ function ProductEdit() {
       //       formData.append(
       //         `media[${orderId}]`,
       //         field.binaryData,
-      //         field.path
+      //         field.resize_path
       //       );
       //     }
       //   } else if (field.selectedType === "video") {
-      //     if (field.path) {
-      //       formData.append(`media_url[${orderId}]`, field.path);
+      //     if (field.resize_path) {
+      //       formData.append(`media_url[${orderId}]`, field.resize_path);
       //     }
       //   }
       // });
@@ -505,7 +505,7 @@ function ProductEdit() {
               .map((mediaItem) => ({
                 id: mediaItem.id,
                 selectedType: mediaItem.type,
-                path: mediaItem.path,
+                path: mediaItem.resize_path,
                 // orderId: mediaItem.order,
               }))
           : [],
@@ -746,14 +746,14 @@ function ProductEdit() {
 
   const handleVideoChange = (e, index) => {
     const updatedFields = [...formik.values.mediaFields];
-    updatedFields[index].path = e.target.value;
+    updatedFields[index].resize_path = e.target.value;
     formik.setFieldValue("mediaFields", updatedFields);
   };
 
   const handleTypeChange = (index, type) => {
     const updatedFields = [...formik.values.mediaFields];
     updatedFields[index].selectedType = type;
-    updatedFields[index].path = "";
+    updatedFields[index].resize_path = "";
     formik.setFieldValue("mediaFields", updatedFields);
   };
   return (
@@ -1119,7 +1119,7 @@ function ProductEdit() {
                           accept=".png,.jpeg,.jpg,.svg,.webp"
                           name={`image-${index}`}
                           className={`form-control ${
-                            formik.errors.mediaFields?.[index]?.path &&
+                            formik.errors.mediaFields?.[index]?.resize_path &&
                             field.selectedType === "image"
                               ? "is-invalid"
                               : ""
@@ -1127,11 +1127,11 @@ function ProductEdit() {
                           disabled={field.selectedType !== "image"}
                           onChange={(e) => handleFileChange(e, index)}
                         />
-                        {/* (3) {field.selectedType === "image" && field.path && (
+                        {/* (3) {field.selectedType === "image" && field.resize_path && (
                           <div className="mt-3">
                             <img
                               src={
-                                imageSrc[index] || `${ImageURL}${field.path}`
+                                imageSrc[index] || `${ImageURL}${field.resize_path}`
                               }
                               alt="Preview"
                               className="img-thumbnail"
@@ -1142,10 +1142,10 @@ function ProductEdit() {
                         {field.selectedType === "image" && (
                           <div className="mt-3">
                             {(!cropperStates[index] && imageSrc[index]) ||
-                            (!cropperStates[index] && field.path) ? (
+                            (!cropperStates[index] && field.resize_path) ? (
                               <img
                                 src={
-                                  imageSrc[index] || `${ImageURL}${field.path}`
+                                  imageSrc[index] || `${ImageURL}${field.resize_path}`
                                 }
                                 alt="Preview"
                                 className="img-thumbnail"
@@ -1201,8 +1201,8 @@ function ProductEdit() {
                             </>
                           )}
                         <div className="invalid-feedback">
-                          {formik.errors.mediaFields?.[index]?.path &&
-                            formik.errors.mediaFields[index].path}
+                          {formik.errors.mediaFields?.[index]?.resize_path &&
+                            formik.errors.mediaFields[index].resize_path}
                         </div>
                       </div>
 
@@ -1216,21 +1216,21 @@ function ProductEdit() {
                         <input
                           type="text"
                           className={`form-control ${
-                            formik.errors.mediaFields?.[index]?.path &&
+                            formik.errors.mediaFields?.[index]?.resize_path &&
                             field.selectedType === "video"
                               ? "is-invalid"
                               : ""
                           }`}
                           value={
-                            field.selectedType === "video" ? field.path : ""
+                            field.selectedType === "video" ? field.resize_path : ""
                           }
                           disabled={field.selectedType !== "video"}
                           onChange={(e) => handleVideoChange(e, index)}
                         />
                         <div className="invalid-feedback">
-                          {formik.errors.mediaFields?.[index]?.path &&
+                          {formik.errors.mediaFields?.[index]?.resize_path &&
                             field.selectedType === "video" &&
-                            formik.errors.mediaFields[index].path}
+                            formik.errors.mediaFields[index].resize_path}
                         </div>
                       </div>
 
