@@ -431,8 +431,8 @@ function ProductAdd() {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        const targetWidth = 320;
-        const targetHeight = 240;
+        const targetWidth = 1600;
+        const targetHeight = 1200;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
@@ -975,7 +975,7 @@ function ProductAdd() {
                               image={imageSrc[index]}
                               crop={crop[index] || { x: 0, y: 0 }}
                               zoom={zoom[index] || 1}
-                              aspect={320 / 240}
+                              aspect={1600 / 1200}
                               onCropChange={(newCrop) =>
                                 updateCrop(index, newCrop)
                               }
