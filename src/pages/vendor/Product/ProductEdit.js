@@ -117,7 +117,7 @@ function ProductEdit() {
     //       selectedType: Yup.string()
     //         .required("Media type is required")
     //         .oneOf(["image", "video"], "Invalid media type"),
-    //       path: Yup.string().test("pathValidation", function (value, context) {
+    //       resize_path: Yup.string().test("pathValidation", function (value, context) {
     //         const { selectedType } = context.parent;
     //         // Validate only for the selectedType
     //         if (selectedType === "image") {
@@ -153,7 +153,7 @@ function ProductEdit() {
           selectedType: Yup.string()
             .required("Media type is required")
             .oneOf(["image", "video"], "Invalid media type"),
-          path: Yup.string()
+          resize_path: Yup.string()
             .nullable()
             .test("pathValidation", function (value, context) {
               const { selectedType, index } = context.parent;
@@ -212,7 +212,7 @@ function ProductEdit() {
       variants: [{ id: Date.now(), value: "" }],
       delivery_days: "",
       specifications: "",
-      mediaFields: [{ selectedType: "image", path: "" }],
+      mediaFields: [{ selectedType: "image", resize_path: "" }],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -505,7 +505,7 @@ function ProductEdit() {
               .map((mediaItem) => ({
                 id: mediaItem.id,
                 selectedType: mediaItem.type,
-                path: mediaItem.resize_path,
+                resize_path: mediaItem.resize_path,
                 // orderId: mediaItem.order,
               }))
           : [],
@@ -547,7 +547,7 @@ function ProductEdit() {
         const updatedFields = [...formik.values.mediaFields];
         updatedFields[index] = {
           ...updatedFields[index],
-          path: file.name,
+          resize_path: file.name,
           binaryData: file,
         };
         formik.setFieldValue("mediaFields", updatedFields);
@@ -560,7 +560,7 @@ function ProductEdit() {
   const handleAddMediaField = () => {
     formik.setFieldValue("mediaFields", [
       ...formik.values.mediaFields,
-      { selectedType: "image", path: "" },
+      { selectedType: "image", resize_path: "" },
     ]);
   };
 
@@ -606,8 +606,8 @@ function ProductEdit() {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        const targetWidth = 1600;
-        const targetHeight = 1200;
+        const targetWidth = 320;
+        const targetHeight = 240;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
@@ -652,7 +652,7 @@ function ProductEdit() {
       const updatedFields = [...formik.values.mediaFields];
       updatedFields[index] = {
         ...updatedFields[index],
-        path: file.name,
+        resize_path: file.name,
         binaryData: file,
       };
       formik.setFieldValue("mediaFields", updatedFields);
@@ -697,7 +697,7 @@ function ProductEdit() {
     const updatedFields = [...formik.values.mediaFields];
     updatedFields[index] = {
       ...updatedFields[index],
-      path: null,
+      resize_path: null,
       binaryData: null,
     };
 
@@ -1166,7 +1166,7 @@ function ProductEdit() {
                                   image={imageSrc[index]}
                                   crop={crop[index] || { x: 0, y: 0 }}
                                   zoom={zoom[index] || 1}
-                                  aspect={1600 / 1200}
+                                  aspect={320 / 240}
                                   onCropChange={(newCrop) =>
                                     updateCrop(index, newCrop)
                                   }
