@@ -147,25 +147,6 @@ function Register({ handleVendorLogin }) {
           className="card shadow-lg p-3 my-5 rounded"
           style={{ width: "100%", maxWidth: "400px" }}
         >
-          {/* <Link to="/">
-            <button className="btn btn-link text-start shadow-none h-0">
-              <IoMdArrowBack style={{ color: "#ff0060" }} />
-            </button>
-          </Link>
-          <div className="d-flex justify-content-around ">
-            <h3
-              className={`py-2`}
-              style={{
-                borderBottom: "2px solid #ff0060",
-                paddingBottom: "5px",
-                width: "100%",
-                textAlign: "center",
-                color: "#ff0060",
-              }}
-            >
-              Register
-            </h3>
-          </div> */}
           <div
             className="row pb-3"
             style={{
@@ -174,21 +155,27 @@ function Register({ handleVendorLogin }) {
           >
             <div className="col-md-1 d-flex justify-content-center align-items-center">
               <Link to="/">
-                  <IoMdArrowBack style={{color: "#ff0060", fontSize: "20px"}}  className="mt-3 ms-5"/>
+                <IoMdArrowBack
+                  style={{ color: "#ff0060", fontSize: "20px" }}
+                  className="mt-3 ms-5"
+                />
               </Link>
             </div>
-            <div className="col-md-11 d-flex justify-content-center align-items-center" style={{paddingRight: "50px"}}>
-                <h3
-                  className={`pt-3`}
-                  style={{
-                    paddingBottom: "5px",
-                    width: "100%",
-                    textAlign: "center",
-                    color: "#ff0060",
-                  }}
-                >
-                  Register
-                </h3>
+            <div
+              className="col-md-11 d-flex justify-content-center align-items-center"
+              style={{ paddingRight: "50px" }}
+            >
+              <h3
+                className={`pt-3`}
+                style={{
+                  paddingBottom: "5px",
+                  width: "100%",
+                  textAlign: "center",
+                  color: "#ff0060",
+                }}
+              >
+                Register
+              </h3>
             </div>
           </div>
           <Form onSubmit={formik.handleSubmit}>
