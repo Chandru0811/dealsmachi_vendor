@@ -127,6 +127,7 @@ const Referrer = () => {
                   <th className="text-start">vendor Name</th>
                   <th className="text-start">Date</th>
                   <th className="text-start">Amount</th>
+                  <th className="text-start">Commission</th>
                   <th className="text-center">Action</th>
                 </tr>
               </thead>
@@ -151,6 +152,15 @@ const Referrer = () => {
                           maximumFractionDigits: 2,
                           useGrouping: true,
                         }).format(parseFloat(data?.amount))}
+                    </td>
+                    <td className="align-middle text-start">
+                      {" "}
+                      {data?.commission_rate &&
+                        new Intl.NumberFormat("en-IN", {
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                          useGrouping: true,
+                        }).format(parseFloat(data?.commission_rate))}
                     </td>
                     <td className="align-middle text-center">
                       <Link to={`/referrer/edit/${data.id}`}>

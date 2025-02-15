@@ -26,6 +26,7 @@ import OrderView from "../pages/vendor/Order/OrderView";
 import ReferrerDashboard from "../pages/vendor/ReferrerDashboard";
 import Vendors from "../pages/vendor/Vendors/Vendors";
 import VendorsAdd from "../pages/vendor/Vendors/VendorsAdd";
+import Earnings from "../pages/vendor/Earnings/Earnings";
 
 function Vendor({ handleLogout }) {
   const loginType = localStorage.getItem("type");
@@ -93,6 +94,8 @@ function Vendor({ handleLogout }) {
                       {/* My Vendors */}
                       <Route path="/my_vendors" element={<Vendors />} />
                       <Route path="/my_vendors/add" element={<VendorsAdd />} />
+
+                      <Route path="/earnings" element={<Earnings />} />
                     </>
                   )}
                   <Route

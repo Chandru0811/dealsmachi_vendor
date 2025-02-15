@@ -19,7 +19,21 @@ function ReferrerEdit() {
   const validationSchema = Yup.object({
     referrer_id: Yup.string().required("*Select a referrer name"),
     vendor_id: Yup.string().required("*Select a vendor name"),
-    amount: Yup.string().required("*Amount is required"),
+    amount: Yup.number()
+      .typeError("*Amount must be a number")
+      .positive("*Amount must be greater than zero")
+      .required("*Amount is required"),
+    commission_rate: Yup.number()
+      .typeError("*Commission amount must be a number")
+      .min(0, "*Commission amount cannot be negative")
+      .required("*Commission amount is required")
+      .test(
+        "is-less-than-amount",
+        "*Commission amount cannot exceed the total amount",
+        function (value) {
+          return value <= this.parent.amount;
+        }
+      ),
     date: Yup.string().required("*Date is required"),
   });
 
@@ -32,6 +46,7 @@ function ReferrerEdit() {
       date: "",
       referrer_number: "",
       vendor_name: "",
+      commission_rate: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -147,7 +162,9 @@ function ReferrerEdit() {
               <div className="container-fluid py-4">
                 <div className="row align-items-center">
                   <div className="col">
-                    <h1 className="h4 ls-tight headingColor">Edit Referral Amount</h1>
+                    <h1 className="h4 ls-tight headingColor">
+                      Edit Referral Amount
+                    </h1>
                   </div>
                   <div className="col-auto">
                     <div className="hstack gap-2 justify-content-end">
@@ -271,6 +288,33 @@ function ReferrerEdit() {
                         {formik.errors.amount}
                       </div>
                     )}
+                  </div>
+                  <div className="col-md-6 col-12 mb-3">
+                    <label className="form-label">
+                      Commission Rate<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      onInput={(event) => {
+                        event.target.value = event.target.value.replace(
+                          /[^0-9]/g,
+                          ""
+                        );
+                      }}
+                      className={`form-control ${
+                        formik.touched.commission_rate &&
+                        formik.errors.commission_rate
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("commission_rate")}
+                    />
+                    {formik.touched.commission_rate &&
+                      formik.errors.commission_rate && (
+                        <div className="invalid-feedback">
+                          {formik.errors.commission_rate}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

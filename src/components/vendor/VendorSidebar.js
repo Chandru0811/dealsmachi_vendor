@@ -6,6 +6,7 @@ import { BiSolidCategory, BiLogOut } from "react-icons/bi";
 import { FaBoxOpen } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { AiFillPieChart } from "react-icons/ai";
+import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 
 function VendorSidebar({ handleLogout }) {
   const navigate = useNavigate();
@@ -107,6 +108,12 @@ function VendorSidebar({ handleLogout }) {
                   <NavLink className="nav-link" to="/my_vendors">
                     <FaUser />
                     My Vendors
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/earnings">
+                    <RiMoneyRupeeCircleFill />
+                    Earnings
                   </NavLink>
                 </li>
               </>
