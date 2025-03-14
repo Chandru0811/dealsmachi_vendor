@@ -104,11 +104,11 @@ function OrderView() {
                         {data?.order?.status === "1"
                           ? "Created"
                           : data?.order?.status === "2"
-                          ? "Payment Error"
-                          : data?.order?.status === "3"
                           ? "Confirmed"
-                          : data?.order?.status === "4"
+                          : data?.order?.status === "3"
                           ? "Awaiting Delivery"
+                          : data?.order?.status === "4"
+                          ? "Payment Error"
                           : data?.order?.status === "5"
                           ? "Delivered"
                           : data?.order?.status === "6"
@@ -266,8 +266,13 @@ function OrderView() {
                           : "badge_payment text-capitalize"
                       }
                     >
-                      {data?.order?.payment_type?.replace(/_/g, " ") ??
-                        "Pending"}
+                      {data?.order?.payment_type === "online_payment"
+                        ? data?.order?.payment_method_type?.replace(
+                            /_/g,
+                            " "
+                          ) ?? "Pending"
+                        : data?.order?.payment_type?.replace(/_/g, " ") ??
+                          "Pending"}
                     </span>
                     &nbsp;
                     <span className="badge_warning text-capitalize">
@@ -387,6 +392,7 @@ function OrderView() {
                   <p className="mb-0">Contact Information</p>
                 </div>
                 <div className="card-body m-0 p-4">
+                  {/* {data?.order?.delivery_address} */}
                   {data?.order?.delivery_address &&
                     (() => {
                       try {
@@ -433,7 +439,7 @@ function OrderView() {
                           <p>
                             {deliveryAddress.address}, {deliveryAddress.city},{" "}
                             {deliveryAddress.state},{" "}
-                            {deliveryAddress.postalcode} {" "}
+                            {deliveryAddress.postalcode}{" "}
                             {/* {deliveryAddress.unit} */}
                             {deliveryAddress.unit &&
                               deliveryAddress.unit !== "null" &&
@@ -447,6 +453,24 @@ function OrderView() {
                     })()}
                 </div>
               </div>
+              {data?.order?.payment_type === "online_payment" ? (
+                <div className="card mb-2">
+                  <div className="card-header m-0 p-2">
+                    <p className="mb-0">Payment Information</p>
+                  </div>
+                  <div className="card-body m-0 p-4">
+                    <p>Transaction Id: {data?.order?.transactionid ?? "--"}</p>
+                    <p>
+                      Payment Time:{" "}
+                      {data?.order?.created_at
+                        ? new Date(data.order.created_at).toLocaleString()
+                        : "--"}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
