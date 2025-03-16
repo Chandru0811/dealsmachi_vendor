@@ -43,6 +43,7 @@ import Referrer from "../pages/admin/Referrer/Referrer";
 import ReferrerAdd from "../pages/admin/Referrer/ReferrerAdd";
 import ReferrerEdit from "../pages/admin/Referrer/ReferrerEdit";
 import ReferrerDeatils from "../pages/admin/ReferrerDetails/ReferrerDetails";
+import ProductOrder from "../pages/admin/Product/ProductOrder";
 
 function Admin({ handleLogout }) {
   return (
@@ -129,6 +130,7 @@ function Admin({ handleLogout }) {
                   <Route path="/products/add" element={<ProductsAdd />} />
                   <Route path="/products/edit" element={<ProductsEdit />} />
                   <Route path="/products/view/:id" element={<ProductsView />} />
+                  <Route path="/products/order" element={<ProductOrder />} />
 
                   <Route path="/shop" element={<Shop />} />
                   <Route path="/shop/view/:id" element={<ShopView />} />
@@ -141,7 +143,10 @@ function Admin({ handleLogout }) {
                   <Route path="/referrer/edit/:id" element={<ReferrerEdit />} />
 
                   {/* Referrer */}
-                  <Route path="/referrer_vendor" element={<ReferrerDeatils />} />
+                  <Route
+                    path="/referrer_vendor"
+                    element={<ReferrerDeatils />}
+                  />
                 </Routes>
               </div>
               <AdminFooter />
