@@ -41,7 +41,7 @@ function ProductAdd() {
     shop_id: Yup.string().required("Category Group is required"),
     category_id: Yup.string().required("Category is required"),
     name: Yup.string()
-      .max(25, "Name must be 25 characters or less")
+      .max(50, "Name must be 50 characters or less")
       .required("Name is required"),
     deal_type: Yup.string().required("Deal Type is required"),
     delivery_days: Yup.string()
