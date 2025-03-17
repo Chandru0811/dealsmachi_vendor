@@ -15,17 +15,33 @@ function ProductView() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [shopStatus, setShopStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showActiveModal, setShowActiveModal] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const handleOpenModal = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
+  const [specialPrize, setSpecialPrize] = useState(null);
+  const [endDate, setEndDate] = useState("");
 
-  const handleActivate = async () => {
+  const handleActivate = () => {
+    setShowActiveModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowActiveModal(false);
+    setSpecialPrize(null);
+    setEndDate("");
+  };
+
+  const handleConfirmActivate = async () => {
     setLoadIndicator(true);
     try {
+      console.log("Special Prize:", specialPrize);
+      console.log("End Date:", specialPrize === "yes" ? endDate : "N/A");
       const response = await api.post(`admin/deal/${id}/approve`);
       if (response.status === 200) {
         getData();
         toast.success("Product Activated Successfully!");
+        handleCloseModal();
       } else {
         toast.error(response.data.message);
       }
@@ -145,6 +161,87 @@ function ProductView() {
                     Deactivate
                   </button>
                 )}
+                {/* Modal */}
+                <Modal show={showActiveModal} onHide={handleCloseModal}>
+                  <Modal.Header closeButton></Modal.Header>
+                  <Modal.Body>
+                    <form>
+                      <div className="mb-3">
+                        <label className="form-label">Special Prize</label>
+                        <div>
+                          <input
+                            type="radio"
+                            id="specialPrizeYes"
+                            name="specialPrize"
+                            value="yes"
+                            checked={specialPrize === "yes"}
+                            onChange={() => setSpecialPrize("yes")}
+                            className="form-check-input"
+                          />
+                          <label
+                            htmlFor="specialPrizeYes"
+                            className="form-check-label ms-2"
+                          >
+                            Yes
+                          </label>
+
+                          <input
+                            type="radio"
+                            id="specialPrizeNo"
+                            name="specialPrize"
+                            value="no"
+                            checked={specialPrize === "no"}
+                            onChange={() => setSpecialPrize("no")}
+                            className="form-check-input ms-3"
+                          />
+                          <label
+                            htmlFor="specialPrizeNo"
+                            className="form-check-label ms-2"
+                          >
+                            No
+                          </label>
+                        </div>
+                      </div>
+
+                      {specialPrize === "yes" && (
+                        <div className="mb-3">
+                          <label className="form-label" htmlFor="endDate">
+                            End Date
+                          </label>
+                          <input
+                            type="date"
+                            id="endDate"
+                            className="form-control"
+                            value={endDate}
+                            onChange={(e) => setEndDate(e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </form>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <button
+                      className="btn btn-light btn-sm me-2"
+                      onClick={handleCloseModal}
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-success btn-sm me-2"
+                      onClick={handleConfirmActivate}
+                      disabled={loadIndicator}
+                    >
+                      {loadIndicator && (
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          aria-hidden="true"
+                        ></span>
+                      )}
+                      Activate
+                    </button>
+                  </Modal.Footer>
+                </Modal>
               </div>
             </div>
           </div>
@@ -252,7 +349,7 @@ function ProductView() {
                       <p className="text-sm">Original Price</p>
                     </div>
                     <div className="col-6">
-                       <p className="text-muted text-sm">
+                      <p className="text-muted text-sm">
                         :{" "}
                         {data?.original_price &&
                           new Intl.NumberFormat("en-IN", {

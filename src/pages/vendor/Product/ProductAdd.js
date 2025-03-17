@@ -107,6 +107,10 @@ function ProductAdd() {
     brand: Yup.string()
       .notRequired()
       .max(250, "Brand cannot be more than 250 characters long"),
+    stock_in_quantity: Yup.number()
+      .typeError("Stock in Quantity must be a number")
+      .integer("Stock in Quantity must be an integer")
+      .required("Stock in Quantity is required"),
     // (1)
     variants: Yup.array().of(
       Yup.object().shape({
@@ -142,6 +146,7 @@ function ProductAdd() {
       category_id: "",
       deal_type: "",
       brand: "",
+      stock_in_quantity: "",
       original_price: "",
       discounted_price: "",
       discounted_percentage: "",
@@ -172,6 +177,7 @@ function ProductAdd() {
       formData.append("category_id", values.category_id);
       formData.append("deal_type", values.deal_type);
       formData.append("brand", values.brand);
+      formData.append("stock_in_quantity", values.stock_in_quantity);
       formData.append("original_price", values.original_price || 0);
       formData.append("discounted_price", values.discounted_price || 0);
       formData.append("discount_percentage", values.discounted_percentage || 0);
@@ -242,6 +248,7 @@ function ProductAdd() {
         deal_type: true,
         delivery_days: true,
         brand: true,
+        stock_in_quantity: true,
         original_price: true,
         discounted_price: true,
         discounted_percentage: true,
@@ -267,6 +274,7 @@ function ProductAdd() {
           deal_type: "Deal Type",
           delivery_days: "Delivery Days",
           brand: "Brand cannot be more than 250 characters long",
+          stock_in_quantity: "Stock in Quantity",
           original_price: "Original Price",
           discounted_price: "Discounted Price",
           discounted_percentage: "Discounted Percentage",
@@ -896,6 +904,26 @@ function ProductAdd() {
               {formik.touched.brand && formik.errors.brand && (
                 <div className="invalid-feedback">{formik.errors.brand}</div>
               )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">Stock In Quantity <span className="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                className={`form-control form-control-sm ${
+                  formik.touched.stock_in_quantity &&
+                  formik.errors.stock_in_quantity
+                    ? "is-invalid"
+                    : ""
+                }`}
+                {...formik.getFieldProps("stock_in_quantity")}
+              />
+              {formik.touched.stock_in_quantity &&
+                formik.errors.stock_in_quantity && (
+                  <div className="invalid-feedback">
+                    {formik.errors.stock_in_quantity}
+                  </div>
+                )}
             </div>
             <>
               {mediaFields.map((field, index) => (
