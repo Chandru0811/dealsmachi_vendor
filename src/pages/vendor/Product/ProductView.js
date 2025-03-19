@@ -66,7 +66,26 @@ function ProductView() {
         <div className="card shadow border-0 mb-3">
           <div className="row p-3">
             <div className="d-flex justify-content-between align-items-center">
-              <h1 className="h4 ls-tight">View Deals</h1>
+              <h1 className="h4 ls-tight">View Deals
+              {data.special_price === 1 && new Date(data.end_date) > new Date() ? (
+                  <>
+                    <span
+                      className="dot"
+                      style={{
+                        backgroundColor: "#3598f0",
+                        width: "10px",
+                        height: "10px",
+                        display: "inline-block",
+                        borderRadius: "50%",
+                        marginRight: "3px",
+                      }}
+                    >
+                    </span><span style={{ fontSize:"12px" }}>Special price</span>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </h1>
               <div>
                 <Link to={`/product/edit/${id}`}>
                   <button type="button" className="btn btn-light btn-sm me-2">

@@ -20,7 +20,7 @@ function ProductView() {
   const handleOpenModal = () => setShowModal(true);
   const handleClose = () => setShowModal(false);
   const [specialPrize, setSpecialPrize] = useState(null);
-  const [endDate, setEndDate] = useState("");
+  const [end_date, setEndDate] = useState("");
 
   const handleActivate = () => {
     setShowActiveModal(true);
@@ -32,12 +32,17 @@ function ProductView() {
     setEndDate("");
   };
 
-  const handleConfirmActivate = async () => {
-    setLoadIndicator(true);
+  const handleConfirmActivate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const payload = {
+      special_price: specialPrize === "1",
+      ...(specialPrize === "1" && { end_date }),
+    };
+
     try {
-      console.log("Special Prize:", specialPrize);
-      console.log("End Date:", specialPrize === "yes" ? endDate : "N/A");
-      const response = await api.post(`admin/deal/${id}/approve`);
+      const response = await api.post(`admin/deal/${id}/approve`, payload);
       if (response.status === 200) {
         getData();
         toast.success("Product Activated Successfully!");
@@ -49,9 +54,28 @@ function ProductView() {
       toast.error("An error occurred while activating the product.");
       console.error("Activation Error:", error);
     } finally {
-      setLoadIndicator(false);
+      setLoading(false);
     }
   };
+
+  // const handleConfirmActivate = async () => {
+  //   setLoadIndicator(true);
+  //   try {
+  //     const response = await api.post(`admin/deal/${id}/approve`);
+  //     if (response.status === 200) {
+  //       getData();
+  //       toast.success("Product Activated Successfully!");
+  //       handleCloseModal();
+  //     } else {
+  //       toast.error(response.data.message);
+  //     }
+  //   } catch (error) {
+  //     toast.error("An error occurred while activating the product.");
+  //     console.error("Activation Error:", error);
+  //   } finally {
+  //     setLoadIndicator(false);
+  //   }
+  // };
 
   const handleDeActive = async () => {
     setLoading(true);
@@ -122,7 +146,25 @@ function ProductView() {
           <div className="row p-3">
             <div className="d-flex justify-content-between align-items-center">
               <h1 className="h4 ls-tight">
-                View Deals
+                View Deals &nbsp;
+                {data.special_price === 1 && new Date(data.end_date) > new Date() ? (
+                  <>
+                    <span
+                      className="dot"
+                      style={{
+                        backgroundColor: "#3598f0",
+                        width: "10px",
+                        height: "10px",
+                        display: "inline-block",
+                        borderRadius: "50%",
+                        marginRight: "3px",
+                      }}
+                    >
+                    </span><span style={{ fontSize:"12px" }}>Special price</span>
+                  </>
+                ) : (
+                  <></>
+                )}
                 <span>
                   {data?.ownerEmailVerifiedAt !== null && (
                     <i
@@ -165,21 +207,21 @@ function ProductView() {
                 <Modal show={showActiveModal} onHide={handleCloseModal}>
                   <Modal.Header closeButton></Modal.Header>
                   <Modal.Body>
-                    <form>
+                    <form onSubmit={handleConfirmActivate}>
                       <div className="mb-3">
                         <label className="form-label">Special Prize</label>
                         <div>
                           <input
                             type="radio"
-                            id="specialPrizeYes"
-                            name="specialPrize"
-                            value="yes"
-                            checked={specialPrize === "yes"}
-                            onChange={() => setSpecialPrize("yes")}
+                            id="special_price_yes"
+                            name="special_price"
+                            value="1"
+                            checked={specialPrize === "1"}
+                            onChange={() => setSpecialPrize("1")}
                             className="form-check-input"
                           />
                           <label
-                            htmlFor="specialPrizeYes"
+                            htmlFor="special_price_yes"
                             className="form-check-label ms-2"
                           >
                             Yes
@@ -187,15 +229,15 @@ function ProductView() {
 
                           <input
                             type="radio"
-                            id="specialPrizeNo"
-                            name="specialPrize"
-                            value="no"
-                            checked={specialPrize === "no"}
-                            onChange={() => setSpecialPrize("no")}
+                            id="special_price_no"
+                            name="special_price"
+                            value="0"
+                            checked={specialPrize === "0"}
+                            onChange={() => setSpecialPrize("0")}
                             className="form-check-input ms-3"
                           />
                           <label
-                            htmlFor="specialPrizeNo"
+                            htmlFor="special_price_no"
                             className="form-check-label ms-2"
                           >
                             No
@@ -203,22 +245,36 @@ function ProductView() {
                         </div>
                       </div>
 
-                      {specialPrize === "yes" && (
+                      {specialPrize === "1" && (
                         <div className="mb-3">
-                          <label className="form-label" htmlFor="endDate">
+                          <label className="form-label" htmlFor="end_date">
                             End Date
                           </label>
                           <input
                             type="date"
-                            id="endDate"
+                            id="end_date"
                             className="form-control"
-                            value={endDate}
+                            value={
+                              end_date ||
+                              (data?.end_date
+                                ? data.end_date.split("T")[0]
+                                : "")
+                            }
                             onChange={(e) => setEndDate(e.target.value)}
                           />
                         </div>
                       )}
+
+                      {/* <button
+                        type="submit"
+                        className="btn btn-primary"
+                        disabled={loading}
+                      >
+                        {loading ? "Saving..." : "Save"}
+                      </button> */}
                     </form>
                   </Modal.Body>
+
                   <Modal.Footer>
                     <button
                       className="btn btn-light btn-sm me-2"
@@ -237,7 +293,8 @@ function ProductView() {
                           className="spinner-border spinner-border-sm me-2"
                           aria-hidden="true"
                         ></span>
-                      )}
+                      )}{" "}
+                      {loading ? "Saving..." : "Save"}
                       Activate
                     </button>
                   </Modal.Footer>
