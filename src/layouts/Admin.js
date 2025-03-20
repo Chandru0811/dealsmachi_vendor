@@ -44,6 +44,10 @@ import ReferrerAdd from "../pages/admin/Referrer/ReferrerAdd";
 import ReferrerEdit from "../pages/admin/Referrer/ReferrerEdit";
 import ReferrerDeatils from "../pages/admin/ReferrerDetails/ReferrerDetails";
 import ProductOrder from "../pages/admin/Product/ProductOrder";
+import SubCategoriesIndex from "../pages/admin/SubCategory/SubCategoriesIndex";
+import SubCategoriesAdd from "../pages/admin/SubCategory/SubCategoriesAdd";
+import SubCategoriesView from "../pages/admin/SubCategory/SubCategoriesView";
+import SubCategoriesEdit from "../pages/admin/SubCategory/SubCategoriesEdit";
 
 function Admin({ handleLogout }) {
   return (
@@ -86,6 +90,24 @@ function Admin({ handleLogout }) {
                   <Route
                     path="/categories/edit/:id"
                     element={<CategoriesEdits />}
+                  />
+
+                  {/* SubCategories */}
+                  <Route
+                    path="/subcategories"
+                    element={<SubCategoriesIndex />}
+                  />
+                  <Route
+                    path="/subcategories/add"
+                    element={<SubCategoriesAdd />}
+                  />
+                  <Route
+                    path="/subcategories/view/:id"
+                    element={<SubCategoriesView />}
+                  />
+                  <Route
+                    path="/subcategories/edit/:id"
+                    element={<SubCategoriesEdit />}
                   />
 
                   {/* {/ Banner /} */}
