@@ -22,6 +22,7 @@ function ShopView() {
   const { id } = useParams();
   const [selectedItem, setSelectedItem] = useState("Shop");
   const [shopStatus, setShopStatus] = useState("");
+  const [isDirect, setisDirect] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -67,11 +68,47 @@ function ShopView() {
       setLoading(false);
     }
   };
+
+  const handleDirectShop = async () => {
+    setLoading(true);
+    try {
+      const response = await api.post(`admin/shop/${id}/direct`);
+      if (response.status === 200) {
+        setisDirect(1); 
+        toast.success("Shop has been successfully set as a direct shop.");
+      } else {
+        toast.error("Failed to set as direct shop.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while setting shop as direct.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleIndirectShop = async () => {
+    setLoading(true);
+    try {
+      const response = await api.post(`admin/shop/${id}/indirect`);
+      if (response.status === 200) {
+        setisDirect(0); 
+        toast.success("Shop has been successfully set as an indirect shop.");
+      } else {
+        toast.error("Failed to set as indirect shop.");
+      }
+    } catch (error) {
+      toast.error("An error occurred while setting shop as indirect.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getData = async () => {
     setLoadIndicator(true);
     try {
       const response = await api.get(`admin/shop/${id}/details`);
       setShopStatus(response.data.data.active);
+      setisDirect(response.data.data.is_direct);
     } catch (error) {
       toast.error(error.data.message);
     }
@@ -124,6 +161,31 @@ function ShopView() {
                       <span>Back</span>
                     </button>
                   </Link>
+
+                  {isDirect === 1 || isDirect === "1" ? (
+                    <button
+                      type="button"
+                      onClick={handleIndirectShop}
+                      className="btn btn-danger btn-sm me-2"
+                    >
+                      In-Direct
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleDirectShop}
+                      className="btn btn-success btn-sm me-2"
+                      disabled={loading}
+                    >
+                      {loading && (
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          aria-hidden="true"
+                        ></span>
+                      )}
+                      Direct
+                    </button>
+                  )}
 
                   {/* {shopStatus == 0 ? (
                     <button

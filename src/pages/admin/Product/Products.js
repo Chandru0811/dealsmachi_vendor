@@ -138,24 +138,27 @@ const Products = () => {
                         className="img-fluid w-25 me-3"
                         style={{ maxHeight: "70px", maxWidth: "70px" }}
                       /> */}
-                       {data.special_price === 1 && new Date(data.end_date) > new Date() ? (
-                        <>
-                          <span
-                            className="dot"
-                            style={{
-                              backgroundColor: "#3598f0",
-                              width: "10px",
-                              height: "10px",
-                              display: "inline-block",
-                              borderRadius: "50%",
-                              marginRight: "3px",
-                            }}
-                          ></span>
-                        </>
+                      {data?.shop?.is_direct === 1 ? (
+                        data?.special_price === 1 &&
+                        new Date(data?.end_date) > new Date() ? (
+                          <>
+                            <span
+                              className="dot"
+                              style={{
+                                backgroundColor: "#3598f0",
+                                width: "10px",
+                                height: "10px",
+                                display: "inline-block",
+                                borderRadius: "50%",
+                                marginRight: "3px",
+                              }}
+                            ></span>
+                          </>
+                        ) : null
                       ) : (
-                        <>
-                        </>
-                      )} {data?.name}
+                        <></>
+                      )}{" "}
+                      {data?.name}
                     </td>
                     <td className="align-middle text-start">
                       {data?.original_price &&
