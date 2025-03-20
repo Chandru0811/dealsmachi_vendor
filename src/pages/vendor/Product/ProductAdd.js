@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
 import Cropper from "react-easy-crop";
 import { FaTrash } from "react-icons/fa";
+import { MultiSelect } from "react-multi-select-component";
 
 function ProductAdd() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ function ProductAdd() {
   const MAX_FILE_SIZE = 2 * 1024 * 1024;
   const [showModal, setShowModal] = useState(false);
   const [allCategorgroup, setAllCategorgroup] = useState([]);
+  const [allSubCategorgroup, setAllSubCategorgroup] = useState([]);
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
   const [category, setCategory] = useState([]);
   const id = localStorage.getItem("shop_id");
@@ -28,6 +30,7 @@ function ProductAdd() {
   const [mediaFields, setMediaFields] = useState([
     { image: "", video: "", selectedType: "image" },
   ]);
+  const [selectedSubCategories, setSelectedSubCategories] = useState([]);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -40,6 +43,10 @@ function ProductAdd() {
   const validationSchema = Yup.object({
     shop_id: Yup.string().required("Category Group is required"),
     category_id: Yup.string().required("Category is required"),
+    // sub_category_id: Yup.array()
+    //   .of(Yup.string())
+    //   .min(1, "At least one Sub Category is required")
+    //   .required("Sub Category is required"),
     name: Yup.string()
       .max(50, "Name must be 50 characters or less")
       .required("Name is required"),
@@ -107,7 +114,7 @@ function ProductAdd() {
     brand: Yup.string()
       .notRequired()
       .max(250, "Brand cannot be more than 250 characters long"),
-    stock_in_quantity: Yup.number()
+    stock: Yup.number()
       .typeError("Stock in Quantity must be a number")
       .integer("Stock in Quantity must be an integer")
       .required("Stock in Quantity is required"),
@@ -144,9 +151,10 @@ function ProductAdd() {
       shop_id: "",
       name: "",
       category_id: "",
+      sub_category_id: [],
       deal_type: "",
       brand: "",
-      stock_in_quantity: "",
+      stock: "",
       original_price: "",
       discounted_price: "",
       discounted_percentage: "",
@@ -175,9 +183,12 @@ function ProductAdd() {
       formData.append("shop_id", id);
       formData.append("name", values.name);
       formData.append("category_id", values.category_id);
+      values.sub_category_id.forEach((subCatId, index) => {
+        formData.append(`sub_category_id[${index}]`, subCatId);
+      });
       formData.append("deal_type", values.deal_type);
       formData.append("brand", values.brand);
-      formData.append("stock_in_quantity", values.stock_in_quantity);
+      formData.append("stock", values.stock);
       formData.append("original_price", values.original_price || 0);
       formData.append("discounted_price", values.discounted_price || 0);
       formData.append("discount_percentage", values.discounted_percentage || 0);
@@ -245,10 +256,11 @@ function ProductAdd() {
         shop_id: true,
         name: true,
         category_id: true,
+        sub_category_id: true,
         deal_type: true,
         delivery_days: true,
         brand: true,
-        stock_in_quantity: true,
+        stock: true,
         original_price: true,
         discounted_price: true,
         discounted_percentage: true,
@@ -271,10 +283,11 @@ function ProductAdd() {
           shop_id: "Category Group",
           name: "Name",
           category_id: "Category",
+          sub_category_id: "Sub Category",
           deal_type: "Deal Type",
           delivery_days: "Delivery Days",
           brand: "Brand cannot be more than 250 characters long",
-          stock_in_quantity: "Stock in Quantity",
+          stock: "Stock in Quantity",
           original_price: "Original Price",
           discounted_price: "Discounted Price",
           discounted_percentage: "Discounted Percentage",
@@ -339,6 +352,30 @@ function ProductAdd() {
     };
     getData();
   }, []);
+
+  const fetchSubCategory = async (categoryId) => {
+    try {
+      const category = await api.get(
+        `vendor/subcategories/category/${categoryId}`
+      );
+      setAllSubCategorgroup(category.data.data);
+    } catch (error) {
+      toast.error(error);
+    }
+  };
+
+  const handleCategoryChange = async (event) => {
+    const categoryId = event.target.value;
+    formik.setFieldValue("category_id", categoryId);
+    formik.setFieldValue("sub_category_id", []);
+    await fetchSubCategory(categoryId);
+  };
+
+  useEffect(() => {
+    if (formik.values.category_id) {
+      fetchSubCategory(formik.values.category_id);
+    }
+  }, [formik.values.category_id]);
 
   const fetchCategory = async (categoryId) => {
     try {
@@ -439,8 +476,8 @@ function ProductAdd() {
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
-        const targetWidth = 1600;
-        const targetHeight = 1200;
+        const targetWidth = 1280;
+        const targetHeight = 960;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
@@ -664,6 +701,7 @@ function ProductAdd() {
                     : ""
                 }`}
                 {...formik.getFieldProps("category_id")}
+                onChange={handleCategoryChange}
               >
                 <option></option>
                 {category &&
@@ -678,6 +716,42 @@ function ProductAdd() {
                   {formik.errors.category_id}
                 </div>
               )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+              <div className="row">
+                <div className="">
+                  <label className="form-label">
+                    Sub Category<span className="text-danger">*</span>
+                  </label>
+                  <MultiSelect
+                    options={allSubCategorgroup.map((subCat) => ({
+                      label: subCat.name,
+                      value: subCat.id,
+                    }))}
+                    value={selectedSubCategories}
+                    onChange={(selected) => {
+                      setSelectedSubCategories(selected);
+                      formik.setFieldValue(
+                        "sub_category_id",
+                        selected.map((option) => option.value)
+                      );
+                    }}
+                    labelledBy="Select Sub Categories"
+                    className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                      formik.touched.sub_category_id &&
+                      formik.errors.sub_category_id
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                  />
+                  {formik.touched.sub_category_id &&
+                    formik.errors.sub_category_id && (
+                      <div className="invalid-feedback">
+                        {formik.errors.sub_category_id}
+                      </div>
+                    )}
+                </div>
+              </div>
             </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
@@ -906,24 +980,21 @@ function ProductAdd() {
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">Stock In Quantity <span className="text-danger">*</span>
+              <label className="form-label">
+                Stock In Quantity <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
                 className={`form-control form-control-sm ${
-                  formik.touched.stock_in_quantity &&
-                  formik.errors.stock_in_quantity
+                  formik.touched.stock && formik.errors.stock
                     ? "is-invalid"
                     : ""
                 }`}
-                {...formik.getFieldProps("stock_in_quantity")}
+                {...formik.getFieldProps("stock")}
               />
-              {formik.touched.stock_in_quantity &&
-                formik.errors.stock_in_quantity && (
-                  <div className="invalid-feedback">
-                    {formik.errors.stock_in_quantity}
-                  </div>
-                )}
+              {formik.touched.stock && formik.errors.stock && (
+                <div className="invalid-feedback">{formik.errors.stock}</div>
+              )}
             </div>
             <>
               {mediaFields.map((field, index) => (
@@ -1003,7 +1074,7 @@ function ProductAdd() {
                               image={imageSrc[index]}
                               crop={crop[index] || { x: 0, y: 0 }}
                               zoom={zoom[index] || 1}
-                              aspect={1600 / 1200}
+                              aspect={1280 / 960}
                               onCropChange={(newCrop) =>
                                 updateCrop(index, newCrop)
                               }

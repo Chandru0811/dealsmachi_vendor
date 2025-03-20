@@ -108,6 +108,12 @@ function Sidebar({ handleLogout }) {
               </NavLink>
             </li>
             <li className="nav-item">
+              <NavLink className="nav-link" to="/subcategories">
+                <BiSolidCategory />
+                Sub Categories
+              </NavLink>
+            </li>
+            <li className="nav-item">
               <NavLink className="nav-link" to="/dealcategories">
                 <MdCategory />
                 Deal Categories

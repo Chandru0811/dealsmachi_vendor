@@ -147,30 +147,34 @@ function ProductView() {
             <div className="d-flex justify-content-between align-items-center">
               <h1 className="h4 ls-tight">
                 View Deals &nbsp;
-                {data.special_price === 1 && new Date(data.end_date) > new Date() ? (
-                  <>
-                    <span
-                      className="dot"
-                      style={{
-                        backgroundColor: "#3598f0",
-                        width: "10px",
-                        height: "10px",
-                        display: "inline-block",
-                        borderRadius: "50%",
-                        marginRight: "3px",
-                      }}
-                    >
-                    </span><span style={{ fontSize:"12px" }}>Special price</span>
-                  </>
-                ) : (
-                  <></>
-                )}
                 <span>
-                  {data?.ownerEmailVerifiedAt !== null && (
-                    <i
-                      className="fa-duotone fa-solid fa-badge-check"
-                      style={{ color: "green" }}
-                    ></i>
+                  {data?.shop?.is_direct === 1 ? (
+                    data?.special_price === 1 &&
+                    new Date(data?.end_date) > new Date() ? (
+                      <>
+                        <span
+                          className="dot"
+                          style={{
+                            backgroundColor: "#3598f0",
+                            width: "10px",
+                            height: "10px",
+                            display: "inline-block",
+                            borderRadius: "50%",
+                            marginRight: "3px",
+                          }}
+                        ></span>
+                        <span style={{ fontSize: "12px" }}>Special price</span>
+                      </>
+                    ) : null
+                  ) : (
+                    data.ownerEmailVerifiedAt !== null && (
+                      <span>
+                        <i
+                          className="fa-duotone fa-solid fa-badge-check"
+                          style={{ color: "green" }}
+                        ></i>
+                      </span>
+                    )
                   )}
                 </span>
               </h1>
@@ -355,6 +359,16 @@ function ProductView() {
                       <p className="text-muted text-sm">
                         : {data?.categoryName}
                       </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-3">
+                    <div className="col-6 d-flex justify-content-start align-items-center">
+                      <p className="text-sm">Sub Category</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data?.name}</p>
                     </div>
                   </div>
                 </div>
